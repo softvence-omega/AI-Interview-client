@@ -15,7 +15,7 @@ const Router = () => {
       {/* Root layout with common navbar */}
       <Route path="/" element={<CommonLayout />}>
         {/* Nested routes */}
-        <Route path="home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="features" element={<Features />} />
         <Route path="pricing" element={<Planpage />} />
         <Route path="about-us" element={<AboutUs />} />

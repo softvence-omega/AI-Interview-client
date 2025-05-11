@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Buttons from "./AllButtons";
 import img1 from "../assets/logos/inprep.png";
 import Container from "../container/container";
@@ -9,7 +9,7 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   const middleMenuOptions = [
-    { name: "Home", to: "/home" },
+    { name: "Home", to: "/" },
     { name: "Features", to: "/features" },
     { name: "Pricing", to: "/pricing" },
     { name: "About US", to: "/About-US" },
@@ -61,7 +61,9 @@ const Navbar = () => {
            ))}
          </ul>
        </div>
-       <img src={img1} alt="logo" className="h-[40px] w-[118px]" />
+       <Link to="/">
+        <img src={img1} alt="logo" className="h-[40px] w-[118px]" />
+       </Link>
      </div>
 
      {/* Middle: Desktop Menu */}
