@@ -1,9 +1,10 @@
 import React from 'react'
+import Banner from './Banner/Banner'
 
 const Home = () => {
   return (
-    <div>
-       i am home
+    <div className='bg-white justify-center text-center max-w-full mx-auto'>
+       <Banner/>
     </div>
   )
 }

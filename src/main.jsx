@@ -10,11 +10,9 @@ import Router from "./routes/Rourer.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <Container>
         <AuthProvider>
           <Router/>
         </AuthProvider>
-      </Container>
     </BrowserRouter>
   </StrictMode>
 );
