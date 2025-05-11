@@ -29,11 +29,12 @@ const NormalLinkButton = ({
   width = 'w-full',
   textColor = 'text-[#676768]',
   bgColor = 'bg-transparent',
+  rounded='rounded-4xl',
 }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center justify-center ${height} ${width} ${textColor} ${bgColor} ${baseStyles}`}>
+      className={`flex items-center justify-center ${height} ${width} ${textColor} ${bgColor} ${baseStyles} ${rounded}`}>
       {text}
     </Link>
   );
@@ -52,7 +53,7 @@ const SubmitButton = ({
     <button
       type="submit"
       className={`rounded ${height} ${width} ${bgColor} ${textColor} ${baseStyles} ${rounded}`}
-      onClick={onClick}
+      onClick={()=>onClick}
     >
       {text}
     </button>
