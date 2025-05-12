@@ -10,11 +10,11 @@ import { FaArrowRight } from "react-icons/fa6";
 const Banner = () => {
   return (
     <div id="banner" className="text-black text-center pt-24">
-      <h1 className="text-center text-[70px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 w-[864px] mx-auto">
+      <h1 className="text-center text-[28px] md:text-[36px] lg:text-[70px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 md:w-[450px] lg:w-[864px] mx-auto">
         Master Your Interviews with AI-Driven Preparation
       </h1>
 
-      <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-[480px] mx-auto">
+      <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[410px] lg:w-[480px] mx-auto">
         Did you know that 80% of video interviews are screened by AI? With{" "}
         Inprep.ai, you can harness the power of AI to prepare for your{" "}
         interview. Join us now and get interview-ready with Inprep.ai!
@@ -38,7 +38,7 @@ const Banner = () => {
         <img
           src={bannerImage}
           alt="banner"
-          className="relative z-10 mt-[40px] mx-auto object-contain
+          className="relative z-10 mt-[50px] mx-auto object-contain
                w-[300px] h-[300px]
                sm:w-[400px] sm:h-[400px]
                md:w-[500px] md:h-[500px]
@@ -52,19 +52,19 @@ const Banner = () => {
                top-[85%] left-[5%]
                sm:top-[80%] sm:left-[10%]
                md:top-[75%] md:left-[12%]
-               lg:top-[50%] lg:left-[23%]"
+               lg:top-[49%] lg:left-[22%]"
         >
           <div className="flex flex-row text-left gap-2">
             <img
               src={dataScience}
               alt="Software Developer Interview"
-              className="w-18 h-18"
+              className="w-8 md:w-14 lg:w-18 h-8 md:h-14 lg:h-18"
             />
             <div>
-              <p className="text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
+              <p className="text-[8px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
                 Software Developer <br /> Interview
               </p>
-              <p className="text-[#AFAFAF]">11 Positions</p>
+              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">11 Positions</p>
             </div>
             <div className="flex items-center justify-center ml-auto">
             <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2"/>
@@ -78,19 +78,19 @@ const Banner = () => {
                top-[10%] right-[5%]
                sm:top-[12%] sm:right-[10%]
                md:top-[15%] md:right-[12%]
-               lg:top-[20%] lg:right-[23%]"
+               lg:top-[22%] lg:right-[23%]"
         >
           <div className="flex flex-row text-left gap-2">
             <img
               src={softwareDeveloperCard}
               alt="Software Developer Interview"
-              className="w-18 h-18"
+              className="w-8 md:w-14 lg:w-18 h-8 md:h-14 lg:h-18"
             />
             <div>
-              <p className="text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
+              <p className="text-[8px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
                 Software Developer <br /> Interview
               </p>
-              <p className="text-[#AFAFAF]">11 Positions</p>
+              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">11 Positions</p>
             </div>
             <div className="flex items-center justify-center ml-auto">
             <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2"/>

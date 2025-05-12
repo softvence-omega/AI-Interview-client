@@ -1,0 +1,62 @@
+#prepareJobBanner h1 {
+  font-size: 8vw; /* Use viewport width for responsiveness */
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+#prepareJobBanner p {
+  font-size: 4vw; /* Adjust for responsive text size */
+  color: #AFAFAF;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+#prepareJobBanner .info-box h2 {
+  color: #278352;
+  font-size: 6vw; /* Use viewport width for responsive size */
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+#prepareJobBanner .info-box p {
+  color: #676768;
+  font-size: 4vw; /* Adjust for responsive size */
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
+  #prepareJobBanner h1 {
+    font-size: 10vw; /* Larger text on smaller screens */
+  }
+
+  #prepareJobBanner p {
+    font-size: 5vw;
+  }
+
+  #prepareJobBanner .info-box h2 {
+    font-size: 8vw;
+  }
+
+  #prepareJobBanner .info-box p {
+    font-size: 5vw;
+  }
+}
+
+@media (max-width: 480px) {
+  #prepareJobBanner h1 {
+    font-size: 8vw !important; /* Adjust for very small screens */
+  }
+
+  #prepareJobBanner p {
+    font-size: 3vw !important;
+  }
+
+  #prepareJobBanner .info-box h2 {
+    font-size: 10vw;
+  }
+
+  #prepareJobBanner .info-box p {
+    font-size: 6vw;
+  }
+}
