@@ -1,39 +1,98 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import botImg from "../../assets/logos/Hi_bot.png";
 import Buttons from "../../reuseable/AllButtons";
+import useApi from "../../hook/apiHook";
+import { AuthContext, AuthProvider, useAuth } from "../../context/AuthProvider";
+
 
 const LoginOrSignup = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
+  const { request } = useApi();
 
-  // Form state
+  // const { setUser } = useContext(AuthContext); 
+  const { setUser,setOtpToken } = useAuth() 
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    phone: "",
+    aggriedToTerms: true,
   });
 
-  // Handle input changes
+  useEffect(() => {
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      aggriedToTerms: true,
+    });
+  }, [location.pathname]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Login handler
-  const triggerFunctionForLogIN = (e) => {
+  const triggerFunctionForLogIN = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", {
-      email: formData.email,
-      password: formData.password,
-    });
+
+      const res = await request({
+        endpoint: "/auth/login",
+        method: "POST",
+        body: {
+          email: formData.email,
+          password: formData.password,
+        },
+      });
+
+      if (res.ok) {
+        const userData = {
+          userData: res.data.user,
+          approvalToken: res.data.approvalToken,
+          refreshToken: res.data.refreshToken,
+        };
+        setUser(userData);
+        localStorage.setItem("userData", JSON.stringify(userData));
+        navigate("/");
+      } else {
+        console.error(`Login failed (${res.status}):`, res.message);
+      }
+
   };
 
-  // SignUp handler
-  const triggerFunctionForSignUp = (e) => {
+  const triggerFunctionForSignUp =async (e) => {
     e.preventDefault();
     console.log("Signing up with:", formData);
+    // Add actual signup API logic here
+
+    const res = await request({
+      endpoint: "/users/createUser",
+      method: "POST",
+      body: {
+        name:formData.name,
+        phone:formData.phone,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword:formData.confirmPassword,
+        aggriedToTerms:formData.aggriedToTerms
+      },
+    });
+
+    if (res.ok) {
+      console.log("success data",res.data)
+      setOtpToken(res.data.token)
+      // navigate("/otpCrossCheck");
+    } else {
+      console.error(`Login failed (${res.status}):`, res.message);
+    }
+
   };
 
   return (
@@ -55,7 +114,6 @@ const LoginOrSignup = () => {
       {/* Right: Form Section */}
       <div className="w-1/2 p-10 flex items-center justify-center">
         {currentPath === "/login" ? (
-          // Login Form
           <form
             onSubmit={triggerFunctionForLogIN}
             className="space-y-4 w-full max-w-sm relative right-[20%]"
@@ -64,9 +122,7 @@ const LoginOrSignup = () => {
               Log In
             </h2>
             <div>
-              <label className="text-[20px] font-normal text-black">
-                Email
-              </label>
+              <label className="text-[20px] font-normal text-black">Email</label>
               <input
                 type="email"
                 name="email"
@@ -79,9 +135,7 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">
-                Password
-              </label>
+              <label className="text-[20px] font-normal text-black">Password</label>
               <input
                 type="password"
                 name="password"
@@ -99,16 +153,23 @@ const LoginOrSignup = () => {
               rounded="rounded-[10px]"
               onClick={triggerFunctionForLogIN}
             />
-
-            <Link
-              to="/forgot-password"
-              className="text-sm text-black"
-            >
-              Forgot password?
-            </Link>
+            <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
+              <Link to="/forgot-password" className="hover:underline">
+                Forgot password?
+              </Link>
+              <div className="text-center flex mt-14">
+                <p>Don&apos;t have an account?</p>
+                <Link
+                  to="/signup"
+                  className="hover:underline ml-2"
+                  style={{ color: "var(--btn-primary-color)" }}
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
           </form>
         ) : (
-          // Sign Up Form
           <form
             onSubmit={triggerFunctionForSignUp}
             className="space-y-4 w-full max-w-sm relative right-[20%]"
@@ -116,7 +177,6 @@ const LoginOrSignup = () => {
             <h2 className="mb-4 text-center text-black font-semibold text-5xl">
               Sign Up
             </h2>
-
             <div>
               <label className="text-[20px] font-normal text-black">Name</label>
               <input
@@ -131,9 +191,7 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">
-                Email
-              </label>
+              <label className="text-[20px] font-normal text-black">Email</label>
               <input
                 type="email"
                 name="email"
@@ -152,6 +210,7 @@ const LoginOrSignup = () => {
               <input
                 type="text"
                 name="phone"
+                value={formData.phone}
                 onChange={handleChange}
                 className="w-full p-2 rounded text-black border-[1px] focus:outline-none mb-1"
                 style={{ borderColor: "var(--btn-primary-color)" }}
@@ -160,9 +219,7 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">
-                Password
-              </label>
+              <label className="text-[20px] font-normal text-black">Password</label>
               <input
                 type="password"
                 name="password"
@@ -195,6 +252,18 @@ const LoginOrSignup = () => {
               rounded="rounded-[10px]"
               onClick={triggerFunctionForSignUp}
             />
+            <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
+              <div className="text-center flex mt-14">
+                <p>Already have an account?</p>
+                <Link
+                  to="/login"
+                  className="hover:underline ml-2"
+                  style={{ color: "var(--btn-primary-color)" }}
+                >
+                  Log In
+                </Link>
+              </div>
+            </div>
           </form>
         )}
       </div>
