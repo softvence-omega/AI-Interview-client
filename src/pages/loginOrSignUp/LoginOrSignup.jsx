@@ -86,8 +86,8 @@ const LoginOrSignup = () => {
     });
 
     if (res.ok) {
-      console.log("success data",res.data)
-      setOtpToken(res.data.token)
+      console.log("success data",res.data.data.token)
+      setOtpToken(res.data.data.token)
       // navigate("/otpCrossCheck");
     } else {
       console.error(`Login failed (${res.status}):`, res.message);
