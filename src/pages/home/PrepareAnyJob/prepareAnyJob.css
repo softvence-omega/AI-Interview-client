@@ -1,3 +1,16 @@
+.bannerBG {
+  position: relative;
+  background-color: #174D31 !important;
+  background-image: url("../../../assets/banner-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  text-align: center;
+  border-radius: 12px;
+}
+
 #prepareJobBanner h1 {
   font-size: 8vw; /* Use viewport width for responsiveness */
   font-weight: 600;
