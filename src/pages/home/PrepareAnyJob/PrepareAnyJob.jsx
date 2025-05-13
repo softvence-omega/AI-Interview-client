@@ -54,7 +54,7 @@ const PrepareAnyJob = () => {
   return (
     <div
       id="prepareJobBanner"
-      className="text-center justify-items-center items-center mt-24"
+      className="text-center justify-items-center items-center mt-24 bannerBG"
     >
       <div className="content-wrapper">
         <img
