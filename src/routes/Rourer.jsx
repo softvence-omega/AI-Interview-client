@@ -8,6 +8,8 @@ import ContuctUs from "../pages/contuctus/ContuctUs";
 import LoginOrSignup from "../pages/loginOrSignUp/LoginOrSignup";
 import CommonLayout from "../container/commonLayout";
 import OtpCrossCheck from "../pages/OtpCrosscheck/OtpCrossCheck";
+import ResumeUpload from "../pages/resumeUpload/ResumeUplod";
+import AboutMe from "../pages/Aboutme/Aboutme";
 
 
 const Router = () => {
@@ -24,6 +26,8 @@ const Router = () => {
         <Route path="/login" element={<LoginOrSignup />} />
         <Route path="/signup" element={<LoginOrSignup />} />
         <Route path="/otp-crosscheck" element={<OtpCrossCheck />} />
+        <Route path="/resume-upload" element={<ResumeUpload />} />
+        <Route path="/aboutMe" element={<AboutMe/>} />
       </Route>
 
 

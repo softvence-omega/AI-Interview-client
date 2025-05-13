@@ -3,17 +3,15 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import botImg from "../../assets/logos/Hi_bot.png";
 import Buttons from "../../reuseable/AllButtons";
 import useApi from "../../hook/apiHook";
-import { AuthContext, AuthProvider, useAuth } from "../../context/AuthProvider";
-
+import { useAuth } from "../../context/AuthProvider";
+import { toast } from "sonner";
 
 const LoginOrSignup = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { request } = useApi();
-
-  // const { setUser } = useContext(AuthContext); 
-  const { setUser,setOtpToken } = useAuth() 
+  const { setUser, setOtpToken } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -43,6 +41,7 @@ const LoginOrSignup = () => {
   const triggerFunctionForLogIN = async (e) => {
     e.preventDefault();
 
+    try {
       const res = await request({
         endpoint: "/auth/login",
         method: "POST",
@@ -52,7 +51,7 @@ const LoginOrSignup = () => {
         },
       });
 
-      if (res.ok) {
+      if (res.ok && res.data) {
         const userData = {
           userData: res.data.user,
           approvalToken: res.data.approvalToken,
@@ -60,39 +59,60 @@ const LoginOrSignup = () => {
         };
         setUser(userData);
         localStorage.setItem("userData", JSON.stringify(userData));
-        navigate("/");
+        toast.success("✅ Log in successful!");
+        setTimeout(() => {
+          if (res.data.meta) {
+            const completedSteps = res.data.meta;
+            if (!completedSteps.isResumeUploaded) {
+              navigate("/resume-upload");
+            } else if (!completedSteps.isAboutMeGenerated) {
+              navigate("/generateAboutMe");
+            } else if (!completedSteps.isAboutMeVideoChecked) {
+              navigate("/generateAboutMe");
+            } else {
+              navigate("/userDashBoard");
+            }
+          }
+        }, 1500);
       } else {
-        console.error(`Login failed (${res.status}):`, res.message);
+        toast.error(res.message || "Login failed");
+        console.error("Login failed", res);
       }
-
+    } catch (err) {
+      console.error("Login error", err);
+      toast.error("An error occurred during login.");
+    }
   };
 
-  const triggerFunctionForSignUp =async (e) => {
+  const triggerFunctionForSignUp = async (e) => {
     e.preventDefault();
-    console.log("Signing up with:", formData);
-    // Add actual signup API logic here
 
-    const res = await request({
-      endpoint: "/users/createUser",
-      method: "POST",
-      body: {
-        name:formData.name,
-        phone:formData.phone,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword:formData.confirmPassword,
-        aggriedToTerms:formData.aggriedToTerms
-      },
-    });
+    try {
+      const res = await request({
+        endpoint: "/users/createUser",
+        method: "POST",
+        body: {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          aggriedToTerms: formData.aggriedToTerms,
+        },
+      });
 
-    if (res.ok) {
-      console.log("success data",res.data.data.token)
-      setOtpToken(res.data.data.token)
-      // navigate("/otpCrossCheck");
-    } else {
-      console.error(`Login failed (${res.status}):`, res.message);
+      if (res.ok && res.data?.data?.token) {
+        setOtpToken(res.data.data.token);
+        toast.success("✅ Check your email for OTP!");
+        setTimeout(() => navigate("/otp-crosscheck"), 1500);
+      } else {
+        toast.error(res.data.message || "Signup failed");
+        console.error("Signup failed", res);
+      }
+    } catch (err) {
+      console.error("Signup error", err);
+      toast.error("An error occurred during sign-up.");
     }
-
   };
 
   return (
@@ -122,7 +142,9 @@ const LoginOrSignup = () => {
               Log In
             </h2>
             <div>
-              <label className="text-[20px] font-normal text-black">Email</label>
+              <label className="text-[20px] font-normal text-black">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
@@ -135,7 +157,9 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">Password</label>
+              <label className="text-[20px] font-normal text-black">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -151,7 +175,6 @@ const LoginOrSignup = () => {
               text="Log In"
               height="h-[60px]"
               rounded="rounded-[10px]"
-              onClick={triggerFunctionForLogIN}
             />
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
               <Link to="/forgot-password" className="hover:underline">
@@ -191,7 +214,9 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">Email</label>
+              <label className="text-[20px] font-normal text-black">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
@@ -205,7 +230,7 @@ const LoginOrSignup = () => {
             </div>
             <div>
               <label className="text-[20px] font-normal text-black">
-                Phone Number
+                Phone
               </label>
               <input
                 type="text"
@@ -219,7 +244,9 @@ const LoginOrSignup = () => {
               />
             </div>
             <div>
-              <label className="text-[20px] font-normal text-black">Password</label>
+              <label className="text-[20px] font-normal text-black">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -250,7 +277,6 @@ const LoginOrSignup = () => {
               text="Sign Up"
               height="h-[60px]"
               rounded="rounded-[10px]"
-              onClick={triggerFunctionForSignUp}
             />
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
               <div className="text-center flex mt-14">
