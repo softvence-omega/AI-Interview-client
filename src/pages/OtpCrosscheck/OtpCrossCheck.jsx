@@ -21,14 +21,14 @@ const OtpCrossCheck = () => {
     setOtp(newOtp);
 
     if (value && index < 5) {
-      document.getElementById(`otp-${index + 1}`).focus();
+      document.getElementById(`otp-${index + 1}`)?.focus();
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const enteredOtp = otp.join("");
 
+    const enteredOtp = otp.join("");
     if (enteredOtp.length < 6) {
       toast.error("Please enter the full 6-digit OTP.");
       return;
@@ -37,9 +37,8 @@ const OtpCrossCheck = () => {
     try {
       setLoading(true);
 
-      const endpoint = `/auth/otpcrossCheck`;
       const res = await request({
-        endpoint,
+        endpoint: "/auth/otpcrossCheck",
         method: "POST",
         body: {
           token: otpToken,
@@ -47,8 +46,8 @@ const OtpCrossCheck = () => {
         },
       });
 
-      if (res?.success) {
-        toast.success("✅ OTP verified successfully!");
+      if (res?.ok) {
+        toast.success(`${res.data.message}`);
         setTimeout(() => navigate("/login"), 1500);
       } else {
         toast.error(res?.message || "❌ OTP verification failed.");
@@ -65,9 +64,8 @@ const OtpCrossCheck = () => {
     try {
       setLoading(true);
 
-      const endpoint = `/auth/resendOtp`;
       const res = await request({
-        endpoint,
+        endpoint: "/auth/resendOtp",
         method: "POST",
         body: {
           token: otpToken,
@@ -92,7 +90,9 @@ const OtpCrossCheck = () => {
       <div className="shadow-lg rounded-2xl p-8 w-full max-w-md">
         <div className="flex flex-col items-center">
           <img src={img1} alt="mobile" className="w-24 h-24 mb-6" />
-          <h2 className="text-2xl font-semibold text-[#37B874] mb-2">Verify OTP</h2>
+          <h2 className="text-2xl font-semibold text-[#37B874] mb-2">
+            Verify OTP
+          </h2>
           <p className="text-center text-gray-600 mb-6">
             Please provide the OTP sent to your email
           </p>
@@ -117,7 +117,6 @@ const OtpCrossCheck = () => {
               height="h-[50px]"
               rounded="rounded-[8px]"
               disabled={loading}
-              onClick={handleSubmit}
             />
 
             <div className="text-center mt-6">
