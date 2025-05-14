@@ -10,7 +10,9 @@ const Features = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <InterviewFeatures />
       </div>
-      <HomeCorner />
+      <div className="mx-4 md:mx-4 lg:mx-0 xl:mx-0">
+        <HomeCorner />
+      </div>
     </div>
   );
 };
