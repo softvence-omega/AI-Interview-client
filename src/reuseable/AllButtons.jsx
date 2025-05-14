@@ -25,7 +25,7 @@ const LinkButton = ({
 const NormalLinkButton = ({
   text = 'Click Me',
   to = '/',
-  height = 'h-full',
+  height = 'h-[40px]',
   width = 'w-full',
   textColor = 'text-[#676768]',
   bgColor = 'bg-transparent',
@@ -42,23 +42,30 @@ const NormalLinkButton = ({
 
 const SubmitButton = ({
   text = 'Submit',
-  height = 'h-full',
+  height = 'h-[40px]',
   width = 'w-full',
   textColor = 'text-white',
   bgColor = 'bg-[#37B874]',
-  rounded='rounded-4xl',
+  rounded = 'rounded-[12px]',
   onClick,
+  type = 'button',
+  disabled = false,
 }) => {
+  const baseStyles = `flex items-center justify-center font-semibold transition duration-200`;
+
   return (
     <button
-      type="submit"
-      className={`rounded ${height} ${width} ${bgColor} ${textColor} ${baseStyles} ${rounded}`}
-      onClick={()=>onClick}
+      type={type}
+      disabled={disabled}
+      className={`${height} ${width} ${bgColor} ${textColor} ${rounded} ${baseStyles} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onClick={onClick}
     >
       {text}
     </button>
   );
 };
+
+
 
 const Buttons = {
   LinkButton,
