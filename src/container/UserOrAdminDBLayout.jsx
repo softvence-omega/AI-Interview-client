@@ -1,8 +1,70 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import Container from "./container";
+import dbLogo from "../assets/logos/dbLogo.png";
+import { useAuth } from "../context/AuthProvider";
+import { IoHome } from "react-icons/io5";
+import { MdOutlineBusinessCenter } from "react-icons/md";
+import { MdOutlineInsights } from "react-icons/md";
+import { RiLogoutBoxLine } from "react-icons/ri";
 
-const UserOrAdminDBLayout = ({ children }) => {
+const UserOrAdminDBLayout = () => {
+  const { user } = useAuth();
+  const userData = user?.userData; // Safely access userData
+  const userMeta = user?.userMeta; // Directly access meta
+  const userType = user?.userData?.role; // Safely access role
+  console.log("user", user,userMeta);
+
   const navigate = useNavigate();
+  const location = useLocation(); // Get current route
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to toggle sidebar
+
+  // Define routes based on user type
+  const userRoutes = [
+    {
+      name: "Mock Interviews",
+      logo: <IoHome />,
+      to: "/mockInterview",
+    },
+    {
+      name: "My Jobs",
+      logo: <MdOutlineBusinessCenter />,
+      to: "/myJobs",
+    },
+    {
+      name: "Incites",
+      logo: <MdOutlineInsights />,
+      to: "/incites",
+    },
+  ];
+
+  const adminRoutes = [
+    {
+      name: "Mock Interviews",
+      logo: null,
+      to: "/createInterview",
+    },
+    {
+      name: "Add User",
+      logo: null,
+      to: "/add-user",
+    },
+    {
+      name: "Add Admin",
+      logo: null,
+      to: "/add-admin",
+    },
+    {
+      name: "Manage User",
+      logo: null,
+      to: "/manage-user",
+    },
+    {
+      name: "Manage Admin",
+      logo: null,
+      to: "/manage-admin",
+    },
+  ];
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -13,77 +75,154 @@ const UserOrAdminDBLayout = ({ children }) => {
     navigate("/login"); // Redirect to login page after logout
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // Combined logic for meta-based redirects and first route navigation
+  useEffect(() => {
+    if (!userType) {
+      console.log("Waiting for userType to be available");
+      return; // Wait until userType is available
+    }
+
+    const currentPath = location.pathname;
+    const routes = userType === "admin" ? adminRoutes : userRoutes;
+
+    // Step 1: Check meta conditions for non-admins
+    if (userType !== "admin" && userMeta) {
+      const completedSteps = userMeta;
+
+      if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
+        console.log("Redirecting to /resume-upload due to isResumeUploaded=false");
+        navigate("/resume-upload");
+        return; // Exit early after redirect
+      } 
+      else if (
+        !completedSteps.isAboutMeGenerated &&
+        currentPath !== "/generateAboutMe"
+      ) {
+        console.log("Redirecting to /generateAboutMe due to isAboutMeGenerated=false");
+        navigate("/generateAboutMe");
+        return; // Exit early after redirect
+      } 
+      else if (
+        !completedSteps.isAboutMeVideoChecked &&
+        currentPath !== "/generateAboutMe"
+      ) {
+        console.log("Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false");
+        navigate("/generateAboutMe");
+        return; // Exit early after redirect
+      }
+    }
+
+    // Step 2: If no meta redirect is needed (or user is admin), check for first route navigation
+    const isCurrentRouteValid = routes.some((route) => location.pathname === route.to);
+
+    if (!isCurrentRouteValid) {
+      const firstRoute = routes[0];
+      console.log(`Navigating to first route: ${firstRoute.to}`);
+      navigate(firstRoute.to);
+    } else {
+      console.log(`Current route ${location.pathname} is valid, no navigation needed`);
+    }
+  }, [userType, location.pathname, navigate, adminRoutes, userRoutes, userMeta]);
+
   return (
-    <div className="h-screen w-screen flex bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-[#37B874] text-white flex flex-col">
-        {/* Sidebar Header */}
-        <div className="p-4 text-2xl font-bold border-b border-gray-300">
-          Dashboard
-        </div>
+    <Container>
+      <div className="h-screen w-screen flex bg-gray-100 max-w-[1440px]">
+        {/* Overlay for mobile when sidebar is open */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={toggleSidebar}
+          ></div>
+        )}
 
-        {/* Navigation Links */}
-        <nav className="flex-1 p-4 space-y-2">
+        {/* Sidebar */}
+        <div
+          className={`fixed lg:static h-full bg-transparent text-white flex flex-col transition-all duration-300 z-30 ${
+            isSidebarOpen ? "w-64" : "w-0 lg:w-64 overflow-hidden"
+          }`}
+          style={{ boxShadow: "2px 0 2px rgba(0, 0, 0, 0.1)" }} // 2px right shadow
+        >
+          {/* Toggle Button for Mobile */}
           <button
-            onClick={() => handleNavigation("/dashboard")}
-            className="w-full text-left py-2 px-4 rounded hover:bg-[#2f9b63] transition"
+            onClick={toggleSidebar}
+            className="lg:hidden absolute top-4 right-4 text-white z-40"
           >
-            Dashboard
+            ✕
           </button>
-          <button
-            onClick={() => handleNavigation("/add-user")}
-            className="w-full text-left py-2 px-4 rounded hover:bg-[#2f9b63] transition"
-          >
-            Add User
-          </button>
-          <button
-            onClick={() => handleNavigation("/add-admin")}
-            className="w-full text-left py-2 px-4 rounded hover:bg-[#2f9b63] transition"
-          >
-            Add Admin
-          </button>
-          <button
-            onClick={() => handleNavigation("/manage-user")}
-            className="w-full text-left py-2 px-4 rounded hover:bg-[#2f9b63] transition"
-          >
-            Manage User
-          </button>
-          <button
-            onClick={() => handleNavigation("/manage-admin")}
-            className="w-full text-left py-2 px-4 rounded hover:bg-[#2f9b63] transition"
-          >
-            Manage Admin
-          </button>
-        </nav>
 
-        {/* Logout Button */}
-        <div className="p-4 border-t border-gray-300">
-          <button
-            onClick={handleLogout}
-            className="w-full text-left py-2 px-4 rounded bg-red-500 hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
+          {/* Sidebar Header */}
+          <div className="p-4 text-2xl font-bold border-b border-gray-300">
+            <img src={dbLogo} alt="logo not available" />
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white p-4 shadow flex justify-between items-center">
-          <h1 className="text-xl font-semibold">User/Admin Dashboard</h1>
-          <div className="flex items-center space-x-2">
-            <span className="text-gray-600">Logged in as: Admin</span>
-            <div className="w-8 h-8 bg-gray-300 rounded-full"></div> {/* Placeholder for user avatar */}
+          {/* Navigation Links */}
+          <nav className="flex-1 p-4 space-y-2">
+            {(userType === "admin" ? adminRoutes : userRoutes).map((route, index) => (
+              <button
+                key={index}
+                onClick={() => handleNavigation(route.to)}
+                className={`w-full text-left py-2 px-4 rounded transition ${
+                  location.pathname === route.to
+                    ? "bg-[#3A4C67] text-white"
+                    : "hover:bg-[#3A4C67] hover:text-white text-[#676768]"
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  {route.logo || null}
+                  <h2>{route.name}</h2>
+                </div>
+              </button>
+            ))}
+          </nav>
+
+          {/* Logout Button */}
+          <div className="p-4 border-t border-gray-300">
+            <button
+              onClick={handleLogout}
+              className="w-full text-left py-2 px-4 rounded transition"
+            >
+              <div className="flex gap-4 items-center">
+                <span className="text-red-600">
+                  <RiLogoutBoxLine />
+                </span>
+                <span className="text-black">Logout</span>
+              </div>
+            </button>
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          {children || <p className="text-gray-600">Select an option from the sidebar to view content.</p>}
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Header with Toggle Button */}
+          <div className="bg-white p-4 shadow flex justify-between items-center">
+            <button
+              onClick={toggleSidebar}
+              className="lg:hidden text-[#37B874] focus:outline-none"
+            >
+              ☰
+            </button>
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gray-300 rounded-[8px]"></div>
+              <div className="text-gray-600">
+                <h2 className="text-[#676768]">Welcome Back</h2>
+                <h2 className="text-[20px] font-medium">
+                  {userData?.name?.toUpperCase() || "Guest"}
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
