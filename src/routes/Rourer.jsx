@@ -34,7 +34,11 @@ const Router = () => {
         <Route path="/exprience" element={<Experience/>} />
         <Route path="/certificates" element={<EducationCertificate/>} />
       </Route>
-      <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} />
+
+
+      <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} >
+      
+      </Route>
 
 
     </Routes>

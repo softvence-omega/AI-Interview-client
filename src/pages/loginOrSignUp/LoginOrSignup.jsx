@@ -53,6 +53,7 @@ const LoginOrSignup = () => {
 
       if (res.ok && res.data) {
         const userData = {
+          userMeta:res.data.meta,
           userData: res.data.user,
           approvalToken: res.data.approvalToken,
           refreshToken: res.data.refreshToken,
@@ -60,21 +61,10 @@ const LoginOrSignup = () => {
         setUser(userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         toast.success("✅ Log in successful!");
-        setTimeout(() => {
-          if (res.data.meta) {
-            const completedSteps = res.data.meta;
-            if (!completedSteps.isResumeUploaded) {
-              navigate("/resume-upload");
-            } else if (!completedSteps.isAboutMeGenerated) {
-              navigate("/generateAboutMe");
-            } else if (!completedSteps.isAboutMeVideoChecked) {
-              navigate("/generateAboutMe");
-            } else {
-              navigate("/userDashBoard");
-            }
-          }
-        }, 1500);
-      } else {
+        
+        setTimeout(() =>navigate("/userDashBoard"), 1500);
+      } 
+      else {
         toast.error(res.message || "Login failed");
         console.error("Login failed", res);
       }
@@ -175,6 +165,7 @@ const LoginOrSignup = () => {
               text="Log In"
               height="h-[60px]"
               rounded="rounded-[10px]"
+              onClick={triggerFunctionForLogIN}
             />
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
               <Link to="/forgot-password" className="hover:underline">
@@ -192,7 +183,9 @@ const LoginOrSignup = () => {
               </div>
             </div>
           </form>
-        ) : (
+        ) 
+        : 
+        (
           <form
             onSubmit={triggerFunctionForSignUp}
             className="space-y-4 w-full max-w-sm relative right-[20%]"
@@ -277,6 +270,7 @@ const LoginOrSignup = () => {
               text="Sign Up"
               height="h-[60px]"
               rounded="rounded-[10px]"
+              onClick={triggerFunctionForSignUp}
             />
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-[#3A4C67]">
               <div className="text-center flex mt-14">
