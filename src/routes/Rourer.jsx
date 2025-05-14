@@ -10,6 +10,9 @@ import CommonLayout from "../container/commonLayout";
 import OtpCrossCheck from "../pages/OtpCrosscheck/OtpCrossCheck";
 import ResumeUpload from "../pages/resumeUpload/ResumeUplod";
 import AboutMe from "../pages/Aboutme/Aboutme";
+import Experience from "../pages/expreance/Exprence";
+import EducationCertificate from "../pages/certificates/Certificates";
+import UserOrAdminDBLayout from "../container/UserOrAdminDBLayout";
 
 
 const Router = () => {
@@ -28,7 +31,10 @@ const Router = () => {
         <Route path="/otp-crosscheck" element={<OtpCrossCheck />} />
         <Route path="/resume-upload" element={<ResumeUpload />} />
         <Route path="/aboutMe" element={<AboutMe/>} />
+        <Route path="/exprience" element={<Experience/>} />
+        <Route path="/certificates" element={<EducationCertificate/>} />
       </Route>
+      <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} />
 
 
     </Routes>
