@@ -1,7 +1,7 @@
-import "./FeatureBanner.css";
-import bannerImage from "../../../assets/features/featurebanner.png";
+import "./AboutUsBanner.css";
+import bannerImage from "../../../assets/greeting.png";
 
-const FeaturesBanner = () => {
+const AboutUsBanner = () => {
   return (
     <div id="feature-banner" className="text-black text-center pt-24">
       <h1
@@ -13,13 +13,11 @@ const FeaturesBanner = () => {
           WebkitTextFillColor: "transparent",
         }}
       >
-        Features
+        About Us
       </h1>
 
       <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[510px] lg:w-[520px] mx-auto">
-        Explore the powerful tools and features that make inprep.ai the most
-        effective way to prepare for interviews, track job applications, and
-        improve your chances of success.
+      We are a team dedicated to revolutionizing interview preparation with AI-driven insights. At inprep.ai, we empower job seekers to master their interviews through personalized mock interviews, real-time feedback, and actionable insights.
       </p>
 
       <div className="w-full overflow-hidden text-[#212121] flex justify-end items-center xl:-mt-24">
@@ -29,4 +27,4 @@ const FeaturesBanner = () => {
   );
 };
 
-export default FeaturesBanner;
+export default AboutUsBanner;
