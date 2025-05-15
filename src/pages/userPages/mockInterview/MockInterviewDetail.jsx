@@ -84,7 +84,6 @@ const MockInterviewDetail = () => {
             src={interviewData.img}
             alt={interviewData.interview_name}
             className="w-full h-60 object-cover rounded-lg mb-4"
-            onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
           />
           <h1 className="text-2xl font-bold mb-4">
             {interviewData.interview_name}
