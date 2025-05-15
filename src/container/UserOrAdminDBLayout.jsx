@@ -11,30 +11,30 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 const UserOrAdminDBLayout = () => {
   const { user } = useAuth();
   const userData = user?.userData; // Safely access userData
-  const userMeta = user?.userMeta; // Directly access meta
+  const userMeta = user?.meta; // Corrected to user?.meta
   const userType = user?.userData?.role; // Safely access role
-  console.log("user", user,userMeta);
+  console.log("user", user, userMeta);
 
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to toggle sidebar
 
-  // Define routes based on user type
+  // Define routes based on user type (relative to /userDashboard)
   const userRoutes = [
     {
       name: "Mock Interviews",
       logo: <IoHome />,
-      to: "/mockInterview",
+      to: "mockInterview",
     },
     {
       name: "My Jobs",
       logo: <MdOutlineBusinessCenter />,
-      to: "/myJobs",
+      to: "myJobs",
     },
     {
       name: "Incites",
       logo: <MdOutlineInsights />,
-      to: "/incites",
+      to: "incites",
     },
   ];
 
@@ -42,37 +42,38 @@ const UserOrAdminDBLayout = () => {
     {
       name: "Mock Interviews",
       logo: null,
-      to: "/createInterview",
+      to: "createInterview",
     },
     {
       name: "Add User",
       logo: null,
-      to: "/add-user",
+      to: "add-user",
     },
     {
       name: "Add Admin",
       logo: null,
-      to: "/add-admin",
+      to: "add-admin",
     },
     {
       name: "Manage User",
       logo: null,
-      to: "/manage-user",
+      to: "manage-user",
     },
     {
       name: "Manage Admin",
       logo: null,
-      to: "/manage-admin",
+      to: "manage-admin",
     },
   ];
 
   const handleNavigation = (path) => {
-    navigate(path);
+    navigate(`/userDashboard/${path}`);
   };
 
   const handleLogout = () => {
-    // Add logout logic here (e.g., clear auth token)
-    navigate("/login"); // Redirect to login page after logout
+    // Clear the redirect flag on logout
+    localStorage.removeItem("hasRedirected");
+    navigate("/login");
   };
 
   const toggleSidebar = () => {
@@ -89,44 +90,59 @@ const UserOrAdminDBLayout = () => {
     const currentPath = location.pathname;
     const routes = userType === "admin" ? adminRoutes : userRoutes;
 
-    // Step 1: Check meta conditions for non-admins
-    if (userType !== "admin" && userMeta) {
-      const completedSteps = userMeta;
+    // Check if the initial redirect has already happened
+    const hasRedirected = localStorage.getItem("hasRedirected");
 
-      if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
-        console.log("Redirecting to /resume-upload due to isResumeUploaded=false");
-        navigate("/resume-upload");
-        return; // Exit early after redirect
-      } 
-      else if (
-        !completedSteps.isAboutMeGenerated &&
-        currentPath !== "/generateAboutMe"
-      ) {
-        console.log("Redirecting to /generateAboutMe due to isAboutMeGenerated=false");
-        navigate("/generateAboutMe");
-        return; // Exit early after redirect
-      } 
-      else if (
-        !completedSteps.isAboutMeVideoChecked &&
-        currentPath !== "/generateAboutMe"
-      ) {
-        console.log("Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false");
-        navigate("/generateAboutMe");
-        return; // Exit early after redirect
+    if (!hasRedirected) {
+      // Step 1: Meta-based redirects for non-admin users
+      if (userType !== "admin" && userMeta) {
+        const completedSteps = userMeta;
+
+        if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
+          console.log("Redirecting to /resume-upload due to isResumeUploaded=false");
+          localStorage.setItem("hasRedirected", "true"); // Set the flag
+          // navigate("/resume-upload");
+          // return; // Exit early after redirect
+        } else if (
+          !completedSteps.isAboutMeGenerated &&
+          currentPath !== "/generateAboutMe"
+        ) {
+          console.log("Redirecting to /generateAboutMe due to isAboutMeGenerated=false");
+          localStorage.setItem("hasRedirected", "true"); // Set the flag
+          // navigate("/generateAboutMe");
+          // return; // Exit early after redirect
+        } else if (
+          !completedSteps.isAboutMeVideoChecked &&
+          currentPath !== "/generateAboutMe"
+        ) {
+          console.log("Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false");
+          localStorage.setItem("hasRedirected", "true"); // Set the flag
+          // navigate("/generateAboutMe");
+          // return; // Exit early after redirect
+        }
       }
-    }
 
-    // Step 2: If no meta redirect is needed (or user is admin), check for first route navigation
-    const isCurrentRouteValid = routes.some((route) => location.pathname === route.to);
+      // Step 2: First route navigation (if no meta-based redirect occurred)
+      const isCurrentRouteValid = routes.some(
+        (route) =>
+          currentPath === `/userDashboard/${route.to}` ||
+          currentPath.startsWith(`/userDashboard/mockInterview/`) // Allow dynamic route
+      );
 
-    if (!isCurrentRouteValid) {
-      const firstRoute = routes[0];
-      console.log(`Navigating to first route: ${firstRoute.to}`);
-      navigate(firstRoute.to);
+      if (!isCurrentRouteValid) {
+        const firstRoute = routes[0];
+        console.log(`Performing initial redirect to: /userDashboard/${firstRoute.to}`);
+        localStorage.setItem("hasRedirected", "true"); // Set the flag
+        navigate(`/userDashboard/${firstRoute.to}`);
+      } else {
+        // If the current route is valid, still set the flag to prevent future redirects
+        localStorage.setItem("hasRedirected", "true");
+        console.log(`Current route ${currentPath} is valid, setting hasRedirected flag`);
+      }
     } else {
-      console.log(`Current route ${location.pathname} is valid, no navigation needed`);
+      console.log("Initial redirect already performed, skipping");
     }
-  }, [userType, location.pathname, navigate, adminRoutes, userRoutes, userMeta]);
+  }, [userType, navigate, userMeta]); // Dependencies: userType, navigate, userMeta
 
   return (
     <Container>
@@ -144,7 +160,7 @@ const UserOrAdminDBLayout = () => {
           className={`fixed lg:static h-full bg-transparent text-white flex flex-col transition-all duration-300 z-30 ${
             isSidebarOpen ? "w-64" : "w-0 lg:w-64 overflow-hidden"
           }`}
-          style={{ boxShadow: "2px 0 2px rgba(0, 0, 0, 0.1)" }} // 2px right shadow
+          style={{ boxShadow: "2px 0 2px rgba(0, 0, 0, 0.1)" }}
         >
           {/* Toggle Button for Mobile */}
           <button
@@ -166,7 +182,7 @@ const UserOrAdminDBLayout = () => {
                 key={index}
                 onClick={() => handleNavigation(route.to)}
                 className={`w-full text-left py-2 px-4 rounded transition ${
-                  location.pathname === route.to
+                  location.pathname === `/userDashboard/${route.to}`
                     ? "bg-[#3A4C67] text-white"
                     : "hover:bg-[#3A4C67] hover:text-white text-[#676768]"
                 }`}
