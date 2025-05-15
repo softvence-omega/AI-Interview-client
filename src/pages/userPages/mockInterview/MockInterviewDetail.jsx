@@ -49,7 +49,7 @@ const MockInterviewDetail = () => {
   }, []);
 
   // Reusable Interview Card Component (adapted for question banks)
-  const QuestionBankCard = ({ qb, interviewId }) => (
+  const QuestionBankCard = ({ qb }) => (
     <div className="bg-white">
       <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between">
         <div className="flex items-center gap-6">
@@ -64,7 +64,7 @@ const MockInterviewDetail = () => {
           </div>
         </div>
         <Link
-          to={`/userDashboard/mockInterview/${interviewId}/questionBank/${qb._id}`}
+          to={`/userDashboard/mockInterview/questionBank?questionBank_id=${qb._id}`}
         >
           <div className="w-[40px] h-[40px] rounded-full bg-[#37B874] flex justify-center items-center text-white">
             <FaArrowRight />

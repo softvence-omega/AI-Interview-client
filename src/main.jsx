@@ -7,13 +7,19 @@ import Router from "./routes/Rourer.jsx";
 import { AuthProvider } from "./context/AuthProvider.jsx";
 import { Toaster } from "sonner";
 
+// ✅ React Query setup
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <Router />
-        <Toaster position="top-center" richColors />
-      </AuthProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Router />
+          <Toaster position="top-center" richColors />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>
 );

@@ -15,6 +15,9 @@ import EducationCertificate from "../pages/certificates/Certificates";
 import UserOrAdminDBLayout from "../container/UserOrAdminDBLayout";
 import MockInterview from "../pages/userPages/mockInterview/MockInterview"
 import MockInterviewDetail from "../pages/userPages/mockInterview/MockInterviewDetail";
+import QuestionBankDetail from "../pages/userPages/mockInterview/QuestionBankDetail";
+import StartInterviewPage from "../pages/userPages/mockInterview/StartInterviewPage";
+
 
 
 const Router = () => {
@@ -41,6 +44,9 @@ const Router = () => {
       <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} >
       <Route path="mockInterview" element={<MockInterview/>} />
       <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
+      <Route path="mockInterview/questionBank" element={<QuestionBankDetail />} />
+      <Route path="mockInterview/startInterview" element={<StartInterviewPage />} />
+     
       </Route>
 
 
