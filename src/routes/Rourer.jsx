@@ -13,6 +13,8 @@ import AboutMe from "../pages/Aboutme/Aboutme";
 import Experience from "../pages/expreance/Exprence";
 import EducationCertificate from "../pages/certificates/Certificates";
 import UserOrAdminDBLayout from "../container/UserOrAdminDBLayout";
+import MockInterview from "../pages/userPages/mockInterview/MockInterview"
+import MockInterviewDetail from "../pages/userPages/mockInterview/MockInterviewDetail";
 
 
 const Router = () => {
@@ -37,7 +39,8 @@ const Router = () => {
 
 
       <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} >
-      
+      <Route path="mockInterview" element={<MockInterview/>} />
+      <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
       </Route>
 
 

@@ -5,6 +5,7 @@ const useApi = () => {
 
   const request = async ({ endpoint, method = "GET", body = null, headers = {} }) => {
     const url = `${baseUrl}${endpoint}`;
+    console.log("bamboo url",endpoint)
 
     try {
       const response = await axios({
