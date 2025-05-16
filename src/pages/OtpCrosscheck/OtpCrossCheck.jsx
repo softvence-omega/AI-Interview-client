@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import img1 from "../../assets/mobileDroied.png";
 import Buttons from "../../reuseable/AllButtons";
 import { useAuth } from "../../context/AuthProvider";
@@ -7,11 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const OtpCrossCheck = () => {
-  const { otpToken } = useAuth();
+  const { otpToken, setOtpToken } = useAuth();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
+  const [resendDisabled, setResendDisabled] = useState(true); // Controls button enable/disable
+  const [timeLeft, setTimeLeft] = useState(120); // Initial 2 minutes in seconds
   const { request } = useApi();
   const navigate = useNavigate();
+
+  console.log("otp token", otpToken);
 
   const handleChange = (index, value) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -65,15 +69,19 @@ const OtpCrossCheck = () => {
       setLoading(true);
 
       const res = await request({
-        endpoint: "/auth/resendOtp",
+        endpoint: "/auth/reSend_OTP",
         method: "POST",
         body: {
-          token: otpToken,
+          resendOTPtoken: otpToken,
         },
       });
 
-      if (res?.success) {
-        toast.success("✅ OTP has been resent to your email.");
+      if (res?.ok) {
+        toast.success(res.data.token || "✅ OTP has been resent to your email.");
+        console.log(res);
+        setOtpToken(res.data.body);
+        setTimeLeft(120); // Reset countdown to 2 minutes
+        setResendDisabled(true); // Lock the button
       } else {
         toast.error(res?.message || "❌ Failed to resend OTP.");
       }
@@ -83,6 +91,32 @@ const OtpCrossCheck = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle countdown
+  useEffect(() => {
+    let timer;
+    if (resendDisabled && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setResendDisabled(false); // Unlock button when countdown reaches 0
+    }
+
+    // Initial 2-minute lockout
+    if (resendDisabled && timeLeft === 120) {
+      setTimeout(() => setResendDisabled(false), 120000); // Fallback 2-min lockout
+    }
+
+    return () => clearInterval(timer); // Cleanup interval
+  }, [resendDisabled, timeLeft]);
+
+  // Format time left as MM:SS
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
   return (
@@ -117,17 +151,23 @@ const OtpCrossCheck = () => {
               height="h-[50px]"
               rounded="rounded-[8px]"
               disabled={loading}
+              onClick={handleSubmit}
             />
 
             <div className="text-center mt-6">
               <button
                 type="button"
                 onClick={handleResend}
-                disabled={loading}
+                disabled={loading || resendDisabled}
                 className="text-sm text-[#37B874] hover:underline"
               >
                 {loading ? "Resending..." : "Resend OTP"}
               </button>
+              {resendDisabled && timeLeft > 0 && (
+                <span className="text-sm text-gray-600 ml-2">
+                  (Time left: {formatTime(timeLeft)})
+                </span>
+              )}
             </div>
           </form>
         </div>

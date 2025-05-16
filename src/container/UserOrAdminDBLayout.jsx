@@ -11,9 +11,9 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 const UserOrAdminDBLayout = () => {
   const { user } = useAuth();
   const userData = user?.userData; // Safely access userData
-  const userMeta = user?.meta; // Corrected to user?.meta
+  const userMeta = user?.userMeta; // Corrected to user?.meta
   const userType = user?.userData?.role; // Safely access role
-  console.log("user", user, userMeta);
+  console.log("user********************", user,"meta*********", userMeta);
 
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
@@ -101,24 +101,24 @@ const UserOrAdminDBLayout = () => {
         if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
           console.log("Redirecting to /resume-upload due to isResumeUploaded=false");
           localStorage.setItem("hasRedirected", "true"); // Set the flag
-          // navigate("/resume-upload");
-          // return; // Exit early after redirect
+          navigate("/resume-upload");
+          return; // Exit early after redirect
         } else if (
           !completedSteps.isAboutMeGenerated &&
           currentPath !== "/generateAboutMe"
         ) {
           console.log("Redirecting to /generateAboutMe due to isAboutMeGenerated=false");
           localStorage.setItem("hasRedirected", "true"); // Set the flag
-          // navigate("/generateAboutMe");
-          // return; // Exit early after redirect
+          navigate("/generateAboutMe");
+          return; // Exit early after redirect
         } else if (
           !completedSteps.isAboutMeVideoChecked &&
           currentPath !== "/generateAboutMe"
         ) {
           console.log("Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false");
           localStorage.setItem("hasRedirected", "true"); // Set the flag
-          // navigate("/generateAboutMe");
-          // return; // Exit early after redirect
+          navigate("/generateAboutMe");
+          return; // Exit early after redirect
         }
       }
 
@@ -139,7 +139,8 @@ const UserOrAdminDBLayout = () => {
         localStorage.setItem("hasRedirected", "true");
         console.log(`Current route ${currentPath} is valid, setting hasRedirected flag`);
       }
-    } else {
+    } 
+    else {
       console.log("Initial redirect already performed, skipping");
     }
   }, [userType, navigate, userMeta]); // Dependencies: userType, navigate, userMeta
