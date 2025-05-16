@@ -26,7 +26,7 @@ const ResumeUpload = () => {
     if (selectedFile) {
       // Simulate file upload logic (replace with actual API call)
       toast.success("Resume uploaded successfully!");
-      setTimeout(() => navigate("/next-page"), 1500); // Replace "/next-page" with your desired route
+      setTimeout(() => navigate("/userDashboard"), 1500); // Replace "/next-page" with your desired route
     } else {
       toast.error("Please select a PDF file first!");
     }
