@@ -1,0 +1,9 @@
+#feature-banner {
+    background-color: #F6F6F7;
+    background-image: url("../../../assets/banner-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-bottom: 48px;
+  }
+  
