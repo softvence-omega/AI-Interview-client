@@ -13,12 +13,11 @@ import AboutMe from "../pages/Aboutme/Aboutme";
 import Experience from "../pages/expreance/Exprence";
 import EducationCertificate from "../pages/certificates/Certificates";
 import UserOrAdminDBLayout from "../container/UserOrAdminDBLayout";
-import MockInterview from "../pages/userPages/mockInterview/MockInterview"
+import MockInterview from "../pages/userPages/mockInterview/MockInterview";
 import MockInterviewDetail from "../pages/userPages/mockInterview/MockInterviewDetail";
 import QuestionBankDetail from "../pages/userPages/mockInterview/QuestionBankDetail";
 import StartInterviewPage from "../pages/userPages/mockInterview/StartInterviewPage";
-
-
+import HelpCenter from "../pages/helpCenter/HelpCenter";
 
 const Router = () => {
   return (
@@ -35,21 +34,24 @@ const Router = () => {
         <Route path="/signup" element={<LoginOrSignup />} />
         <Route path="/otp-crosscheck" element={<OtpCrossCheck />} />
         <Route path="/resume-upload" element={<ResumeUpload />} />
-        <Route path="/aboutMe" element={<AboutMe/>} />
-        <Route path="/exprience" element={<Experience/>} />
-        <Route path="/certificates" element={<EducationCertificate/>} />
+        <Route path="/aboutMe" element={<AboutMe />} />
+        <Route path="/exprience" element={<Experience />} />
+        <Route path="/certificates" element={<EducationCertificate />} />
+        <Route path="/help-center" element={<HelpCenter />} />
       </Route>
 
-
-      <Route path="/userDashboard" element={<UserOrAdminDBLayout/>} >
-      <Route path="mockInterview" element={<MockInterview/>} />
-      <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
-      <Route path="mockInterview/questionBank" element={<QuestionBankDetail />} />
-      <Route path="mockInterview/startInterview" element={<StartInterviewPage />} />
-     
+      <Route path="/userDashboard" element={<UserOrAdminDBLayout />}>
+        <Route path="mockInterview" element={<MockInterview />} />
+        <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
+        <Route
+          path="mockInterview/questionBank"
+          element={<QuestionBankDetail />}
+        />
+        <Route
+          path="mockInterview/startInterview"
+          element={<StartInterviewPage />}
+        />
       </Route>
-
-
     </Routes>
   );
 };

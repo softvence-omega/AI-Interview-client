@@ -1,6 +1,7 @@
 import React from "react";
 import AboutUsBanner from "./Banner/AboutUSBanner";
 import OurJourney from "./OurJourney/OurJourney";
+import OurTeam from "./OurTeam/OurTeam";
 
 const AboutUs = () => {
   return (
@@ -8,6 +9,7 @@ const AboutUs = () => {
       <AboutUsBanner />
       <div className="px-2 mx-auto">
         <OurJourney />
+        <OurTeam />
       </div>
     </div>
   );
