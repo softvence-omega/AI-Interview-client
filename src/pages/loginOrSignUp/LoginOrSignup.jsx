@@ -92,10 +92,12 @@ const LoginOrSignup = () => {
       });
 
       if (res.ok && res.data?.data?.token) {
+        console.log("i am here")
         setOtpToken(res.data.data.token);
         toast.success("✅ Check your email for OTP!");
         setTimeout(() => navigate("/otp-crosscheck"), 1500);
-      } else {
+      } 
+      else {
         toast.error(res.data.message || "Signup failed");
         console.error("Signup failed", res);
       }

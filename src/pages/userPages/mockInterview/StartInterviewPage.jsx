@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthProvider";
 import useApi from "../../../hook/apiHook";
+import VideoController from "./VideoController";
 
 const StartInterviewPage = () => {
   const [searchParams] = useSearchParams();
@@ -320,6 +321,8 @@ const StartInterviewPage = () => {
             {isVideoState ? (
               !retakeLoading ? (
                 <div className="w-full h-[80%] border-[1px] rounded-sm ">
+
+
                   <p className="text-lg mb-4">
                     {ongoingQuestion.time_to_answer
                       ? `${Math.floor(
@@ -328,6 +331,13 @@ const StartInterviewPage = () => {
                       : "No time available"}
                   </p>
                   here ill mount the camera
+
+
+                        <VideoController
+                        question={ongoingQuestion}
+                        isVideoState={isVideoState}
+                        />
+
                 </div>
               ) : (
                 <h2>Generating new question for retake...</h2>
