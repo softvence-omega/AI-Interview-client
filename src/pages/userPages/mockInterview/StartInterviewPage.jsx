@@ -12,15 +12,17 @@ const StartInterviewPage = () => {
   const AuthorizationToken = user?.approvalToken;
   const { request } = useApi();
 
-  const generatedQuestions = useRef(null); // Store the full list of questions
-  const [ongoingQuestion, setOngoingQuestion] = useState(null); // Current question to display
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Track the current question index
+  const generatedQuestions = useRef(null);
+  const [ongoingQuestion, setOngoingQuestion] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [retakeLoading, setRetakeLoading] = useState(false); // New state for retake loading
+  const [retakeLoading, setRetakeLoading] = useState(false);
   const [isVideoState, setIsVideoState] = useState(true);
   const [summeryState, setSumarryState] = useState(false);
   const [returnOrFullRetakeState, setReturnOrFullRetakeState] = useState(false);
+  const [aiResponse, setAiResponse] = useState(null); // New state for AI response
+  const videoControllerRef = useRef(null); // Ref to access VideoController
   const navigate = useNavigate();
 
   // Generate AI questions
@@ -31,9 +33,11 @@ const StartInterviewPage = () => {
         setError(null);
 
         const queryParams = [];
-        if (questionBankId) queryParams.push(`questionBank_id=${questionBankId}`);
+        if (questionBankId)
+          queryParams.push(`questionBank_id=${questionBankId}`);
         if (interviewId) queryParams.push(`interview_id=${interviewId}`);
-        const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+        const queryString =
+          queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
 
         const endpoint = `/interview/genarateQuestionSet_ByAi${queryString}`;
         const res = await request({
@@ -41,7 +45,7 @@ const StartInterviewPage = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${AuthorizationToken}`, // No "Bearer" as requested
+            Authorization: `${AuthorizationToken}`,
           },
         });
 
@@ -51,9 +55,8 @@ const StartInterviewPage = () => {
 
         const data = res.data.body;
         console.log("Generated Questions:", data.remainingQuestions);
-        generatedQuestions.current = data.remainingQuestions; // Store the array of questions
+        generatedQuestions.current = data.remainingQuestions;
 
-        // Set the first question as the ongoing question if available
         if (
           Array.isArray(generatedQuestions.current) &&
           generatedQuestions.current.length > 0
@@ -81,24 +84,17 @@ const StartInterviewPage = () => {
           : "No authorization token available"
       );
     }
-  }, [questionBankId, interviewId, AuthorizationToken]); // No request in dependencies
-
-
+  }, [questionBankId, interviewId, AuthorizationToken]);
 
   // Define the lastQuestionModification function
   const lastQuestionModification = () => {
-    // update the data before sending to the backend 
-    // update the video data.........
     setSumarryState(true);
     console.log(
       "Reached the last question. Performing last question modification..."
     );
-    // Add your logic here if needed
   };
 
-
-
-  // Call lastQuestionModification when reaching the last question===>Done
+  // Call lastQuestionModification when reaching the last question
   useEffect(() => {
     if (
       Array.isArray(generatedQuestions.current) &&
@@ -109,15 +105,18 @@ const StartInterviewPage = () => {
     }
   }, [currentQuestionIndex]);
 
+  // Handle AI response from VideoController
+  const handleVideoAnalysisComplete = (data) => {
+    setAiResponse(data);
+  };
 
-
-
-  // Define the handleRetake function
+  // Handle retake
   const handleRetake = async () => {
     if (!ongoingQuestion) return;
     setIsVideoState(true);
+    setAiResponse(null); // Reset AI response for retake
 
-    setRetakeLoading(true); // Start loading for retake
+    setRetakeLoading(true);
     try {
       const endpoint = `/interview/genarateSingleQuestion_ByAi_for_Retake`;
       const res = await request({
@@ -131,7 +130,7 @@ const StartInterviewPage = () => {
         },
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${AuthorizationToken}`, // No "Bearer" as requested
+          Authorization: `${AuthorizationToken}`,
         },
       });
 
@@ -141,13 +140,11 @@ const StartInterviewPage = () => {
         );
       }
 
-      const newQuestion = res.data.body; // Assuming the API returns the new question in res.data.body
+      const newQuestion = res.data.body;
       console.log("New Retake Question:", newQuestion);
 
-      // Update the ongoingQuestion state with the new question
       setOngoingQuestion(newQuestion);
 
-      // Update the corresponding question in generatedQuestions.current
       if (Array.isArray(generatedQuestions.current)) {
         const updatedQuestions = [...generatedQuestions.current];
         updatedQuestions[currentQuestionIndex] = newQuestion;
@@ -158,29 +155,23 @@ const StartInterviewPage = () => {
       setError(err.message || "Failed to generate new question for retake");
       console.error("Error generating retake question:", err);
     } finally {
-      setRetakeLoading(false); // Stop loading after the operation
+      setRetakeLoading(false);
     }
   };
-
-
 
   // Handle next question click
   const handleNextQuestion = () => {
     setIsVideoState(false);
-    // add fetch for video annalysis.........
+    setAiResponse(null); // Reset AI response
+    if (videoControllerRef.current && videoControllerRef.current.stopRecording) {
+      videoControllerRef.current.stopRecording(); // Trigger stopRecording to call AI API
+    }
   };
-
-
 
   // Handle continue for next question
   const handleContinue = () => {
-
-    // get the data from the video annalysis
-    // save the data in the database
-    // then prform the change below
-
-
     setIsVideoState(true);
+    setAiResponse(null); // Reset AI response for next question
     if (
       Array.isArray(generatedQuestions.current) &&
       currentQuestionIndex < generatedQuestions.current.length - 1
@@ -189,39 +180,29 @@ const StartInterviewPage = () => {
       setCurrentQuestionIndex(nextIndex);
       setOngoingQuestion(generatedQuestions.current[nextIndex]);
     } else {
-      // On the last question, do not increment the index
       console.log("Already on the last question, index not incremented.");
     }
   };
 
-
-
   // Last question done and continue clicked
   const handleSummaryGenaration = () => {
-
-
-    // heat api for summary genaration
-    // show grenarated summary
-
-
     setReturnOrFullRetakeState(true);
     console.log("generating summary");
-    // fetch api for summary
   };
 
-
-
-  // Summary state true and returnOrFullRetakeState true====>Done
+  // Handle full retake
   const handleFullRetaake = async () => {
     console.log("I am being called full retake");
     if (!ongoingQuestion || !ongoingQuestion.questionBank_id) {
-      setError("No ongoing question or questionBank_id available for full retake");
+      setError(
+        "No ongoing question or questionBank_id available for full retake"
+      );
       setRetakeLoading(false);
       return;
     }
 
     try {
-      setRetakeLoading(true); // Indicate loading for full retake
+      setRetakeLoading(true);
       const queryParams = [
         `questionBank_id=${ongoingQuestion.questionBank_id}`,
         "isRetake=true",
@@ -235,49 +216,50 @@ const StartInterviewPage = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${AuthorizationToken}`, // No "Bearer" as requested
+          Authorization: `${AuthorizationToken}`,
         },
       });
 
       if (!res.ok) {
-        throw new Error(res.message || "Failed to generate full question set for retake");
+        throw new Error(
+          res.message || "Failed to generate full question set for retake"
+        );
       }
 
       const data = res.data.body;
       console.log("Generated Questions for Full Retake:", data.question_Set);
-      generatedQuestions.current = data.question_Set; // Update with new question set
+      generatedQuestions.current = data.question_Set;
 
-      // Reset to the first question
-      if (Array.isArray(generatedQuestions.current) && generatedQuestions.current.length > 0) {
+      if (
+        Array.isArray(generatedQuestions.current) &&
+        generatedQuestions.current.length > 0
+      ) {
         setCurrentQuestionIndex(0);
         setOngoingQuestion(generatedQuestions.current[0]);
-        setIsVideoState(true); // Reset to camera view
-        setSumarryState(false); // Reset summary state
-        setReturnOrFullRetakeState(false); // Reset retake state
-      } 
-      else {
+        setIsVideoState(true);
+        setSumarryState(false);
+        setReturnOrFullRetakeState(false);
+        setAiResponse(null); // Reset AI response
+      } else {
         setError("No questions generated in full retake response");
       }
-    } 
-    catch (err) {
-      setError(err.message || "Failed to generate full question set for retake");
+    } catch (err) {
+      setError(
+        err.message || "Failed to generate full question set for retake"
+      );
       console.error("Error generating full retake question set:", err);
-    } 
-    finally {
-      setRetakeLoading(false); // Stop loading after the operation
+    } finally {
+      setRetakeLoading(false);
     }
   };
 
-
-  // returnOrFullRetakeState true and clicks continue====>Done
+  // Handle return to interview
   const handleReturnInterview = () => {
     navigate(`/userDashboard/mockInterview/${ongoingQuestion.interview_id}`);
     console.log("interview done Returning to interview state");
   };
 
-
-
-  // Define onClick handlers with conditional logic handleContinueClick====>Done
+  // Define onClick handlers with conditional logic
   const handleContinueClick = () => {
     if (summeryState && returnOrFullRetakeState) {
       handleReturnInterview();
@@ -288,13 +270,21 @@ const StartInterviewPage = () => {
     }
   };
 
-
-// Define onClick handlers with conditional logic handleRetakeClick====>Done
+  // Define onClick handlers with conditional logic
   const handleRetakeClick = () => {
     if (summeryState && returnOrFullRetakeState) {
       handleFullRetaake();
     } else {
       handleRetake();
+    }
+  };
+
+  // Expose stopRecording via ref
+  const videoControllerRefCallback = (node) => {
+    if (node) {
+      videoControllerRef.current = {
+        stopRecording: node.stopRecording, // Expose stopRecording method
+      };
     }
   };
 
@@ -321,23 +311,20 @@ const StartInterviewPage = () => {
             {isVideoState ? (
               !retakeLoading ? (
                 <div className="w-full h-[80%] border-[1px] rounded-sm ">
-
-
                   <p className="text-lg mb-4">
-                    {ongoingQuestion.time_to_answer
-                      ? `${Math.floor(
-                          Number(ongoingQuestion.time_to_answer) / 60
-                        )} minute(s)`
-                      : "No time available"}
+                    {ongoingQuestion.time_to_answer &&
+                      !isVideoState &&
+                      `${Math.floor(
+                        Number(ongoingQuestion.time_to_answer) / 60
+                      )} minute(s)`}
                   </p>
-                  here ill mount the camera
 
-
-                        <VideoController
-                        question={ongoingQuestion}
-                        isVideoState={isVideoState}
-                        />
-
+                  <VideoController
+                    question={ongoingQuestion}
+                    isVideoState={isVideoState}
+                    onVideoAnalysisComplete={handleVideoAnalysisComplete}
+                    ref={videoControllerRefCallback}
+                  />
                 </div>
               ) : (
                 <h2>Generating new question for retake...</h2>
@@ -353,7 +340,8 @@ const StartInterviewPage = () => {
                 onClick={handleNextQuestion}
                 className="bg-blue-500 w-[50%] h-[50px] rounded-[12px]"
               >
-                {currentQuestionIndex < generatedQuestions.current.length - 1 ? (
+                {currentQuestionIndex <
+                generatedQuestions.current.length - 1 ? (
                   <div>Next Question</div>
                 ) : (
                   <div>Finish</div>
