@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import RecordRTC from "recordrtc";
-import axios from "axios";
+import { useAuth } from "../../../context/AuthProvider";
 
 const VideoController = forwardRef(({ question, isVideoState, isSummary, islast, onVideoAnalysisComplete }, ref) => {
+  const { user } = useAuth();
+  const AuthorizationToken = user?.approvalToken;
   const [countdown, setCountdown] = useState(3);
   const [recordingTimeLeft, setRecordingTimeLeft] = useState(question.time_to_answer);
   const [isRecording, setIsRecording] = useState(false);
@@ -125,23 +127,6 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
         link.download = blob.type.includes("mp4") ? "test.mp4" : "test.webm";
         link.click();
 
-        /* Optional: Convert WebM to MP4 using FFmpeg.wasm (uncomment if FFmpeg is set up)
-        if (blob.type === "video/webm") {
-          try {
-            const { createFFmpeg, fetchFile } = window.FFmpeg;
-            const ffmpeg = createFFmpeg({ log: true });
-            await ffmpeg.load();
-            ffmpeg.FS("writeFile", "input.webm", await fetchFile(blob));
-            await ffmpeg.run("-i", "input.webm", "-c:v", "libx264", "-c:a", "aac", "output.mp4");
-            const data = ffmpeg.FS("readFile", "output.mp4");
-            blob = new Blob([data.buffer], { type: "video/mp4" });
-            console.log("Converted to MP4:", blob);
-          } catch (error) {
-            console.error("Error converting WebM to MP4:", error);
-          }
-        }
-        */
-
         callAIApiforVideoAnalysis(blob);
         isStoppingRef.current = false;
       });
@@ -195,43 +180,44 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       });
 
       console.log("Sending request to:", API_URL);
-      const response = await axios.post(API_URL, formData, {
+      fetch(API_URL, {
+        method: "POST",
         headers: {
           Accept: "application/json",
-          // Axios automatically sets the correct Content-Type for FormData
-          // Add authentication headers if required
-          // Authorization: `Bearer ${yourAuthToken}`,
+          Authorization: `Bearer ${AuthorizationToken}`,
         },
-      });
-
-      console.log("API Response:", response);
-
-      setAiResponse(response.data);
-      setProcessing(false);
-      if (onVideoAnalysisComplete) {
-        onVideoAnalysisComplete(response.data);
-      }
-    } catch (error) {
-      console.error("Error calling AI API:", error);
-      let errorMessage = "Failed to process video";
-      if (error.response) {
-        // Server responded with a status code outside 2xx
-        console.error("API response error:", {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data,
-          url: API_URL,
+        body: formData,
+      })
+        .then((response) => {
+          console.log("Fetch Response:", {
+            status: response.status,
+            statusText: response.statusText,
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("API Response Data:", data);
+          setAiResponse(data);
+          setProcessing(false);
+          if (onVideoAnalysisComplete) {
+            onVideoAnalysisComplete(data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error calling AI API:", error);
+          let errorMessage = `Failed to process video: ${error.message}`;
+          setAiResponse({ error: errorMessage });
+          setProcessing(false);
+          if (onVideoAnalysisComplete) {
+            onVideoAnalysisComplete({ error: errorMessage });
+          }
         });
-        errorMessage += `: ${error.response.statusText} (${error.response.status}) - ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        // No response received
-        console.error("No response received:", error.request);
-        errorMessage += ": No response from server";
-      } else {
-        // Error setting up the request
-        console.error("Error setting up request:", error.message);
-        errorMessage += `: ${error.message}`;
-      }
+    } catch (error) {
+      console.error("Error setting up request:", error);
+      let errorMessage = `Failed to process video: ${error.message}`;
       setAiResponse({ error: errorMessage });
       setProcessing(false);
       if (onVideoAnalysisComplete) {
