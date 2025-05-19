@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import RecordRTC from "recordrtc";
+import axios from "axios";
 
 const VideoController = forwardRef(({ question, isVideoState, isSummary, islast, onVideoAnalysisComplete }, ref) => {
   const [countdown, setCountdown] = useState(3);
@@ -87,9 +88,12 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        // Attempt to record in MP4 if supported, fallback to WebM
+        const mimeType = MediaRecorder.isTypeSupported("video/mp4") ? "video/mp4" : "video/webm";
+        console.log("Recording with MIME type:", mimeType);
         recorderRef.current = new RecordRTC(stream, {
           type: "video",
-          mimeType: "video/webm",
+          mimeType: mimeType,
           timeSlice: 1000,
         });
         recorderRef.current.startRecording();
@@ -106,14 +110,38 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
   const stopRecording = () => {
     if (recorderRef.current && isRecording && !isStoppingRef.current) {
       isStoppingRef.current = true;
-      recorderRef.current.stopRecording(() => {
-        const blob = recorderRef.current.getBlob();
+      recorderRef.current.stopRecording(async () => {
+        let blob = recorderRef.current.getBlob();
         setVideoBlob(blob);
         if (videoRef.current && videoRef.current.srcObject) {
           videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
         }
         setIsRecording(false);
         setProcessing(true);
+
+        // Download video for debugging
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = blob.type.includes("mp4") ? "test.mp4" : "test.webm";
+        link.click();
+
+        /* Optional: Convert WebM to MP4 using FFmpeg.wasm (uncomment if FFmpeg is set up)
+        if (blob.type === "video/webm") {
+          try {
+            const { createFFmpeg, fetchFile } = window.FFmpeg;
+            const ffmpeg = createFFmpeg({ log: true });
+            await ffmpeg.load();
+            ffmpeg.FS("writeFile", "input.webm", await fetchFile(blob));
+            await ffmpeg.run("-i", "input.webm", "-c:v", "libx264", "-c:a", "aac", "output.mp4");
+            const data = ffmpeg.FS("readFile", "output.mp4");
+            blob = new Blob([data.buffer], { type: "video/mp4" });
+            console.log("Converted to MP4:", blob);
+          } catch (error) {
+            console.error("Error converting WebM to MP4:", error);
+          }
+        }
+        */
+
         callAIApiforVideoAnalysis(blob);
         isStoppingRef.current = false;
       });
@@ -121,6 +149,7 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
   };
 
   const callAIApiforVideoAnalysis = async (videoBlob) => {
+    const API_URL = "https://freepik.softvenceomega.com/in-prep/api/v1/video_process/process-video/";
     try {
       // Validate video blob
       if (!videoBlob || videoBlob.size === 0) {
@@ -145,57 +174,68 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       }
 
       const formData = new FormData();
-      const file = new File([videoBlob], "recording.webm", { type: videoBlob.type });
+      const fileExtension = videoBlob.type.includes("mp4") ? "mp4" : "webm";
+      const file = new File([videoBlob], `recording.${fileExtension}`, { type: videoBlob.type });
       formData.append("file", file);
       formData.append("qid", question._id);
       formData.append("interview_id", question.interview_id);
       formData.append("questionBank_id", question.questionBank_id);
       formData.append("user_id", question.user_id);
-      formData.append("isSummary", isSummary ? "true" : "false"); // Ensure string format
-      formData.append("islast", islast ? "true" : "false"); // Ensure string format
+      formData.append("isSummary", isSummary ? "true" : "false");
+      formData.append("islast", islast ? "true" : "false");
       formData.append("question", question.question);
       formData.append("expected_answer", question.expected_answer || "");
 
       // Log FormData for debugging
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
-      // Log video blob details
+      console.log("FormData contents:", [...formData.entries()]);
       console.log("Video Blob:", {
         size: videoBlob.size,
         type: videoBlob.type,
         name: file.name,
       });
 
-      // Hardcoded API URL without trailing slash
-      const response = await fetch("https://freepik.softvenceomega.com/in-prep/api/v1/video_process/process-video", {
-        method: "POST",
+      console.log("Sending request to:", API_URL);
+      const response = await axios.post(API_URL, formData, {
         headers: {
+          Accept: "application/json",
+          // Axios automatically sets the correct Content-Type for FormData
           // Add authentication headers if required
-          // Authorization: `Bearer your-api-token-here`,
+          // Authorization: `Bearer ${yourAuthToken}`,
         },
-        body: formData,
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API response error:", response.status, errorText);
-        throw new Error(`API error: ${response.statusText} (${response.status})`);
-      }
+      console.log("API Response:", response);
 
-      const data = await response.json();
-      setAiResponse(data);
+      setAiResponse(response.data);
       setProcessing(false);
       if (onVideoAnalysisComplete) {
-        onVideoAnalysisComplete(data);
+        onVideoAnalysisComplete(response.data);
       }
     } catch (error) {
       console.error("Error calling AI API:", error);
-      setAiResponse({ error: "Failed to process video" });
+      let errorMessage = "Failed to process video";
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        console.error("API response error:", {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data,
+          url: API_URL,
+        });
+        errorMessage += `: ${error.response.statusText} (${error.response.status}) - ${JSON.stringify(error.response.data)}`;
+      } else if (error.request) {
+        // No response received
+        console.error("No response received:", error.request);
+        errorMessage += ": No response from server";
+      } else {
+        // Error setting up the request
+        console.error("Error setting up request:", error.message);
+        errorMessage += `: ${error.message}`;
+      }
+      setAiResponse({ error: errorMessage });
       setProcessing(false);
       if (onVideoAnalysisComplete) {
-        onVideoAnalysisComplete({ error: "Failed to process video" });
+        onVideoAnalysisComplete({ error: errorMessage });
       }
     }
   };
@@ -212,7 +252,7 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
               <p>Time remaining: {formatTime(recordingTimeLeft)}</p>
             </div>
           )}
-          <div className="w-full flex justify-center item center">
+          <div className="w-full flex justify-center items-center">
             <video
               ref={videoRef}
               autoPlay
