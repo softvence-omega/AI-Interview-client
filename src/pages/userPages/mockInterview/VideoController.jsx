@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import RecordRTC from "recordrtc";
 import { useAuth } from "../../../context/AuthProvider";
 
-const VideoController = forwardRef(({ question, isVideoState, isSummary, islast, onVideoAnalysisComplete }, ref) => {
+const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete }, ref) => {
   const { user } = useAuth();
   const AuthorizationToken = user?.approvalToken;
   const [countdown, setCountdown] = useState(3);
@@ -28,6 +28,8 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
+
+
   // Countdown before recording starts
   useEffect(() => {
     if (countdown > 0) {
@@ -40,6 +42,9 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       setHasRecorded(true);
     }
   }, [countdown, isRecording, hasRecorded]);
+
+
+
 
   // Recording timer
   useEffect(() => {
@@ -60,12 +65,15 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
     }
   }, [isVideoState, isRecording]);
 
+
+
+
   // Show preview video when blob is ready
-  useEffect(() => {
-    if (videoBlob && previewVideoRef.current) {
-      previewVideoRef.current.src = URL.createObjectURL(videoBlob);
-    }
-  }, [videoBlob]);
+  // useEffect(() => {
+  //   if (videoBlob && previewVideoRef.current) {
+  //     previewVideoRef.current.src = URL.createObjectURL(videoBlob);
+  //   }
+  // }, [videoBlob]);
 
   // Reset state on new question
   useEffect(() => {
@@ -81,6 +89,8 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       recorderRef.current = null;
     }
   }, [question]);
+
+
 
   const startRecording = async () => {
     try {
@@ -109,6 +119,8 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
     }
   };
 
+
+
   const stopRecording = () => {
     if (recorderRef.current && isRecording && !isStoppingRef.current) {
       isStoppingRef.current = true;
@@ -132,6 +144,8 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       });
     }
   };
+
+
 
   const callAIApiforVideoAnalysis = async (videoBlob) => {
     const API_URL = "https://freepik.softvenceomega.com/in-prep/api/v1/video_process/process-video/";
@@ -199,7 +213,7 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
         })
         .then((data) => {
           console.log("API Response Data:", data);
-          setAiResponse(data.assesment);
+          setAiResponse(data);
           setProcessing(false);
           if (onVideoAnalysisComplete) {
             onVideoAnalysisComplete(data);
@@ -214,7 +228,8 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
             onVideoAnalysisComplete({ error: errorMessage });
           }
         });
-    } catch (error) {
+    } 
+    catch (error) {
       console.error("Error setting up request:", error);
       let errorMessage = `Failed to process video: ${error.message}`;
       setAiResponse({ error: errorMessage });
@@ -269,7 +284,7 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
               />
               <div style={{ marginTop: "20px" }}>
                 <h3>AI Response:</h3>
-                <pre>{JSON.stringify(aiResponse, null, 2)}</pre>
+                {/* <pre>{JSON.stringify(aiResponse, null, 2)}</pre> */}
               </div>
             </div>
           )}
