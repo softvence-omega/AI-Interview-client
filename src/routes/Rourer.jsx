@@ -18,6 +18,7 @@ import MockInterviewDetail from "../pages/userPages/mockInterview/MockInterviewD
 import QuestionBankDetail from "../pages/userPages/mockInterview/QuestionBankDetail";
 import StartInterviewPage from "../pages/userPages/mockInterview/StartInterviewPage";
 import HelpCenter from "../pages/helpCenter/HelpCenter";
+import PaymentStatus from "../pages/planpage/payment/PaymentStatus";
 
 const Router = () => {
   return (
@@ -38,6 +39,7 @@ const Router = () => {
         <Route path="/exprience" element={<Experience />} />
         <Route path="/certificates" element={<EducationCertificate />} />
         <Route path="/help-center" element={<HelpCenter />} />
+        <Route path="/payment-status" element={<PaymentStatus />} />
       </Route>
 
       <Route path="/userDashboard" element={<UserOrAdminDBLayout />}>

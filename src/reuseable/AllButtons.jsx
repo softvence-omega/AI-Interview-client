@@ -51,7 +51,7 @@ const SubmitButton = ({
   type = 'button',
   disabled = false,
 }) => {
-  const baseStyles = `flex items-center justify-center font-semibold transition duration-200`;
+  const baseStyles = `flex items-center justify-center font-semibold transition duration-200 cursor-pointer`;
 
   return (
     <button
