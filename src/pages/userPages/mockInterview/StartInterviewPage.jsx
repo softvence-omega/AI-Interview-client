@@ -330,7 +330,7 @@ const StartInterviewPage = () => {
                 <h2>Generating new question for retake...</h2>
               )
             ) : (
-              <div>here ill mount the outcome of submitted video component</div>
+              <div>{aiResponse}</div>
             )}
           </div>
 

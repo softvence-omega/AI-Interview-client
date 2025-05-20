@@ -7,6 +7,7 @@ import { IoHome } from "react-icons/io5";
 import { MdOutlineBusinessCenter } from "react-icons/md";
 import { MdOutlineInsights } from "react-icons/md";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { IoSettings } from "react-icons/io5";
 
 const UserOrAdminDBLayout = () => {
   const { user } = useAuth();
@@ -35,6 +36,11 @@ const UserOrAdminDBLayout = () => {
       name: "Incites",
       logo: <MdOutlineInsights />,
       to: "incites",
+    },
+    {
+      name: "Settings",
+      logo: <IoSettings />,
+      to: "settings",
     },
   ];
 

@@ -162,12 +162,12 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
       const fileExtension = videoBlob.type.includes("mp4") ? "mp4" : "webm";
       const file = new File([videoBlob], `recording.${fileExtension}`, { type: videoBlob.type });
       formData.append("file", file);
-      formData.append("qid", question._id);
-      formData.append("interview_id", question.interview_id);
-      formData.append("questionBank_id", question.questionBank_id);
-      formData.append("user_id", question.user_id);
-      formData.append("isSummary", isSummary ? "true" : "false");
-      formData.append("islast", islast ? "true" : "false");
+      formData.append("qid", question._id); // String, as per backend update
+      formData.append("interview_id", question.interview_id); // String
+      formData.append("questionBank_id", question.questionBank_id); // String
+      formData.append("user_id", question.user_id); // String
+      formData.append("isSummary", question.isSummary ? "true" : "false"); // Stringified boolean
+      formData.append("islast", question.islast ? "true" : "false"); // Stringified boolean
       formData.append("question", question.question);
       formData.append("expected_answer", question.expected_answer || "");
 
@@ -184,7 +184,6 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${AuthorizationToken}`,
         },
         body: formData,
       })
@@ -200,7 +199,7 @@ const VideoController = forwardRef(({ question, isVideoState, isSummary, islast,
         })
         .then((data) => {
           console.log("API Response Data:", data);
-          setAiResponse(data);
+          setAiResponse(data.assesment);
           setProcessing(false);
           if (onVideoAnalysisComplete) {
             onVideoAnalysisComplete(data);
