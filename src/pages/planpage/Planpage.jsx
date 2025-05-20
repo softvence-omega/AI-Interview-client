@@ -2,6 +2,7 @@ import React from "react";
 import PlanBanner from "./Banner/PlanBanner";
 import ChoosePlan from "./ChoosePlan/ChoosePlan";
 import HomeCorner from "../home/HomeCorner/HomeCorner";
+import PlanTest from "./PlanTest";
 
 const Planpage = () => {
   return (
@@ -11,6 +12,8 @@ const Planpage = () => {
       <div className="mx-4 md:mx-4 lg:mx-0 xl:mx-0">
         <HomeCorner />
       </div>
+
+      <PlanTest></PlanTest>
     </div>
   );
 };
