@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useNavigate, useLocation, Outlet, Link } from "react-router-dom";
 import Container from "./container";
 import dbLogo from "../assets/logos/dbLogo.png";
 import { useAuth } from "../context/AuthProvider";
@@ -172,9 +172,11 @@ const UserOrAdminDBLayout = () => {
           </button>
 
           {/* Sidebar Header */}
+          <Link to="/">
           <div className="p-4 text-2xl font-bold border-b border-gray-300">
             <img src={dbLogo} alt="logo not available" />
           </div>
+          </Link>
 
           {/* Navigation Links */}
           <nav className="flex-1 p-4 space-y-2">

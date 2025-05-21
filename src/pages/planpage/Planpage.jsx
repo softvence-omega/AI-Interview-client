@@ -13,7 +13,7 @@ const Planpage = () => {
         <HomeCorner />
       </div>
 
-      <PlanTest></PlanTest>
+      {/* <PlanTest></PlanTest> */}
     </div>
   );
 };
