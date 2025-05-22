@@ -703,14 +703,6 @@
 
 // export default StartInterviewPage;
 
-
-
-
-
-
-
-
-
 import React, {
   useState,
   useEffect,
@@ -1051,12 +1043,22 @@ const StartInterviewPage = () => {
   }, [ongoingQuestion, AuthorizationToken]);
 
   // Handle next question
-  const handleNextQuestion = useCallback(() => {
+  const handleNextQuestion = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleNextQuestion: already processing");
       return;
     }
     isProcessingRef.current = true;
+
+    // Check if it's the last question
+    if (
+      Array.isArray(generatedQuestions.current) &&
+      currentQuestionIndex === generatedQuestions.current.length - 1
+    ) {
+      console.log("Last question reached, skipping next question");
+      isProcessingRef.current = false;
+      return;
+    }
 
     console.log("handleNextQuestion called");
     React.startTransition(() => {
@@ -1071,7 +1073,7 @@ const StartInterviewPage = () => {
       videoControllerRef.current.stopRecording();
     }
     isProcessingRef.current = false;
-  }, []);
+  };
 
   // Handle continue
   const handleContinue = async () => {
@@ -1099,6 +1101,7 @@ const StartInterviewPage = () => {
           delete dataToSave.qid;
         }
 
+        console.log("this data to be saved", dataToSave);
         const endpoint = `/video/submit_Video_Analysis_and_Summary`;
         const res = await request({
           endpoint,
@@ -1362,7 +1365,7 @@ const StartInterviewPage = () => {
                   )}
                 </div>
               )}
-              {(summeryState && aiResponse) && (
+              {summeryState && aiResponse && (
                 <AiResponseDisplay
                   response={aiResponse}
                   currentQuestionIndex={currentQuestionIndex}
