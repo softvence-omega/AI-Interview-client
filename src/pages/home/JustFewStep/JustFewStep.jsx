@@ -87,7 +87,7 @@ const JustFewStep = () => {
             <h3 className="text-[#212121] text-[28px] font-semibold mb-4">
               {card.title}
             </h3>
-            <p className="text-[#676768] text-sm tracking-wide w-[55%] mx-auto">
+            <p className="text-[#676768] text-sm tracking-wide w-[80%] md: lg:w-[55%] mx-auto">
               {card.description}
             </p>
           </div>
