@@ -22,15 +22,39 @@ const ResumeUpload = () => {
     }
   };
 
-  const handleContinue = () => {
-    if (selectedFile) {
-      // Simulate file upload logic (replace with actual API call)
-      toast.success("Resume uploaded successfully!");
-      setTimeout(() => navigate("/userDashboard"), 1500); // Replace "/next-page" with your desired route
-    } else {
+  const handleContinue = async () => {
+    if (!selectedFile) {
       toast.error("Please select a PDF file first!");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("resumeFile", selectedFile);
+    formData.append("manualData", JSON.stringify({})); // send empty object or actual manual data if available
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/v1/resume/upload-resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `${user.approvalToken}`,
+        },
+        body: formData,
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Upload failed");
+      }
+  
+      toast.success("Resume uploaded successfully!");
+      setTimeout(() => navigate("/userDashboard"), 1500);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error(`Upload failed: ${error.message}`);
     }
   };
+  
 
   const handleManualUpload = () => {
     // Logic for manual upload (e.g., navigate to a manual entry page)
@@ -39,7 +63,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="flex w-screen min-h-screen overflow-hidden items-center justify-center pt-24 px-4">
+    <div className="flex w-screen min-h-screen overflow-hidden items-center justify-center pt-24 px-4 pb-24">
       <div className="flex flex-col lg:flex-row items-center justify-between w-full max-w-6xl gap-12">
         {/* Left: Welcome and Bot Image Section */}
         <div className="flex flex-col items-center justify-center flex-1 space-y-8 text-center">

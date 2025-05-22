@@ -108,7 +108,7 @@ const LoginOrSignup = () => {
   };
 
   return (
-    <div className="md:flex lg:flex w-screen min-h-screen bg-white overflow-hidden py-12 lg:py-0 md:py-0">
+    <div className="md:flex lg:flex w-screen min-h-screen bg-white overflow-hidden">
       {/* Left: Bot Image Section */}
       <div
         style={{ background: "var(--btn-primary-color)" }}

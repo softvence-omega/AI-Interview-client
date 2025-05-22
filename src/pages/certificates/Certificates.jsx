@@ -63,33 +63,34 @@ const EducationCertificate = () => {
     setEducations(updated);
   };
 
-  const handleCertificateChange = (index, e) => {
-    const file = e.target.files[0];
-    if (
-      file &&
-      (file.type === "application/pdf" ||
-        file.type === "image/jpeg" ||
-        file.type === "image/png")
-    ) {
-      const updated = [...educations];
-      updated[index].certificate = file;
-      setEducations(updated);
-      toast.success("Certificate file selected!");
-    } else {
-      toast.error("Please upload a PDF, JPEG, or PNG file!");
-    }
-  };
+  // const handleCertificateChange = (index, e) => {
+  //   const file = e.target.files[0];
+  //   if (
+  //     file &&
+  //     (file.type === "application/pdf" ||
+  //       file.type === "image/jpeg" ||
+  //       file.type === "image/png")
+  //   ) {
+  //     const updated = [...educations];
+  //     updated[index].certificate = file;
+  //     setEducations(updated);
+  //     toast.success("Certificate file selected!");
+  //   } else {
+  //     toast.error("Please upload a PDF, JPEG, or PNG file!");
+  //   }
+  // };
 
-  const handleAddMore = () => {
-    setEducations((prev) => [
-      ...prev,
-      { institute: "", degree: degreeOptions[0], certificate: null },
-    ]);
-  };
+  // const handleAddMore = () => {
+  //   setEducations((prev) => [
+  //     ...prev,
+  //     { institute: "", degree: degreeOptions[0], certificate: null },
+  //   ]);
+  // };
 
   const handleContinue = () => {
     const isValid = educations.every(
-      (edu) => edu.institute.trim() !== "" && edu.certificate
+      (edu) => edu.institute.trim() !== "" 
+      // && edu.certificate
     );
 
     if (!isValid) {
@@ -102,7 +103,9 @@ const EducationCertificate = () => {
     const dataToSubmit = educations.map((edu) => ({
       institute: edu.institute,
       degree: edu.degree.value,
-      certificate: edu.certificate.name, // You might want to send file data to your backend
+      // certificate: edu.certificate.name, 
+      // 
+      // // You might want to send file data to your backend
     }));
 
     // Call BE API here
@@ -162,7 +165,7 @@ const EducationCertificate = () => {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       Upload a Certificate
                     </label>
@@ -189,7 +192,7 @@ const EducationCertificate = () => {
                     >
                       + Add
                     </button>
-                  )}
+                  )} */}
                 </div>
               ))}
 

@@ -47,7 +47,7 @@ const Navbar = () => {
       <Container>
         <div
           className={`max-w-screen mx-auto backdrop-blur-md bg-black/10 lg:px-12 md:px-12 px-6 py-3 flex items-center justify-between ${
-            scrolled ? "bg-nav-color shadow-md transition-all duration-150" : "bg-transparent"
+            scrolled ? "bg-nav-color shadow-md transition-all duration-150 pt-8" : "bg-transparent"
           }`}
         >
           {/* Left: Logo & Mobile Menu */}
