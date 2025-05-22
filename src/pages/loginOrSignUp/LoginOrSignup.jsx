@@ -108,13 +108,13 @@ const LoginOrSignup = () => {
   };
 
   return (
-    <div className="flex w-screen h-screen bg-white overflow-hidden">
+    <div className="md:flex lg:flex w-screen min-h-screen bg-white overflow-hidden py-12 lg:py-0 md:py-0">
       {/* Left: Bot Image Section */}
       <div
         style={{ background: "var(--btn-primary-color)" }}
-        className="w-1/2 flex justify-center items-center"
+        className="w-full md:w-1/2 lg:w-1/2 flex justify-center items-center"
       >
-        <div className="relative left-[25%]">
+        <div className="relative md:left-[5%] lg:left-[15%] pb-6 md:pb-0 lg:pb-0">
           <img
             src={botImg}
             alt="bot img not found"
@@ -124,11 +124,11 @@ const LoginOrSignup = () => {
       </div>
 
       {/* Right: Form Section */}
-      <div className="w-1/2 p-10 flex items-center justify-center">
+      <div className="w-full md:w-1/2 lg:w-1/2 p-10 flex items-center justify-center">
         {currentPath === "/login" ? (
           <form
             onSubmit={triggerFunctionForLogIN}
-            className="space-y-4 w-full max-w-sm relative right-[20%]"
+            className="space-y-4 w-full max-w-sm relative md:right-[10%] lg:right-[10%]"
           >
             <h2 className="mb-4 text-center text-black font-semibold text-5xl">
               Log In
@@ -190,7 +190,7 @@ const LoginOrSignup = () => {
         (
           <form
             onSubmit={triggerFunctionForSignUp}
-            className="space-y-4 w-full max-w-sm relative right-[20%]"
+            className="space-y-4 w-full max-w-sm relative md:right-[5%] lg:right-[10%]"
           >
             <h2 className="mb-4 text-center text-black font-semibold text-5xl">
               Sign Up

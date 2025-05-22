@@ -20,7 +20,7 @@
 
 #prepareJobBanner p {
   font-size: 4vw; /* Adjust for responsive text size */
-  color: #AFAFAF;
+  color: #AFAFAF !important;
   line-height: 1.5;
   margin-bottom: 2rem;
 }
