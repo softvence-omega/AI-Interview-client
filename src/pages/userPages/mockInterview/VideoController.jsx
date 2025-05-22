@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import RecordRTC from "recordrtc";
 import { useAuth } from "../../../context/AuthProvider";
 
-const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete }, ref) => {
+const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete,isProcessingRef }, ref) => {
   const { user } = useAuth();
   const AuthorizationToken = user?.approvalToken;
   const [countdown, setCountdown] = useState(3);
@@ -194,6 +194,8 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
       });
 
       console.log("Sending request to:", API_URL);
+      console.log("data is being sent ****************:", formData);
+      isProcessingRef.current=true
       fetch(API_URL, {
         method: "POST",
         headers: {
@@ -215,11 +217,13 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
           console.log("API Response Data:", data);
           setAiResponse(data);
           setProcessing(false);
+          isProcessingRef.current=false
           if (onVideoAnalysisComplete) {
             onVideoAnalysisComplete(data);
           }
         })
         .catch((error) => {
+          isProcessingRef.current=false
           console.error("Error calling AI API:", error);
           let errorMessage = `Failed to process video: ${error.message}`;
           setAiResponse({ error: errorMessage });
