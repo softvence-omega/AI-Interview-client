@@ -55,7 +55,7 @@ const MockInterviewDetail = () => {
         <div className="flex items-center gap-6">
           {/* Use a placeholder image since question_bank_ids doesn't have img */}
           <div className="h-[68px] w-[64px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
-            No Image
+            <img src={qb.img} alt="no Img" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">
