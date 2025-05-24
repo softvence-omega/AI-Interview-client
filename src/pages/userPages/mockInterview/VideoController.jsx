@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import RecordRTC from "recordrtc";
 import { useAuth } from "../../../context/AuthProvider";
 
-const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete,isProcessingRef }, ref) => {
+const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete,isProcessingRef,setAiResponse,aiResponse }, ref) => {
   const { user } = useAuth();
   const AuthorizationToken = user?.approvalToken;
   const [countdown, setCountdown] = useState(3);
@@ -10,8 +10,9 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
   const [isRecording, setIsRecording] = useState(false);
   const [hasRecorded, setHasRecorded] = useState(false);
   const [videoBlob, setVideoBlob] = useState(null);
-  const [aiResponse, setAiResponse] = useState(null);
+  // const [aiResponse, setAiResponse] = useState(null);
   const [processing, setProcessing] = useState(false);
+
 
   const videoRef = useRef(null);
   const previewVideoRef = useRef(null);
@@ -148,6 +149,7 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
 
 
   const callAIApiforVideoAnalysis = async (videoBlob) => {
+    setAiResponse(null)
     const API_URL = "https://freepik.softvenceomega.com/in-prep/api/v1/video_process/process-video/";
     try {
       // Validate video blob
