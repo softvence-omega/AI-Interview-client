@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { throttle } from "lodash";
 import Buttons from "./AllButtons";
 import img1 from "../assets/logos/inprep.png";
-import Container from "../container/container";
 import { TiThMenu } from "react-icons/ti";
 
 const Navbar = () => {
@@ -44,17 +43,23 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full z-[1000]">
-      <Container>
-        <div
-          className={`max-w-screen mx-auto backdrop-blur-md bg-black/10 lg:px-12 md:px-12 px-6 py-3 flex items-center justify-between ${
-            scrolled ? "bg-nav-color shadow-md transition-all duration-150 pt-8" : "bg-transparent"
-          }`}
-        >
+      <div
+        className={`max-w-screen mx-auto backdrop-blur-md bg-black/10  ${
+          scrolled
+            ? "bg-emerald-500 shadow-md transition-all duration-150"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-[1440px] mx-auto lg:px-12 md:px-12 px-6 py-3 flex items-center justify-between">
           {/* Left: Logo & Mobile Menu */}
           <div className="navbar-start">
             <div className="dropdown">
-              <div tabIndex={0} role="button" className="text-[#37B874] border-none lg:hidden rounded-xl">
-                <TiThMenu className="h-8 w-8 mx-2" />
+              <div
+                tabIndex={0}
+                role="button"
+                className="text-[#37B874] border-none lg:hidden rounded-xl"
+              >
+                <TiThMenu className={`h-8 w-8 mx-2 ${scrolled ? "text-white" : "text-none"}`} />
               </div>
               <ul
                 tabIndex={0}
@@ -77,7 +82,15 @@ const Navbar = () => {
             <ul className="menu menu-horizontal gap-4 px-1">
               {middleMenuOptions.map((item, index) => (
                 <li key={index}>
-                  <Buttons.NormalLinkButton text={item.name} to={item.to} />
+                  <Buttons.NormalLinkButton
+                    text={item.name}
+                    to={item.to}
+                    textColor={
+                      scrolled
+                        ? "text-white text-[#676768]"
+                        : "text-[#676768]"
+                    }
+                  />
                 </li>
               ))}
             </ul>
@@ -90,10 +103,15 @@ const Navbar = () => {
               to={authButtonTo}
               height="h-[44px]"
               width="w-[94px]"
+              textColor={
+                scrolled
+                  ? "text-[#37B874] bg-white"
+                  : "text-[#FFF]"
+              }
             />
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };

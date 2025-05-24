@@ -30,11 +30,12 @@ const NormalLinkButton = ({
   textColor = 'text-[#676768]',
   bgColor = 'bg-transparent',
   rounded='rounded-4xl',
+  className = ''
 }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center justify-center ${height} ${width} ${textColor} ${bgColor} ${baseStyles} ${rounded}`}>
+      className={`flex items-center justify-center ${height} ${width} ${textColor} ${bgColor} ${baseStyles} ${rounded} ${className}`}>
       {text}
     </Link>
   );
