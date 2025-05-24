@@ -33,23 +33,38 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
 
   return (
     <div className="bg-white p-4 rounded-lg border border-gray-200">
-      <h4 className="text-2xl font-medium mb-4">
-        Question {currentQuestionIndex + 1} Feedback
-      </h4>
+      {assessment.isSummary
+ ? (
+        <div className="w-full">
+          <h1 className="text-center text-2xl">Overall Interview Feedback</h1>
+          <h1>
+            {currentQuestionIndex} of {currentQuestionIndex} is conpleated
+          </h1>
+        </div>
+      ) : (
+        <div>
+          <h4 className="text-2xl font-medium mb-4">
+            Question {currentQuestionIndex + 1} Feedback
+          </h4>
+        </div>
+      )}
 
       {/* Articulation Section */}
       {assessment.Articulation && (
         <div className="mb-6">
           <div className="flex items-center gap-4 mb-2">
-            <img src={talking} alt="Articulation" className="w-[50px] h-[50px]" />
+            <img
+              src={talking}
+              alt="Articulation"
+              className="w-[50px] h-[50px]"
+            />
             <p className="font-medium text-2xl text-[#293649]">Articulation</p>
           </div>
           <p className="text-[16px] font-normal text-[#293649] mb-2">
-            {assessment.Articulation.feedback || "No feedback"}
+            {assessment.Articulation.feedback}
           </p>
           <p className="bg-[#ffe6f0] text-[#293649] font-bold py-1 px-2 rounded inline-block">
-            <strong>Score:</strong>{" "}
-            {assessment.Articulation.score?.toFixed(2) ?? "N/A"}
+            <strong>Score:</strong> {assessment.Articulation.score.toFixed(2)}
           </p>
         </div>
       )}
@@ -68,11 +83,11 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
             </p>
           </div>
           <p className="text-[16px] font-normal text-[#293649] mb-2">
-            {assessment.Behavioural_Cue.feedback || "No feedback"}
+            {assessment.Behavioural_Cue.feedback}
           </p>
           <p className="bg-[#ffe6f0] text-[#293649] font-bold py-1 px-2 rounded inline-block">
             <strong>Score:</strong>{" "}
-            {assessment.Behavioural_Cue.score?.toFixed(2) ?? "N/A"}
+            {assessment.Behavioural_Cue.score.toFixed(2)}
           </p>
         </div>
       )}
@@ -91,11 +106,31 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
             </p>
           </div>
           <p className="text-[16px] font-normal text-[#293649] mb-2">
-            {assessment.Problem_Solving.feedback || "No feedback"}
+            {assessment.Problem_Solving.feedback}
           </p>
           <p className="bg-[#ffe6f0] text-[#293649] font-bold py-1 px-2 rounded inline-block">
             <strong>Score:</strong>{" "}
-            {assessment.Problem_Solving.score?.toFixed(2) ?? "N/A"}
+            {assessment.Problem_Solving.score.toFixed(2)}
+          </p>
+        </div>
+      )}
+
+      {/* Content Score Section */}
+      {assessment.Content_Score && (
+        <div className="mb-6">
+          <div className="flex items-center gap-4 mb-2">
+            <img
+              src={problemSolvingIcon} // Reuse icon or replace with a specific one
+              alt="Content Score"
+              className="w-[50px] h-[50px]"
+            />
+            <p className="font-medium text-2xl text-[#293649]">Content Score</p>
+          </div>
+          <p className="text-[16px] font-normal text-[#293649] mb-2">
+            Content evaluation
+          </p>
+          <p className="bg-[#ffe6f0] text-[#293649] font-bold py-1 px-2 rounded inline-block">
+            <strong>Score:</strong> {assessment.Content_Score.toFixed(2)}
           </p>
         </div>
       )}
@@ -105,7 +140,7 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
         <div className="mb-6">
           <p className="font-medium text-2xl text-[#293649] mb-2">
             <strong>Inprep Score:</strong>{" "}
-            {assessment.Inprep_Score.total_score?.toFixed(2) ?? "N/A"}
+            {assessment.Inprep_Score.total_score.toFixed(2)}
           </p>
           <p className="bg-[#ffe6f0] text-[#293649] font-bold py-1 px-2 rounded inline-block">
             80/100
@@ -118,7 +153,7 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
         <div className="bg-[#e6ffe6] text-[#293649] p-4 rounded-lg mt-4">
           <p className="font-bold text-xl mb-2">What can I do better?</p>
           <p className="text-[16px] font-normal">
-            {assessment.what_can_i_do_better.overall_feedback || "No feedback"}
+            {assessment.what_can_i_do_better.overall_feedback}
           </p>
         </div>
       )}
@@ -128,7 +163,9 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
 
 const AiResponseDisplay = ({ response, currentQuestionIndex }) => {
   if (!response) {
-    return <p className="text-center text-red-500">ERR: server failed to process</p>;
+    return (
+      <p className="text-center text-red-500">ERR: server failed to process</p>
+    );
   }
   if (response.error) {
     return <p className="text-red-500">Error: {response.error}</p>;
@@ -136,7 +173,7 @@ const AiResponseDisplay = ({ response, currentQuestionIndex }) => {
   return (
     <div className="text-left bg-gray-100 p-4 rounded">
       <AssessmentDisplay
-        assessment={response.assessment}
+        assessment={response.assessment || response.assessment}
         currentQuestionIndex={currentQuestionIndex}
       />
     </div>
@@ -167,6 +204,7 @@ const StartInterviewPage = () => {
 
   // Fetch AI-generated questions
   useEffect(() => {
+    
     const fetchGeneratedQuestions = async () => {
       if (isProcessingRef.current) {
         console.log("Skipping fetchGeneratedQuestions: already processing");
@@ -209,7 +247,8 @@ const StartInterviewPage = () => {
 
         const data = res.data.body;
         console.log("dataaaaaaaaaaaaaa", data);
-        generatedQuestions.current = data?.remainingQuestions || data?.question_Set || [];
+        generatedQuestions.current =
+          data?.remainingQuestions || data?.question_Set || [];
 
         if (
           Array.isArray(generatedQuestions.current) &&
@@ -317,6 +356,7 @@ const StartInterviewPage = () => {
 
   // Handle continue
   const handleContinue = async () => {
+    setAiResponse(null)
     if (isProcessingRef.current) {
       console.log("Skipping handleContinue: already processing");
       return;
@@ -340,8 +380,7 @@ const StartInterviewPage = () => {
           delete dataToSave.qid;
         }
 
-
-        console.log("this is data to be saved", dataToSave)
+        console.log("this is data to be saved", dataToSave);
 
         const endpoint = `/video/submit_Video_Analysis_and_Summary`;
         const res = await request({
@@ -371,18 +410,15 @@ const StartInterviewPage = () => {
           setIsVideoState(true);
           setAiResponse(null);
           setError(null);
-        } 
-        else {
+        } else {
           console.log("Reached last question, keeping summeryState");
           // No state change needed here as summeryState is already set
         }
       });
-    } 
-    catch (err) {
+    } catch (err) {
       setError(err.message || "Failed to save video analysis");
       console.error("Error saving video analysis:", err);
-    } 
-    finally {
+    } finally {
       isProcessingRef.current = false; // Enable buttons after continue
     }
   };
@@ -415,6 +451,7 @@ const StartInterviewPage = () => {
       currentQuestionIndex >= generatedQuestions.current.length - 1
     ) {
       React.startTransition(() => {
+        setAiResponse(null)
         setSumarryState(true);
       });
     }
@@ -424,7 +461,8 @@ const StartInterviewPage = () => {
 
   // Handle summary generation
   const handleSummaryGenaration = async () => {
-    await handleContinue()
+    setAiResponse(null)
+    await handleContinue();
     if (isProcessingRef.current) {
       console.log("Skipping handleSummaryGenaration: already processing");
       return;
@@ -443,7 +481,6 @@ const StartInterviewPage = () => {
 
       const endpoint = `/video/getSummary?questionBank_id=${questionBankId}`;
 
-      
       const res = await request({
         endpoint,
         method: "GET",
@@ -457,10 +494,14 @@ const StartInterviewPage = () => {
         throw new Error(res.message || "Failed to generate summary");
       }
 
-      console.log("Summary generated successfully****************************:", res.data);
+      console.log(
+        "Summary generated successfully****************************:",
+        res.data.data
+      );
 
       React.startTransition(() => {
-        setAiResponse(res.data);
+        setAiResponse(null)
+        setAiResponse(res.data.data);
         setReturnOrFullRetakeState(true);
       });
     } catch (err) {
@@ -470,10 +511,6 @@ const StartInterviewPage = () => {
       isProcessingRef.current = false; // Enable buttons after summary generation
     }
   };
-
-
-
-
 
   // Handle full retake
   const handleFullRetaake = async () => {
@@ -549,10 +586,6 @@ const StartInterviewPage = () => {
     }
   };
 
-
-
-
-  
   // Handle return to interview
   const handleReturnInterview = () => {
     if (isProcessingRef.current) {
@@ -569,18 +602,24 @@ const StartInterviewPage = () => {
   // Define onClick handlers with conditional logic
   const handleContinueClick = () => {
     if (summeryState && returnOrFullRetakeState) {
+      setAiResponse(null)
       handleReturnInterview();
-    } else if (summeryState) {
+    } else if (summeryState) 
+      {
+        setAiResponse(null)
       handleSummaryGenaration();
     } else {
+      setAiResponse(null)
       handleContinue();
     }
   };
 
   const handleRetakeClick = () => {
     if (summeryState && returnOrFullRetakeState) {
+      setAiResponse(null)
       handleFullRetaake();
     } else {
+      setAiResponse(null)
       handleRetake();
     }
   };
@@ -693,6 +732,8 @@ const StartInterviewPage = () => {
                       onVideoAnalysisComplete={handleVideoAnalysisComplete}
                       ref={videoControllerRefCallback}
                       isProcessingRef={isProcessingRef}
+                      setAiResponse={setAiResponse}
+                      aiResponse={aiResponse}
                     />
                   </div>
                 )
@@ -761,7 +802,9 @@ const StartInterviewPage = () => {
                   <button
                     onClick={handleContinueClick}
                     className="bg-blue-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
-                    disabled={isProcessingRef.current || loading || retakeLoading}
+                    disabled={
+                      isProcessingRef.current || loading || retakeLoading
+                    }
                   >
                     {summeryState && returnOrFullRetakeState
                       ? "Return to Interview"
@@ -772,7 +815,9 @@ const StartInterviewPage = () => {
                   <button
                     onClick={handleRetakeClick}
                     className="bg-green-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
-                    disabled={isProcessingRef.current || loading || retakeLoading}
+                    disabled={
+                      isProcessingRef.current || loading || retakeLoading
+                    }
                   >
                     {retakeLoading
                       ? "Generating..."
@@ -785,7 +830,8 @@ const StartInterviewPage = () => {
             </div>
           </div>
         ) : (
-          !loading && !error && (
+          !loading &&
+          !error && (
             <p className="text-white text-center">
               No questions available to display.
             </p>
