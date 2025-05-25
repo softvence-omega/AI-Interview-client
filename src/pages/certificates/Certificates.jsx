@@ -5,6 +5,8 @@ import Select from "react-select";
 import botImg from "../../assets/logos/Hi_bot.png";
 import Container from "../../container/container";
 import Buttons from "../../reuseable/AllButtons";
+import axios from "axios"; // Import Axios
+import { useAuth } from "../../context/AuthProvider";
 
 const customSelectStyles = {
   control: (provided, state) => ({
@@ -45,9 +47,17 @@ const degreeOptions = [
 ].map((degree) => ({ value: degree, label: degree }));
 
 const EducationCertificate = () => {
+  const user = useAuth();
   const navigate = useNavigate();
   const [educations, setEducations] = useState([
-    { institute: "", degree: degreeOptions[0], certificate: null },
+    {
+      institution: "",
+      degree: degreeOptions[0],
+      majorField: "",
+      startDate: "",
+      completionDate: "",
+      isOngoing: false, // Add ongoing field
+    },
   ]);
 
   const handleChange = (index, e) => {
@@ -63,55 +73,78 @@ const EducationCertificate = () => {
     setEducations(updated);
   };
 
-  // const handleCertificateChange = (index, e) => {
-  //   const file = e.target.files[0];
-  //   if (
-  //     file &&
-  //     (file.type === "application/pdf" ||
-  //       file.type === "image/jpeg" ||
-  //       file.type === "image/png")
-  //   ) {
-  //     const updated = [...educations];
-  //     updated[index].certificate = file;
-  //     setEducations(updated);
-  //     toast.success("Certificate file selected!");
-  //   } else {
-  //     toast.error("Please upload a PDF, JPEG, or PNG file!");
-  //   }
-  // };
+  const handleOngoingChange = (index) => {
+    const updated = [...educations];
+    updated[index].isOngoing = !updated[index].isOngoing;
+    if (updated[index].isOngoing) {
+      updated[index].completionDate = ""; // Clear completion date if ongoing
+    }
+    setEducations(updated);
+  };
 
-  // const handleAddMore = () => {
-  //   setEducations((prev) => [
-  //     ...prev,
-  //     { institute: "", degree: degreeOptions[0], certificate: null },
-  //   ]);
-  // };
+  const handleAddMore = () => {
+    setEducations((prev) => [
+      ...prev,
+      {
+        institution: "",
+        degree: degreeOptions[0],
+        majorField: "",
+        startDate: "",
+        completionDate: "",
+        isOngoing: false,
+      },
+    ]);
+  };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const isValid = educations.every(
-      (edu) => edu.institute.trim() !== "" 
-      // && edu.certificate
+      (edu) =>
+        edu.institution.trim() !== "" &&
+        edu.majorField.trim() !== "" &&
+        edu.startDate.trim() !== "" &&
+        (edu.isOngoing || edu.completionDate.trim() !== "") // Ensure completionDate is only required if not ongoing
     );
 
     if (!isValid) {
-      toast.error(
-        "Please fill in all fields and upload a certificate for each entry!"
-      );
+      toast.error("Please fill in all fields for each education entry!");
       return;
     }
 
     const dataToSubmit = educations.map((edu) => ({
-      institute: edu.institute,
+      institution: edu.institution,
       degree: edu.degree.value,
-      // certificate: edu.certificate.name, 
-      // 
-      // // You might want to send file data to your backend
+      majorField: edu.majorField,
+      startDate: edu.startDate,
+      completionDate: edu.isOngoing ? "Ongoing" : edu.completionDate,
     }));
 
-    // Call BE API here
-    console.log(dataToSubmit);
-    toast.success("Education & Certificates saved successfully!");
-    setTimeout(() => navigate("/userDashboard"), 1500); // Replace "/next-page" with your desired route
+    const token = user.user.approvalToken;
+
+    try {
+      console.log("Data to Submit:", dataToSubmit); // Debug log data before sending
+
+      const response = await axios.put(
+        `http://localhost:5000/api/v1/resume/update-resume`,
+        { education: dataToSubmit },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      console.log("API Response:", response);  // Log the complete response
+
+      if (response.status === 200) {
+        toast.success("Education details saved successfully!");
+        setTimeout(() => navigate("/userDashboard"), 1500); // Redirect after success
+      } else {
+        toast.error("Failed to save education details!");
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+      toast.error("An error occurred while saving education details. Please try again.");
+    }
   };
 
   return (
@@ -143,11 +176,11 @@ const EducationCertificate = () => {
                     </label>
                     <input
                       type="text"
-                      name="institute"
-                      value={edu.institute}
+                      name="institution"
+                      value={edu.institution}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
-                      placeholder="Enter institute name"
+                      placeholder="Enter institution name"
                       required
                     />
                   </div>
@@ -165,22 +198,63 @@ const EducationCertificate = () => {
                     />
                   </div>
 
-                  {/* <div>
+                  <div>
                     <label className="block text-sm font-medium mb-1">
-                      Upload a Certificate
+                      Major Field of Study
                     </label>
-                    <label className="flex items-center justify-center w-full p-4 border-2 border-dashed border-[#37B874] rounded bg-green-50 cursor-pointer">
-                      <input
-                        type="file"
-                        accept="application/pdf,image/jpeg,image/png"
-                        onChange={(e) => handleCertificateChange(index, e)}
-                        className="hidden"
-                      />
-                      <span className="text-[#37B874] text-center">
-                        {edu.certificate
-                          ? edu.certificate.name
-                          : "Select File (PDF, JPEG, PNG)"}
-                      </span>
+                    <input
+                      type="text"
+                      name="majorField"
+                      value={edu.majorField}
+                      onChange={(e) => handleChange(index, e)}
+                      className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                      placeholder="Enter major field of study"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      name="startDate"
+                      value={edu.startDate}
+                      onChange={(e) => handleChange(index, e)}
+                      className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Completion Date
+                    </label>
+                    <input
+                      type="date"
+                      name="completionDate"
+                      value={edu.isOngoing ? "" : edu.completionDate}
+                      onChange={(e) => handleChange(index, e)}
+                      className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                      required={!edu.isOngoing} // Make it required only if not ongoing
+                      disabled={edu.isOngoing} // Disable if ongoing
+                    />
+                  </div>
+
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id={`ongoing-checkbox-${index}`}
+                      checked={edu.isOngoing}
+                      onChange={() => handleOngoingChange(index)}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`ongoing-checkbox-${index}`}
+                      className="text-sm"
+                    >
+                      Ongoing Education
                     </label>
                   </div>
 
@@ -190,16 +264,14 @@ const EducationCertificate = () => {
                       onClick={handleAddMore}
                       className="text-[#37B874] font-semibold underline mt-2"
                     >
-                      + Add
+                      + Add More
                     </button>
-                  )} */}
+                  )}
                 </div>
               ))}
 
               <Buttons.SubmitButton
-                text="Continue"
-                width="w-full"
-                rounded="rounded-[12px]"
+                title="Continue"
                 onClick={handleContinue}
               />
             </form>

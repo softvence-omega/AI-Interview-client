@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { throttle } from "lodash";
 import Buttons from "./AllButtons";
 import img1 from "../assets/logos/inprep.png";
 import { TiThMenu } from "react-icons/ti";
+import { useAuth } from "../context/AuthProvider";
 
 const Navbar = () => {
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  // const location = useLocation();
+  // const currentPath = location.pathname;
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -30,15 +33,22 @@ const Navbar = () => {
     { name: "Contact Us", to: "/Contact-Us" },
   ];
 
-  let authButtonText = "Log In";
-  let authButtonTo = "/login";
+  // let authButtonText = "Log In";
+  // let authButtonTo = "/login";
 
-  if (currentPath === "/login") {
-    authButtonText = "Sign Up";
-    authButtonTo = "/signup";
-  } else if (currentPath === "/signup") {
-    authButtonText = "Log In";
-    authButtonTo = "/login";
+  // if (currentPath === "/login") {
+  //   authButtonText = "Sign Up";
+  //   authButtonTo = "/signup";
+  // } else if (currentPath === "/signup") {
+  //   authButtonText = "Log In";
+  //   authButtonTo = "/login";
+  // }
+
+  // Logout handler
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    window.location.href = "/login"
   }
 
   return (
@@ -98,9 +108,10 @@ const Navbar = () => {
 
           {/* Right: Auth Button */}
           <div className="navbar-end">
-            <Buttons.LinkButton
-              text={authButtonText}
-              to={authButtonTo}
+            {
+              user ? <Buttons.OnClickButton
+              text="Log Out"
+              onClick={handleLogout}
               height="h-[44px]"
               width="w-[94px]"
               textColor={
@@ -108,7 +119,18 @@ const Navbar = () => {
                   ? "text-[#37B874] bg-white"
                   : "text-[#FFF]"
               }
-            />
+            /> : <Buttons.LinkButton
+            text="Log In"
+            to="/login"
+            height="h-[44px]"
+            width="w-[94px]"
+            textColor={
+              scrolled
+                ? "text-[#37B874] bg-white"
+                : "text-[#FFF]"
+            }
+          />
+            }
           </div>
         </div>
       </div>

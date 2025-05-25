@@ -31,20 +31,20 @@ const Footer = () => {
           <h6 className="text-[16px] text-[#37B874] font-medium leading-[130%] mb-5">
             Quick Links
           </h6>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Home</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Features</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Pricing</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">About Us</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Blog</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Contact Us</a>
+          <a href="/" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Home</a>
+          <a href="/features" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Features</a>
+          <a href="pricing" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Pricing</a>
+          <a href="About-Us" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">About Us</a>
+          <a href="/features#feature" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Blog</a>
+          <a href="Contact-Us" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Contact Us</a>
         </nav>
         <nav>
           <h6 className="text-[16px] text-[#37B874] font-medium leading-[130%] mb-5">
             Legal & Support
           </h6>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Privacy Policy</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Terms of Service</a>
-          <a className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Help Center</a>
+          <a href="/About-Us" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Privacy Policy</a>
+          <a href="/features" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Terms of Service</a>
+          <a href="/Contact-Us" className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]">Help Center</a>
         </nav>
         <nav>
           <h6 className="text-[16px] text-[#37B874] font-medium leading-[130%] mb-5">
