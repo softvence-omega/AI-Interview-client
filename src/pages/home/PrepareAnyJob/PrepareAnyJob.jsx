@@ -52,7 +52,7 @@ const cardData = [
 
 const PrepareAnyJob = () => {
   return (
-    <div className="mx-2">
+    <div className="mx-0 lg:mx-0">
       <div
         id="prepareJobBanner"
         className="text-center justify-items-center items-center mt-24 bannerBG"
