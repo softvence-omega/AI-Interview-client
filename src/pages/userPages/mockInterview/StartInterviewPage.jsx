@@ -246,9 +246,11 @@ const StartInterviewPage = () => {
         }
 
         const data = res.data.body;
+        
         console.log("dataaaaaaaaaaaaaa", data);
+
         generatedQuestions.current =
-          data?.remainingQuestions || data?.question_Set || [];
+          data?.remainingQuestions || data?.question_Set || data.history ||[];
 
         if (
           Array.isArray(generatedQuestions.current) &&
