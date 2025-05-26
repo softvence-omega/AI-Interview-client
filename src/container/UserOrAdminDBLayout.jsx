@@ -10,7 +10,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
 
 const UserOrAdminDBLayout = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const userData = user?.userData; // Safely access userData
   const userMeta = user?.userMeta; // Corrected to user?.meta
   const userType = user?.userData?.role; // Safely access role
@@ -33,7 +33,7 @@ const UserOrAdminDBLayout = () => {
       to: "myJobs",
     },
     {
-      name: "Incites",
+      name: "Insights",
       logo: <MdOutlineInsights />,
       to: "incites",
     },
@@ -78,6 +78,7 @@ const UserOrAdminDBLayout = () => {
 
   const handleLogout = () => {
     // Clear the redirect flag on logout
+    logout();
     localStorage.removeItem("hasRedirected");
     navigate("/login");
   };
@@ -157,7 +158,7 @@ const UserOrAdminDBLayout = () => {
         {/* Overlay for mobile when sidebar is open */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            className="fixed inset-0 bg-white bg-opacity-50 z-20 lg:hidden"
             onClick={toggleSidebar}
           ></div>
         )}

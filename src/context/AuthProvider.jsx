@@ -36,12 +36,23 @@ export const AuthProvider = ({ children }) => {
     }
   }, [otpToken]);
 
+  // Logout function
+  const logout = () => {
+    console.log("Logginnggg out.....")
+    setUser(null);
+    setOtpToken(null);
+    localStorage.removeItem("userData");
+    localStorage.removeItem("OTPtoken");
+    localStorage.removeItem("hasRedirected");
+  };
+
   // Values passed to context consumers
   const values = {
     user,
     setUser,
     otpToken,
     setOtpToken,
+    logout,
   };
 
   return (

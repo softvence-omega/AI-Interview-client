@@ -36,7 +36,7 @@ const Router = () => {
         <Route path="/otp-crosscheck" element={<OtpCrossCheck />} />
         <Route path="/resume-upload" element={<ResumeUpload />} />
         <Route path="/aboutMe" element={<AboutMe />} />
-        <Route path="/exprience" element={<Experience />} />
+        <Route path="/experience" element={<Experience />} />
         <Route path="/certificates" element={<EducationCertificate />} />
         <Route path="/help-center" element={<HelpCenter />} />
         <Route path="/payment-status" element={<PaymentStatus />} />

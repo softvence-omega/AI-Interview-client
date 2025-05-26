@@ -293,7 +293,7 @@ const featuresData = [
 
 const InterviewFeatures = () => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
+    <div id="feature" className="max-w-7xl mx-auto px-4 py-16">
       {featuresData.map((feature, index) => {
         const isReversed = feature.layout === "reversed";
         return (
