@@ -300,6 +300,7 @@ const StartInterviewPage = () => {
         }
         else {
           console.log("Reached last question, keeping summeryState");
+          setSumarryState(true)
         }
       });
     } 
@@ -315,7 +316,7 @@ const StartInterviewPage = () => {
 
   
 
-  // Handle next question
+  // Handle next question actually sets up the ai response view
   const handleNextQuestion = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleNextQuestion: already processing");
@@ -353,22 +354,25 @@ const StartInterviewPage = () => {
 
 
 
-  // Handle summary generation
+  // Handle summary generation actually it finds the summary from the db
   const handleSummaryGenaration = async () => {
 
-    setAiResponse(null);
-
+    console.log("handleSummaryGenaration called");
+    // setAiResponse(null);
+    //to save the last response in the datadase before finding the summary
     await handleContinue();
+
+
     if (isProcessingRef.current) {
       console.log("Skipping handleSummaryGenaration: already processing");
       return;
     }
     isProcessingRef.current = true;
 
-    console.log("handleSummaryGenaration called");
+    
     try {
-      const questionBankId =
-        ongoingQuestion?.questionBank_id || aiResponse?.questionBank_id;
+      const questionBankId = ongoingQuestion?.questionBank_id || aiResponse?.questionBank_id;
+
       if (!questionBankId) {
         throw new Error("questionBank_id not found in the response");
       }
@@ -396,7 +400,6 @@ const StartInterviewPage = () => {
       );
 
       React.startTransition(() => {
-        setAiResponse(null);
         setAiResponse(res.data.data);
         setReturnOrFullRetakeState(true);
       });
@@ -497,7 +500,7 @@ const StartInterviewPage = () => {
 
 
 
-  // Handle return to interview
+  // Handle return to interview 
   const handleReturnInterview = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleReturnInterview: already processing");
@@ -513,7 +516,7 @@ const StartInterviewPage = () => {
 
 
 
-  // Handle go back to dashboard
+  // Handle go back to dashboard for history state
   const handleGoBack = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleGoBack: already processing");
@@ -532,7 +535,6 @@ const StartInterviewPage = () => {
   // Define onClick handlers with conditional logic
   const handleContinueClick = () => {
 
-
     if (summeryState && returnOrFullRetakeState) {
       setAiResponse(null);
       handleReturnInterview();
@@ -546,7 +548,6 @@ const StartInterviewPage = () => {
       setAiResponse(null);
       handleContinue();
     }
-
 
   };
 
