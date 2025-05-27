@@ -3,23 +3,28 @@ import behaviorIcon from "../../../assets/logos/Frame 5.png";
 import problemSolvingIcon from "../../../assets/logos/problemSolving.png";
 
 
-const AssessmentDisplay = ({ assessment, currentQuestionIndex }) => {
+const AssessmentDisplay = ({ assessment, currentQuestionIndex,question,isSummary }) => {
     if (!assessment) {
       return <p>No assessment data available</p>;
     }
+
+    console.log("AI RESPONSE :::::: ",assessment, currentQuestionIndex, question);
   
     return (
       <div className="bg-white p-4 rounded-lg border border-gray-200">
-        {assessment.isSummary ? (
+        {isSummary ? (
           <div className="w-full">
             <h1 className="text-center text-2xl">Overall Interview Feedback</h1>
             <h1>
               {currentQuestionIndex} of {currentQuestionIndex} is conpleated
             </h1>
           </div>
-        ) : (
+        )
+        :
+        (
           <div>
             <h4 className="text-2xl font-medium mb-4">
+            <h2>Question: {question}</h2>
               Question {currentQuestionIndex + 1} Feedback
             </h4>
           </div>

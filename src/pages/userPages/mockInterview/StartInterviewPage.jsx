@@ -144,26 +144,36 @@ const StartInterviewPage = () => {
     fetchGeneratedQuestions();
   }, [questionBankId, interviewId, AuthorizationToken]);
 
+
+
+
   // Handle AI response or error
   const handleVideoAnalysisComplete = (data) => {
+
     if (isProcessingRef.current) {
       console.log("Skipping handleVideoAnalysisComplete: already processing");
       return;
     }
+
     isProcessingRef.current = true;
 
-    console.log("handleVideoAnalysisComplete called with:", data);
+    console.log("handleVideoAnalysisComplete called with:==============>>>>>>>=======>>>>>>>======>>>>", data);
+
     React.startTransition(() => {
       if (data.error) {
         setError(data.error);
         setAiResponse(null);
-      } else {
+      }
+      else {
         setAiResponse(data);
         setError(null);
       }
     });
+
     isProcessingRef.current = false;
   };
+
+
 
   // Handle retake
   const handleRetake = async () => {
@@ -226,13 +236,17 @@ const StartInterviewPage = () => {
     }
   };
 
-  // Handle continue
+
+
+  // Handle continue save Ai Response data in the database ...................
   const handleContinue = async () => {
     setAiResponse(null);
+
     if (isProcessingRef.current) {
       console.log("Skipping handleContinue: already processing");
       return;
     }
+
     isProcessingRef.current = true;
 
     console.log("handleContinue called");
@@ -254,6 +268,7 @@ const StartInterviewPage = () => {
         console.log("this is data to be saved", dataToSave);
 
         const endpoint = `/video/submit_Video_Analysis_and_Summary`;
+
         const res = await request({
           endpoint,
           method: "POST",
@@ -274,24 +289,31 @@ const StartInterviewPage = () => {
         if (
           Array.isArray(generatedQuestions.current) &&
           currentQuestionIndex < generatedQuestions.current.length - 1
-        ) {
+        ) 
+        {
           const nextIndex = currentQuestionIndex + 1;
           setCurrentQuestionIndex(nextIndex);
           setOngoingQuestion(generatedQuestions.current[nextIndex]);
           setIsVideoState(true);
           setAiResponse(null);
           setError(null);
-        } else {
+        }
+        else {
           console.log("Reached last question, keeping summeryState");
         }
       });
-    } catch (err) {
+    } 
+    catch (err)
+    {
       setError(err.message || "Failed to save video analysis");
       console.error("Error saving video analysis:", err);
-    } finally {
+    }
+    finally {
       isProcessingRef.current = false;
     }
   };
+
+  
 
   // Handle next question
   const handleNextQuestion = () => {
@@ -328,9 +350,14 @@ const StartInterviewPage = () => {
     isProcessingRef.current = false;
   };
 
+
+
+
   // Handle summary generation
   const handleSummaryGenaration = async () => {
+
     setAiResponse(null);
+
     await handleContinue();
     if (isProcessingRef.current) {
       console.log("Skipping handleSummaryGenaration: already processing");
@@ -373,7 +400,8 @@ const StartInterviewPage = () => {
         setAiResponse(res.data.data);
         setReturnOrFullRetakeState(true);
       });
-    } catch (err) {
+    } 
+    catch (err) {
       setError(err.message || "Failed to generate summary");
       console.error("Error generating summary:", err);
     } finally {
@@ -381,15 +409,11 @@ const StartInterviewPage = () => {
     }
   };
 
+
+
+
   // Handle full retake
-const handleFullRetaake = async () => {
-
-
-
-    console.log(" i amk being called");
-
-
-
+  const handleFullRetaake = async () => {
     if (
       (!ongoingQuestion || !ongoingQuestion.questionBank_id) &&
       !history.current.length
@@ -452,14 +476,12 @@ const handleFullRetaake = async () => {
           setOngoingQuestion(generatedQuestions.current[0]);
           setIsVideoState(true);
           setSumarryState(false);
-          setHistoryState(false);
           setReturnOrFullRetakeState(false);
           setHistoryState(false);
           setAiResponse(null);
           setError(null);
         });
-      } 
-      else {
+      } else {
         throw new Error("No questions generated in full retake response");
       }
     } catch (err) {
@@ -472,6 +494,8 @@ const handleFullRetaake = async () => {
       isProcessingRef.current = false;
     }
   };
+
+
 
   // Handle return to interview
   const handleReturnInterview = () => {
@@ -486,6 +510,9 @@ const handleFullRetaake = async () => {
     isProcessingRef.current = false;
   };
 
+
+
+
   // Handle go back to dashboard
   const handleGoBack = () => {
     if (isProcessingRef.current) {
@@ -499,21 +526,34 @@ const handleFullRetaake = async () => {
     isProcessingRef.current = false;
   };
 
+
+
+
   // Define onClick handlers with conditional logic
   const handleContinueClick = () => {
+
+
     if (summeryState && returnOrFullRetakeState) {
       setAiResponse(null);
       handleReturnInterview();
-    } else if (summeryState) {
+    } 
+    else if (summeryState)
+    {
       setAiResponse(null);
       handleSummaryGenaration();
-    } else {
+    }
+    else {
       setAiResponse(null);
       handleContinue();
     }
+
+
   };
 
+
+
   const handleRetakeClick = () => {
+
     if (summeryState && returnOrFullRetakeState) {
       setAiResponse(null);
       handleFullRetaake();
@@ -521,7 +561,10 @@ const handleFullRetaake = async () => {
       setAiResponse(null);
       handleRetake();
     }
+
   };
+
+
 
   // Ref callback for VideoController
   const videoControllerRefCallback = (node) => {
@@ -533,7 +576,7 @@ const handleFullRetaake = async () => {
   };
 
   // Debug render
-  console.log("Render with states:", {
+  console.log("Render with states: here=============>>>>>>>>>>>>>>>", {
     isVideoState,
     summeryState,
     currentQuestionIndex,
