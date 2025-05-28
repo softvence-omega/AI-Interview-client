@@ -9,6 +9,7 @@ const ResumeUpload = () => {
   const userData = user.userData;
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -27,34 +28,40 @@ const ResumeUpload = () => {
       toast.error("Please select a PDF file first!");
       return;
     }
-  
+
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("resumeFile", selectedFile);
     formData.append("manualData", JSON.stringify({})); // send empty object or actual manual data if available
-  
+
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/resume/upload-resume`, {
-        method: "POST",
-        headers: {
-          Authorization: `${user.approvalToken}`,
-        },
-        body: formData,
-      });
-  
+      const response = await fetch(
+        `http://localhost:5000/api/v1/resume/upload-resume`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `${user.approvalToken}`,
+          },
+          body: formData,
+        }
+      );
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Upload failed");
       }
-  
+
       toast.success("Resume uploaded successfully!");
       setTimeout(() => navigate("/userDashboard"), 1500);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error(`Upload failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   const handleManualUpload = () => {
     // Logic for manual upload (e.g., navigate to a manual entry page)
@@ -63,7 +70,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="flex w-screen min-h-screen overflow-hidden items-center justify-center pt-24 px-4 pb-24">
+    <div className="relative flex w-screen min-h-screen overflow-hidden items-center justify-center pt-24 px-4 pb-24">
       <div className="flex flex-col lg:flex-row items-center justify-between w-full max-w-6xl gap-12">
         {/* Left: Welcome and Bot Image Section */}
         <div className="flex flex-col items-center justify-center flex-1 space-y-8 text-center">
@@ -111,9 +118,36 @@ const ResumeUpload = () => {
               <div className="mt-4 flex justify-center space-x-4 flex-wrap">
                 <button
                   onClick={handleContinue}
+                  disabled={loading}
                   className="bg-green-500 text-white py-2 px-6 rounded hover:bg-green-600 transition h-[60px]"
                 >
-                  Continue
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    "Continue"
+                  )}
                 </button>
                 <button
                   onClick={handleManualUpload}
@@ -126,6 +160,40 @@ const ResumeUpload = () => {
           </div>
         </div>
       </div>
+
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl text-center">
+            <div className="flex items-center justify-center mb-4">
+              <svg
+                className="animate-spin h-6 w-6 text-[#37B874] mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+              <p className="text-lg text-[#37B874] font-semibold">
+                Uploading your resume...
+              </p>
+            </div>
+            <p className="text-sm text-gray-500">
+              Please wait while we process your file.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
