@@ -144,36 +144,50 @@ const StartInterviewPage = () => {
     fetchGeneratedQuestions();
   }, [questionBankId, interviewId, AuthorizationToken]);
 
-
-
-
-  // Handle AI response or error
-  const handleVideoAnalysisComplete = (data) => {
-
-    if (isProcessingRef.current) {
-      console.log("Skipping handleVideoAnalysisComplete: already processing");
+  // Save AI response to database without state changes
+  const saveAiResponse = async (response) => {
+    if (!response) {
+      console.log("No AI response to save");
       return;
     }
 
-    isProcessingRef.current = true;
+    try {
+      const dataToSave = {
+        ...response,
+        islast:
+          Array.isArray(generatedQuestions.current) &&
+          currentQuestionIndex === generatedQuestions.current.length - 1,
+        question_id: response.qid || null,
+        assessment: response.assessment,
+      };
 
-    console.log("handleVideoAnalysisComplete called with:==============>>>>>>>=======>>>>>>>======>>>>", data);
-
-    React.startTransition(() => {
-      if (data.error) {
-        setError(data.error);
-        setAiResponse(null);
+      if ("qid" in dataToSave) {
+        delete dataToSave.qid;
       }
-      else {
-        setAiResponse(data);
-        setError(null);
-      }
-    });
 
-    isProcessingRef.current = false;
+      console.log("Saving AI response:", dataToSave);
+
+      const endpoint = `/video/submit_Video_Analysis_and_Summary`;
+
+      const res = await request({
+        endpoint,
+        method: "POST",
+        body: dataToSave,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${AuthorizationToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(res.message || "Failed to save video analysis");
+      }
+      console.log("AI response saved successfully:", res.data);
+    } catch (err) {
+      console.error("Error saving AI response:", err);
+      // Optionally set error state if needed, but avoiding state changes here
+    }
   };
-
-
 
   // Handle retake
   const handleRetake = async () => {
@@ -236,87 +250,46 @@ const StartInterviewPage = () => {
     }
   };
 
-
-
-  // Handle continue save Ai Response data in the database ...................
+  // Handle continue
   const handleContinue = async () => {
-    setAiResponse(null);
-
     if (isProcessingRef.current) {
       console.log("Skipping handleContinue: already processing");
       return;
     }
-
     isProcessingRef.current = true;
 
     console.log("handleContinue called");
     try {
       if (aiResponse) {
-        const dataToSave = {
-          ...aiResponse,
-          islast:
-            Array.isArray(generatedQuestions.current) &&
-            currentQuestionIndex === generatedQuestions.current.length - 1,
-          question_id: aiResponse.qid || null,
-          assessment: aiResponse.assessment,
-        };
-
-        if ("qid" in dataToSave) {
-          delete dataToSave.qid;
-        }
-
-        console.log("this is data to be saved", dataToSave);
-
-        const endpoint = `/video/submit_Video_Analysis_and_Summary`;
-
-        const res = await request({
-          endpoint,
-          method: "POST",
-          body: dataToSave,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${AuthorizationToken}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error(res.message || "Failed to save video analysis");
-        }
-        console.log("Video analysis saved successfully:", res.data);
+        await saveAiResponse(aiResponse);
       }
 
       React.startTransition(() => {
         if (
           Array.isArray(generatedQuestions.current) &&
           currentQuestionIndex < generatedQuestions.current.length - 1
-        ) 
-        {
+        ) {
           const nextIndex = currentQuestionIndex + 1;
           setCurrentQuestionIndex(nextIndex);
           setOngoingQuestion(generatedQuestions.current[nextIndex]);
           setIsVideoState(true);
           setAiResponse(null);
           setError(null);
-        }
-        else {
-          console.log("Reached last question, keeping summeryState");
-          setSumarryState(true)
+        } else {
+          console.log("Reached last question, setting summeryState");
+          setSumarryState(true);
+          setAiResponse(null); // Clear aiResponse to avoid showing last question analysis
         }
       });
-    } 
-    catch (err)
-    {
+    } catch (err) {
       setError(err.message || "Failed to save video analysis");
       console.error("Error saving video analysis:", err);
-    }
-    finally {
+    } finally {
       isProcessingRef.current = false;
     }
   };
 
-  
-
-  // Handle next question actually sets up the ai response view
+  // Handle next question
   const handleNextQuestion = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleNextQuestion: already processing");
@@ -327,7 +300,6 @@ const StartInterviewPage = () => {
     console.log("handleNextQuestion called");
     React.startTransition(() => {
       setIsVideoState(false);
-      setAiResponse(null);
       setError(null);
     });
 
@@ -351,33 +323,28 @@ const StartInterviewPage = () => {
     isProcessingRef.current = false;
   };
 
-
-
-
-  // Handle summary generation actually it finds the summary from the db
+  // Handle summary generation
   const handleSummaryGenaration = async () => {
-
     console.log("handleSummaryGenaration called");
-    // setAiResponse(null);
-    //to save the last response in the datadase before finding the summary
-    await handleContinue();
-
-
     if (isProcessingRef.current) {
       console.log("Skipping handleSummaryGenaration: already processing");
       return;
     }
     isProcessingRef.current = true;
 
-    
     try {
+      // Save the last question's AI response if it exists
+      if (aiResponse) {
+        await saveAiResponse(aiResponse);
+      }
+
       const questionBankId = ongoingQuestion?.questionBank_id || aiResponse?.questionBank_id;
 
       if (!questionBankId) {
         throw new Error("questionBank_id not found in the response");
       }
 
-      console.log("handleSummaryGenaration called", questionBankId);
+      console.log("Fetching summary for questionBankId:", questionBankId);
 
       const endpoint = `/video/getSummary?questionBank_id=${questionBankId}`;
 
@@ -394,17 +361,13 @@ const StartInterviewPage = () => {
         throw new Error(res.message || "Failed to generate summary");
       }
 
-      console.log(
-        "Summary generated successfully****************************:",
-        res.data.data
-      );
+      console.log("Summary generated successfully:", res.data.data);
 
       React.startTransition(() => {
         setAiResponse(res.data.data);
         setReturnOrFullRetakeState(true);
       });
-    } 
-    catch (err) {
+    } catch (err) {
       setError(err.message || "Failed to generate summary");
       console.error("Error generating summary:", err);
     } finally {
@@ -412,16 +375,12 @@ const StartInterviewPage = () => {
     }
   };
 
-
-
-
   // Handle full retake
   const handleFullRetaake = async () => {
     if (
       (!ongoingQuestion || !ongoingQuestion.questionBank_id) &&
       !history.current.length
-    ) 
-    {
+    ) {
       setError(
         "No ongoing question, questionBank_id, or history available for full retake"
       );
@@ -498,9 +457,7 @@ const StartInterviewPage = () => {
     }
   };
 
-
-
-  // Handle return to interview 
+  // Handle return to interview
   const handleReturnInterview = () => {
     if (isProcessingRef.current) {
       console.log("Skipping handleReturnInterview: already processing");
@@ -509,12 +466,9 @@ const StartInterviewPage = () => {
     isProcessingRef.current = true;
 
     console.log("handleReturnInterview called");
-    navigate(`/userDashboard/mockInterview/${interviewId}`);
+    navigate(`/userDashboard/mockInterview`);
     isProcessingRef.current = false;
   };
-
-
-
 
   // Handle go back to dashboard for history state
   const handleGoBack = () => {
@@ -525,47 +479,28 @@ const StartInterviewPage = () => {
     isProcessingRef.current = true;
 
     console.log("handleGoBack called");
-    navigate("/userDashboard");
+    navigate("/userDashboard/mockInterview");
     isProcessingRef.current = false;
   };
 
-
-
-
-  // Define onClick handlers with conditional logic
+  // Define onClick handlers
   const handleContinueClick = () => {
-
     if (summeryState && returnOrFullRetakeState) {
-      setAiResponse(null);
       handleReturnInterview();
-    } 
-    else if (summeryState)
-    {
-      setAiResponse(null);
+    } else if (summeryState) {
       handleSummaryGenaration();
-    }
-    else {
-      setAiResponse(null);
+    } else {
       handleContinue();
     }
-
   };
-
-
 
   const handleRetakeClick = () => {
-
     if (summeryState && returnOrFullRetakeState) {
-      setAiResponse(null);
       handleFullRetaake();
     } else {
-      setAiResponse(null);
       handleRetake();
     }
-
   };
-
-
 
   // Ref callback for VideoController
   const videoControllerRefCallback = (node) => {
@@ -577,7 +512,7 @@ const StartInterviewPage = () => {
   };
 
   // Debug render
-  console.log("Render with states: here=============>>>>>>>>>>>>>>>", {
+  console.log("Render with states:", {
     isVideoState,
     summeryState,
     currentQuestionIndex,
@@ -619,7 +554,6 @@ const StartInterviewPage = () => {
               aiResponse={aiResponse}
               error={error}
               videoControllerRefCallback={videoControllerRefCallback}
-              handleVideoAnalysisComplete={handleVideoAnalysisComplete}
               isProcessingRef={isProcessingRef}
               setAiResponse={setAiResponse}
             />

@@ -3,12 +3,15 @@ import behaviorIcon from "../../../assets/logos/Frame 5.png";
 import problemSolvingIcon from "../../../assets/logos/problemSolving.png";
 
 
-const AssessmentDisplay = ({ assessment, currentQuestionIndex,question,isSummary }) => {
+const AssessmentDisplay = ({ response, currentQuestionIndex }) => {
+  const assessment= response?.assessment;
+  const isSummary = response?.isSummary;
+
     if (!assessment) {
       return <p>No assessment data available</p>;
     }
 
-    console.log("AI RESPONSE :::::: ",assessment, currentQuestionIndex, question);
+    console.log("AI RESPONSE AssessmentDisplay ::::::>>>>>>> ",assessment, currentQuestionIndex);
   
     return (
       <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -23,10 +26,9 @@ const AssessmentDisplay = ({ assessment, currentQuestionIndex,question,isSummary
         :
         (
           <div>
-            <h4 className="text-2xl font-medium mb-4">
-            <h2>Question: {question}</h2>
+            <div className="text-2xl font-medium mb-4">
               Question {currentQuestionIndex + 1} Feedback
-            </h4>
+            </div>
           </div>
         )}
   

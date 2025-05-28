@@ -14,8 +14,7 @@ const AiResponseDisplay = ({ response, currentQuestionIndex }) => {
     return (
       <div className="text-left bg-gray-100 p-4 rounded">
         <AssessmentDisplay
-          assessment={response.assessment }
-          question = {response.qid}
+          response={response}
           currentQuestionIndex={currentQuestionIndex}
         />
       </div>
