@@ -108,7 +108,8 @@ const Insights = () => {
   const {
     totalInterviews,
     totalAverage,
-    weeklyPercentageChanges,
+    // weeklyPercentageChanges,
+    differenceBetweenTotalAndWithoutLast,
     weeklyAverages,
   } = data;
 
@@ -120,12 +121,16 @@ const Insights = () => {
     { label: "Problem Solving", key: "Problem_Solving" },
   ];
 
-  const chartData = Object.entries(weeklyAverages).map(([week, scores]) => {
-    const avg =
-      Object.values(scores).reduce((a, b) => a + b, 0) /
-      Object.values(scores).length;
-    return { week, avg };
-  });
+  // const chartData = Object.entries(weeklyAverages).map(([week, scores]) => {
+  //   const avg =
+  //     Object.values(scores).reduce((a, b) => a + b, 0) /
+  //     Object.values(scores).length;
+  //   return { week, avg };
+  // });
+  const chartData = data.weeklyOverallAverages.map(({ date, average }) => ({
+    week: date,
+    avg: average,
+  }));
 
   return (
     <div className="p-6 text-black">
@@ -202,7 +207,8 @@ const Insights = () => {
       <div className="flex flex-wrap justify-center gap-6">
         {metrics.map((metric) => {
           const score = totalAverage[metric.key] || 0;
-          const change = weeklyPercentageChanges["Week 2"]?.[metric.key] ?? 0;
+          // 
+          const diff = differenceBetweenTotalAndWithoutLast?.[metric.key] ?? 0;
 
           return (
             <div
@@ -238,13 +244,21 @@ const Insights = () => {
                   }}
                 />
               </div>
-              <p
+              {/* <p
                 className={`mt-2 text-sm font-medium text-right ${
                   change >= 0 ? "text-[#34C759]" : "text-[#FF3B30]"
                 }`}
               >
                 {change >= 0 ? "+" : ""}
                 {change}%
+              </p> */}
+              <p
+                className={`mt-2 text-sm font-medium text-right ${
+                  diff >= 0 ? "text-[#34C759]" : "text-[#FF3B30]"
+                }`}
+              >
+                {diff >= 0 ? "+" : ""}
+                {diff.toFixed(2)}%
               </p>
             </div>
           );

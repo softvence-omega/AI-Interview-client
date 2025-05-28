@@ -22,6 +22,7 @@ import PaymentStatus from "../pages/planpage/payment/PaymentStatus";
 import Insights from "../pages/userPages/insights/Insights";
 import MyJobs from "../pages/userPages/myJobs/MyJobs";
 import JobDetails from "../pages/userPages/myJobs/JobDetails";
+import Dashboard from "../pages/adminPages/dashboard/Dashboard";
 
 const Router = () => {
   return (
@@ -59,6 +60,7 @@ const Router = () => {
         <Route path="incites" element={<Insights />} />
         <Route path="myJobs" element={<MyJobs />} />
         <Route path="job-details/:jobId" element={<JobDetails />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
   );

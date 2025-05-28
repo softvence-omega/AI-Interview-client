@@ -196,7 +196,7 @@ const Experience = () => {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/v1/resume/update-resume`,
-        { experiences: dataToSubmit },
+        { experience: dataToSubmit },
         {
           headers: {
             Authorization: `${token}`,

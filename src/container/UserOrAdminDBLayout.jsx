@@ -14,7 +14,7 @@ const UserOrAdminDBLayout = () => {
   const userData = user?.userData; // Safely access userData
   const userMeta = user?.userMeta; // Corrected to user?.meta
   const userType = user?.userData?.role; // Safely access role
-  console.log("user********************", user,"meta*********", userMeta);
+  console.log("user********************", user, "meta*********", userMeta);
 
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
@@ -45,6 +45,11 @@ const UserOrAdminDBLayout = () => {
   ];
 
   const adminRoutes = [
+    {
+      name: "Dashboard",
+      logo: null,
+      to: "dashboard",
+    },
     {
       name: "Mock Interviews",
       logo: null,
@@ -105,8 +110,13 @@ const UserOrAdminDBLayout = () => {
       if (userType !== "admin" && userMeta) {
         const completedSteps = userMeta;
 
-        if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
-          console.log("Redirecting to /resume-upload due to isResumeUploaded=false");
+        if (
+          !completedSteps.isResumeUploaded &&
+          currentPath !== "/resume-upload"
+        ) {
+          console.log(
+            "Redirecting to /resume-upload due to isResumeUploaded=false"
+          );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/resume-upload");
           return; // Exit early after redirect
@@ -114,7 +124,9 @@ const UserOrAdminDBLayout = () => {
           !completedSteps.isAboutMeGenerated &&
           currentPath !== "/generateAboutMe"
         ) {
-          console.log("Redirecting to /generateAboutMe due to isAboutMeGenerated=false");
+          console.log(
+            "Redirecting to /generateAboutMe due to isAboutMeGenerated=false"
+          );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/generateAboutMe");
           return; // Exit early after redirect
@@ -122,7 +134,9 @@ const UserOrAdminDBLayout = () => {
           !completedSteps.isAboutMeVideoChecked &&
           currentPath !== "/generateAboutMe"
         ) {
-          console.log("Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false");
+          console.log(
+            "Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false"
+          );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/generateAboutMe");
           return; // Exit early after redirect
@@ -138,16 +152,19 @@ const UserOrAdminDBLayout = () => {
 
       if (!isCurrentRouteValid) {
         const firstRoute = routes[0];
-        console.log(`Performing initial redirect to: /userDashboard/${firstRoute.to}`);
+        console.log(
+          `Performing initial redirect to: /userDashboard/${firstRoute.to}`
+        );
         localStorage.setItem("hasRedirected", "true"); // Set the flag
         navigate(`/userDashboard/${firstRoute.to}`);
       } else {
         // If the current route is valid, still set the flag to prevent future redirects
         localStorage.setItem("hasRedirected", "true");
-        console.log(`Current route ${currentPath} is valid, setting hasRedirected flag`);
+        console.log(
+          `Current route ${currentPath} is valid, setting hasRedirected flag`
+        );
       }
-    } 
-    else {
+    } else {
       console.log("Initial redirect already performed, skipping");
     }
   }, [userType, navigate, userMeta]); // Dependencies: userType, navigate, userMeta
@@ -180,29 +197,31 @@ const UserOrAdminDBLayout = () => {
 
           {/* Sidebar Header */}
           <Link to="/">
-          <div className="p-4 text-2xl font-bold border-b border-gray-300">
-            <img src={dbLogo} alt="logo not available" />
-          </div>
+            <div className="p-4 text-2xl font-bold border-b border-gray-300">
+              <img src={dbLogo} alt="logo not available" />
+            </div>
           </Link>
 
           {/* Navigation Links */}
           <nav className="flex-1 p-4 space-y-2">
-            {(userType === "admin" ? adminRoutes : userRoutes).map((route, index) => (
-              <button
-                key={index}
-                onClick={() => handleNavigation(route.to)}
-                className={`w-full text-left py-2 px-4 rounded transition ${
-                  location.pathname === `/userDashboard/${route.to}`
-                    ? "bg-[#3A4C67] text-white"
-                    : "hover:bg-[#3A4C67] hover:text-white text-[#676768]"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  {route.logo || null}
-                  <h2>{route.name}</h2>
-                </div>
-              </button>
-            ))}
+            {(userType === "admin" ? adminRoutes : userRoutes).map(
+              (route, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleNavigation(route.to)}
+                  className={`w-full text-left py-2 px-4 rounded transition ${
+                    location.pathname === `/userDashboard/${route.to}`
+                      ? "bg-[#3A4C67] text-white"
+                      : "hover:bg-[#3A4C67] hover:text-white text-[#676768]"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    {route.logo || null}
+                    <h2>{route.name}</h2>
+                  </div>
+                </button>
+              )
+            )}
           </nav>
 
           {/* Logout Button */}
@@ -211,7 +230,7 @@ const UserOrAdminDBLayout = () => {
               onClick={handleLogout}
               className="w-full text-left py-2 px-4 rounded transition"
             >
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-4 items-center cursor-pointer">
                 <span className="text-red-600">
                   <RiLogoutBoxLine />
                 </span>
@@ -234,7 +253,10 @@ const UserOrAdminDBLayout = () => {
             <div className="flex items-center space-x-2">
               <div className="w-16 h-16 rounded-[8px]">
                 <img
-                  src={userData?.profilePicture || "https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-male-user-profile-vector-illustration-isolated-background-man-profile-sign-business-concept_157943-38764.jpg"}
+                  src={
+                    userData?.profilePicture ||
+                    "https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-male-user-profile-vector-illustration-isolated-background-man-profile-sign-business-concept_157943-38764.jpg"
+                  }
                   alt="User Profile"
                   className="w-full h-full rounded-[8px]"
                 />
