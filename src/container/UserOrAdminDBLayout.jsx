@@ -222,17 +222,23 @@ const UserOrAdminDBLayout = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
+        <div className="max-w-full mx-auto flex-1 flex flex-col">
           {/* Header with Toggle Button */}
           <div className="bg-white p-4 shadow flex justify-between items-center">
             <button
               onClick={toggleSidebar}
-              className="lg:hidden text-[#37B874] focus:outline-none"
+              className="lg:hidden text-[#37B874] focus:outline-none text-4xl"
             >
               ☰
             </button>
             <div className="flex items-center space-x-2">
-              <div className="w-12 h-12 bg-gray-300 rounded-[8px]"></div>
+              <div className="w-16 h-16 rounded-[8px]">
+                <img
+                  src={userData?.profilePicture || "https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-male-user-profile-vector-illustration-isolated-background-man-profile-sign-business-concept_157943-38764.jpg"}
+                  alt="User Profile"
+                  className="w-full h-full rounded-[8px]"
+                />
+              </div>
               <div className="text-gray-600">
                 <h2 className="text-[#676768]">Welcome Back</h2>
                 <h2 className="text-[20px] font-medium">

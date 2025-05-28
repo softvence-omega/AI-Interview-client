@@ -19,6 +19,9 @@ import QuestionBankDetail from "../pages/userPages/mockInterview/QuestionBankDet
 import StartInterviewPage from "../pages/userPages/mockInterview/StartInterviewPage";
 import HelpCenter from "../pages/helpCenter/HelpCenter";
 import PaymentStatus from "../pages/planpage/payment/PaymentStatus";
+import Insights from "../pages/userPages/insights/Insights";
+import MyJobs from "../pages/userPages/myJobs/MyJobs";
+import JobDetails from "../pages/userPages/myJobs/JobDetails";
 
 const Router = () => {
   return (
@@ -53,6 +56,9 @@ const Router = () => {
           path="mockInterview/startInterview"
           element={<StartInterviewPage />}
         />
+        <Route path="incites" element={<Insights />} />
+        <Route path="myJobs" element={<MyJobs />} />
+        <Route path="job-details/:jobId" element={<JobDetails />} />
       </Route>
     </Routes>
   );
