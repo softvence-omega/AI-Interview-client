@@ -3,6 +3,7 @@ import RecordRTC from "recordrtc";
 import { useAuth } from "../../../context/AuthProvider";
 
 const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisComplete,isProcessingRef,setAiResponse,aiResponse }, ref) => {
+
   const { user } = useAuth();
   const AuthorizationToken = user?.approvalToken;
   const [countdown, setCountdown] = useState(3);
@@ -10,7 +11,6 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
   const [isRecording, setIsRecording] = useState(false);
   const [hasRecorded, setHasRecorded] = useState(false);
   const [videoBlob, setVideoBlob] = useState(null);
-  // const [aiResponse, setAiResponse] = useState(null);
   const [processing, setProcessing] = useState(false);
 
 
@@ -67,15 +67,6 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
   }, [isVideoState, isRecording]);
 
 
-
-
-  // Show preview video when blob is ready
-  // useEffect(() => {
-  //   if (videoBlob && previewVideoRef.current) {
-  //     previewVideoRef.current.src = URL.createObjectURL(videoBlob);
-  //   }
-  // }, [videoBlob]);
-
   // Reset state on new question
   useEffect(() => {
     setCountdown(3);
@@ -95,10 +86,12 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
 
   const startRecording = async () => {
     try {
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         // Attempt to record in MP4 if supported, fallback to WebM
@@ -111,11 +104,15 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
         });
         recorderRef.current.startRecording();
         setIsRecording(true);
-      } else {
+      } 
+      else 
+      {
         console.error("Video element is not available");
         stream.getTracks().forEach((track) => track.stop());
       }
-    } catch (error) {
+    } 
+    catch (error)
+    {
       console.error("Error starting recording:", error);
     }
   };
@@ -177,6 +174,8 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
       const formData = new FormData();
       const fileExtension = videoBlob.type.includes("mp4") ? "mp4" : "webm";
       const file = new File([videoBlob], `recording.${fileExtension}`, { type: videoBlob.type });
+
+
       formData.append("file", file);
       formData.append("qid", question._id); // String, as per backend update
       formData.append("interview_id", question.interview_id); // String
@@ -196,7 +195,9 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
       });
 
       console.log("Sending request to:", API_URL);
-      console.log("data is being sent ****************:", formData);
+
+      // console.log("data is being sent ****************:", formData);
+      
       isProcessingRef.current=true
       fetch(API_URL, {
         method: "POST",
@@ -216,7 +217,7 @@ const VideoController = forwardRef(({ question, isVideoState,  onVideoAnalysisCo
           return response.json();
         })
         .then((data) => {
-          console.log("API Response Data:", data);
+          console.log("API Response Data:************************set AI", data);
           setAiResponse(data);
           setProcessing(false);
           isProcessingRef.current=false
