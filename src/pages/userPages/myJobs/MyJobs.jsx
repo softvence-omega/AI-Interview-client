@@ -246,7 +246,7 @@ const JobList = () => {
               <p className="mb-2 text-[#AFAFAF]">{job.company}</p>
               <p className="flex items-center gap-2 text-[#3A4C67] mb-4">
                 <FaLocationDot className="bg-[#3A4C67] text-white p-[4px] rounded-full w-6 h-6" />
-                <span className="text-sm text-[#676768]">{job.location}</span>
+                <span className="text-sm text-[#676768]">{job.location ? job.location : "Remote"}</span>
               </p>
               <p
                 className={`w-26 text-center text-sm font-medium mb-2 rounded-lg p-2 ${
