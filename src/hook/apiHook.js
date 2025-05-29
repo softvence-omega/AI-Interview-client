@@ -5,18 +5,24 @@ const useApi = () => {
 
   const request = async ({ endpoint, method = "GET", body = null, headers = {} }) => {
     const url = `${baseUrl}${endpoint}`;
-    console.log("bamboo url",endpoint)
+    console.log("bamboo url", endpoint);
 
     try {
-      const response = await axios({
+      const config = {
         url,
         method,
-        data: body,
         headers: {
-          "Content-Type": "application/json",
           ...headers,
         },
-      });
+      };
+
+      // Only add Content-Type if there's a body
+      if (body) {
+        config.data = body;
+        config.headers["Content-Type"] = "application/json";
+      }
+
+      const response = await axios(config);
 
       return {
         status: response.status,

@@ -23,6 +23,9 @@ import Insights from "../pages/userPages/insights/Insights";
 import MyJobs from "../pages/userPages/myJobs/MyJobs";
 import JobDetails from "../pages/userPages/myJobs/JobDetails";
 import Dashboard from "../pages/adminPages/dashboard/Dashboard";
+import GenerateAboutMe from "../pages/genarateAboutMe/genarateAboutMe";
+import AboutMeVideoTest from "../pages/aboutMeVidioTest/AboutMeVideoTest";
+import Settings from "../pages/userPages/settings/Settings";
 import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentManagement";
 import UserManagement from "../pages/adminPages/userManagement/UserManagement";
 
@@ -41,6 +44,8 @@ const Router = () => {
         <Route path="/signup" element={<LoginOrSignup />} />
         <Route path="/otp-crosscheck" element={<OtpCrossCheck />} />
         <Route path="/resume-upload" element={<ResumeUpload />} />
+        <Route path="/generateAboutMe" element={<GenerateAboutMe />} />
+        <Route path="/takeAboutMeVideoTest" element={<AboutMeVideoTest />} />
         <Route path="/aboutMe" element={<AboutMe />} />
         <Route path="/experience" element={<Experience />} />
         <Route path="/certificates" element={<EducationCertificate />} />
@@ -63,6 +68,7 @@ const Router = () => {
         <Route path="myJobs" element={<MyJobs />} />
         <Route path="job-details/:jobId" element={<JobDetails />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
       </Route>

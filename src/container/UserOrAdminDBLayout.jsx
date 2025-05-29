@@ -113,27 +113,32 @@ const UserOrAdminDBLayout = () => {
         if (
           !completedSteps.isResumeUploaded &&
           currentPath !== "/resume-upload"
-        ) {
+        )
+        {
           console.log(
             "Redirecting to /resume-upload due to isResumeUploaded=false"
           );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/resume-upload");
           return; // Exit early after redirect
-        } else if (
+        } 
+        else if (
           !completedSteps.isAboutMeGenerated &&
           currentPath !== "/generateAboutMe"
-        ) {
+        ) 
+        {
           console.log(
             "Redirecting to /generateAboutMe due to isAboutMeGenerated=false"
           );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/generateAboutMe");
           return; // Exit early after redirect
-        } else if (
+        }
+        else if (
           !completedSteps.isAboutMeVideoChecked &&
           currentPath !== "/generateAboutMe"
-        ) {
+        )
+        {
           console.log(
             "Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false"
           );

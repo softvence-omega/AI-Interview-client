@@ -7,7 +7,7 @@ const AssessmentDisplay = ({ response, currentQuestionIndex }) => {
   const assessment= response?.assessment;
   const isSummary = response?.isSummary;
 
-    if (!assessment) {
+    if (!assessment) {  
       return <p>No assessment data available</p>;
     }
 
@@ -27,7 +27,10 @@ const AssessmentDisplay = ({ response, currentQuestionIndex }) => {
         (
           <div>
             <div className="text-2xl font-medium mb-4">
-              Question {currentQuestionIndex + 1} Feedback
+              {
+                currentQuestionIndex === "About Me"?currentQuestionIndex:`Question ${currentQuestionIndex + 1} Feedback`
+              }
+              
             </div>
           </div>
         )}
