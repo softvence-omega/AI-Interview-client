@@ -8,6 +8,7 @@ import { MdOutlineBusinessCenter } from "react-icons/md";
 import { MdOutlineInsights } from "react-icons/md";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
+import Notification from "../pages/userPages/notifications/Notification";
 
 const UserOrAdminDBLayout = () => {
   const { user, logout } = useAuth();
@@ -53,7 +54,7 @@ const UserOrAdminDBLayout = () => {
     {
       name: "Content Management",
       logo: null,
-      to: "createInterview",
+      to: "content_management",
     },
     {
       name: "User Management",
@@ -113,32 +114,27 @@ const UserOrAdminDBLayout = () => {
         if (
           !completedSteps.isResumeUploaded &&
           currentPath !== "/resume-upload"
-        )
-        {
+        ) {
           console.log(
             "Redirecting to /resume-upload due to isResumeUploaded=false"
           );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/resume-upload");
           return; // Exit early after redirect
-        } 
-        else if (
+        } else if (
           !completedSteps.isAboutMeGenerated &&
           currentPath !== "/generateAboutMe"
-        ) 
-        {
+        ) {
           console.log(
             "Redirecting to /generateAboutMe due to isAboutMeGenerated=false"
           );
           localStorage.setItem("hasRedirected", "true"); // Set the flag
           navigate("/generateAboutMe");
           return; // Exit early after redirect
-        }
-        else if (
+        } else if (
           !completedSteps.isAboutMeVideoChecked &&
           currentPath !== "/generateAboutMe"
-        )
-        {
+        ) {
           console.log(
             "Redirecting to /generateAboutMe due to isAboutMeVideoChecked=false"
           );
@@ -255,23 +251,28 @@ const UserOrAdminDBLayout = () => {
             >
               ☰
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-16 h-16 rounded-[8px]">
-                <img
-                  src={
-                    userData?.profilePicture ||
-                    "https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-male-user-profile-vector-illustration-isolated-background-man-profile-sign-business-concept_157943-38764.jpg"
-                  }
-                  alt="User Profile"
-                  className="w-full h-full rounded-[8px]"
-                />
+
+            <div className="flex items-center w-full justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-16 h-16 rounded-[8px]">
+                  <img
+                    src={
+                      userData?.profilePicture ||
+                      "https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-male-user-profile-vector-illustration-isolated-background-man-profile-sign-business-concept_157943-38764.jpg"
+                    }
+                    alt="User Profile"
+                    className="w-full h-full rounded-[8px]"
+                  />
+                </div>
+                <div className="text-gray-600">
+                  <h2 className="text-[#676768]">Welcome Back</h2>
+                  <h2 className="text-[20px] font-medium">
+                    {userData?.name?.toUpperCase() || "Guest"}
+                  </h2>
+                </div>
               </div>
-              <div className="text-gray-600">
-                <h2 className="text-[#676768]">Welcome Back</h2>
-                <h2 className="text-[20px] font-medium">
-                  {userData?.name?.toUpperCase() || "Guest"}
-                </h2>
-              </div>
+
+              {userType === "user" && <Notification />}
             </div>
           </div>
 
