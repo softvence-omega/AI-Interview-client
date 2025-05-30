@@ -28,6 +28,8 @@ import AboutMeVideoTest from "../pages/aboutMeVidioTest/AboutMeVideoTest";
 import Settings from "../pages/userPages/settings/Settings";
 import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentManagement";
 import UserManagement from "../pages/adminPages/userManagement/UserManagement";
+import NotificationList from "../pages/userPages/notifications/NotificationList"; 
+import ContentManagement from "../pages/adminPages/ContentManajment/ContentManagement";
 
 const Router = () => {
   return (
@@ -65,12 +67,17 @@ const Router = () => {
           element={<StartInterviewPage />}
         />
         <Route path="incites" element={<Insights />} />
+        <Route path="notificationList" element={<NotificationList />} />
         <Route path="myJobs" element={<MyJobs />} />
         <Route path="job-details/:jobId" element={<JobDetails />} />
+
+
+        //admin routes
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
+        <Route path="content_management" element={<ContentManagement />} />
       </Route>
     </Routes>
   );
