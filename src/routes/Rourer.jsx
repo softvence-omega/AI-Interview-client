@@ -28,6 +28,7 @@ import AboutMeVideoTest from "../pages/aboutMeVidioTest/AboutMeVideoTest";
 import Settings from "../pages/userPages/settings/Settings";
 import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentManagement";
 import UserManagement from "../pages/adminPages/userManagement/UserManagement";
+import UserDetailsManagement from "../pages/adminPages/userManagement/UserDetailsManagement";
 
 const Router = () => {
   return (
@@ -71,6 +72,7 @@ const Router = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
+        <Route path="user-details/:userId" element={<UserDetailsManagement />} />
       </Route>
     </Routes>
   );

@@ -1,63 +1,112 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { ChevronDown, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { useAuth } from "../../../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const UserManagement = () => {
-  const { user } = useAuth(); // Destructure user from useAuth
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openMenuUserId, setOpenMenuUserId] = useState(null);
+  const menuRefs = useRef({}); // Store refs for each user's dropdown
+  const navigate = useNavigate();
 
-  // Fetch all users and profiles
+  const handleUserAction = async (userId, field, value) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/v1/users/update-user/${userId}`,
+        { [field]: value },
+        {
+          headers: {
+            Authorization: `${user?.approvalToken}`,
+          },
+        }
+      );
+      alert(
+        `${
+          field === "isDeleted"
+            ? "User deleted"
+            : value
+            ? "User suspended"
+            : "User activated"
+        } successfully`
+      );
+      fetchData(); // Refresh data
+      setOpenMenuUserId(null); // Close dropdown
+    } catch (err) {
+      console.error("Failed to update user:", err);
+      alert("Failed to update user");
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check all menu refs to see if the click was outside any dropdown
+      let clickedOutside = true;
+      Object.values(menuRefs.current).forEach((ref) => {
+        if (ref && ref.contains(event.target)) {
+          clickedOutside = false;
+        }
+      });
+
+      if (clickedOutside) {
+        setOpenMenuUserId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleUserClick = (userId) => {
+    navigate(`/userDashboard/user-details/${userId}`);
+  };
+
   const fetchData = async () => {
     try {
-      // Fetch all users
-      const userRes = await axios.get("http://localhost:5000/api/v1/users/getAlluser", {
-        headers: {
-          Authorization: `${user?.approvalToken}`,
-        },
-      });
-      console.log("Raw users response:", userRes.data); // Log raw user API response
+      const userRes = await axios.get(
+        "http://localhost:5000/api/v1/users/getAlluser",
+        {
+          headers: {
+            Authorization: `${user?.approvalToken}`,
+          },
+        }
+      );
+      console.log("Raw users response:", userRes.data);
 
-      // Fetch all profiles
       let profileRes;
       try {
-        profileRes = await axios.get("http://localhost:5000/api/v1/users/all-profiles", {
-        });
-        console.log("Raw profiles response:", profileRes.data); // Log raw profiles API response
+        profileRes = await axios.get(
+          "http://localhost:5000/api/v1/users/all-profiles",
+          {}
+        );
+        console.log("Raw profiles response:", profileRes.data);
       } catch (err) {
         console.error("Error fetching profiles:", err.response || err.message);
-        profileRes = { data: { data: [] } }; // Fallback to empty profiles
+        profileRes = { data: { data: [] } };
       }
 
-      // Filter users who are not deleted
       const filteredUsers = (userRes.data?.data || []).filter(
-        (user) => user.isDeleted === false
+        (user) => user.isDeleted === false && user.role === "user"
       );
       console.log("Filtered users (non-deleted):", filteredUsers);
 
-      // Create a map of profiles by user_id for efficient lookup
       const profileMap = new Map(
-        (profileRes.data?.data || []).map((profile) => {
-          console.log("Profile entry:", profile); // Log each profile
-          return [profile.user_id, profile]; // Match profile.user_id to user._id
-        })
+        (profileRes.data?.data || []).map((profile) => [
+          profile.user_id,
+          profile,
+        ])
       );
       console.log("Profile map:", Array.from(profileMap.entries()));
 
-      // Merge users with their profiles
-      const usersWithProfiles = filteredUsers.map((user) => {
-        const matchedProfile = profileMap.get(user._id);
-        if (!matchedProfile) {
-          console.warn(`No profile found for user _id: ${user._id}`);
-        }
-        return {
-          ...user,
-          profile: matchedProfile || null,
-        };
-      });
+      const usersWithProfiles = filteredUsers.map((user) => ({
+        ...user,
+        profile: profileMap.get(user._id) || null,
+      }));
       console.log("Merged users with profiles:", usersWithProfiles);
 
       setUsers(usersWithProfiles);
@@ -89,16 +138,9 @@ const UserManagement = () => {
           </h1>
           <p className="lg:w-[62%] text-[#676768] text-[15px] md:text-[17px] lg:text-[18px] font-normal">
             This section allows you to manage all user accounts on the platform.
-            You can view their details, assign roles, and modify access levels as needed.
+            You can view their details, assign roles, and modify access levels
+            as needed.
           </p>
-        </div>
-        <div>
-          <Link
-            to="/"
-            className="btn border-none rounded-lg bg-[#37B874] text-white text-sm md:text-md lg:text-lg font-medium w-36 md:w-28 lg:w-42 h-10 md:h-10 lg:h-12 mt-6 lg:mt-0 md:mt-2"
-          >
-            Add User +
-          </Link>
         </div>
       </div>
 
@@ -112,7 +154,8 @@ const UserManagement = () => {
             {users.map((user) => (
               <div
                 key={user._id}
-                className="w-full mx-auto bg-white rounded-2xl shadow-sm p-4 grid grid-cols-8 justify-between items-start md:items-center gap-4"
+                onClick={() => handleUserClick(user._id)}
+                className="w-full mx-auto bg-white rounded-2xl shadow-sm p-4 flex flex-col md:grid md:grid-cols-6 md:justify-between md:items-center gap-4 lg:grid lg:grid-cols-8 lg:justify-between lg:items-center cursor-pointer transition hover:shadow-md"
               >
                 <div className="col-span-2 flex items-center gap-4 w-full md:w-auto">
                   <img
@@ -124,9 +167,16 @@ const UserManagement = () => {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="space-y-1">
-                    <h2 className="font-semibold text-gray-800 text-base md:text-lg">
-                      {user.name}
-                    </h2>
+                    <div className="space-y-1 flex items-center gap-2">
+                      <h2 className="font-semibold text-gray-800 text-base md:text-lg">
+                        {user.name}
+                      </h2>
+                      {user.isBlocked && (
+                        <span className="text-red-500 text-xs font-semibold border border-red-400 rounded px-2 py-0.5">
+                          Suspended
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -137,27 +187,79 @@ const UserManagement = () => {
                       {user.email}
                     </p>
                   </div>
-                  <div className="text-center">
+                  <div className="md:text-center lg:text-center">
                     <p className="text-sm text-gray-500">Current Plan</p>
                     <p className="text-sm font-medium text-gray-700">
                       {user.profile?.currentPlan || (
-                        <span title="Profile not found in database">No Profile</span>
+                        <span title="Profile not found in database">
+                          No Profile
+                        </span>
                       )}
                     </p>
                   </div>
                   <div className="flex justify-items-end items-center">
-                    <div className="flex items-end border rounded-full px-4 py-1 text-sm text-green-600 border-green-600 cursor-pointer w-fit">
+                    <div
+                      className={`flex items-end border rounded-full px-4 py-1 text-sm font-medium w-fit ${
+                        user.isLoggedIn
+                          ? "text-[#37B874] border-[#37B874]"
+                          : "text-red-500 border-red-500"
+                      }`}
+                    >
                       {user.isLoggedIn ? "Active" : "Inactive"}
-                      <ChevronDown className="w-12 h-4 ml-2" />
                     </div>
                   </div>
                 </div>
 
                 <div className="col-span-1 flex gap-3 w-full md:w-auto justify-end md:justify-start">
-                  <button className="bg-[#37B874] text-white rounded-md px-4 py-1 text-sm font-medium">
+                  <button className="bg-[#37B874] text-white rounded-md px-4 py-1 text-sm font-medium cursor-pointer">
                     Edit
                   </button>
-                  <MoreVertical className="cursor-pointer text-gray-500" />
+                  <div
+                    className="relative"
+                    ref={(el) => (menuRefs.current[user._id] = el)} // Assign ref for this user's dropdown
+                  >
+                    <MoreVertical
+                      className="cursor-pointer text-gray-500"
+                      onClick={(e) =>{
+                        e.stopPropagation();
+                        setOpenMenuUserId(
+                          openMenuUserId === user._id ? null : user._id
+                        )
+                      }
+                      }
+                    />
+                    {openMenuUserId === user._id && (
+                      <div className="absolute right-0 z-20 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() =>
+                            handleUserAction(user._id, "isDeleted", true)
+                          }
+                          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        >
+                          Delete User
+                        </button>
+                        {user.isBlocked ? (
+                          <button
+                            onClick={() =>
+                              handleUserAction(user._id, "isBlocked", false)
+                            }
+                            className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                          >
+                            Activate User
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() =>
+                              handleUserAction(user._id, "isBlocked", true)
+                            }
+                            className="block w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-gray-100"
+                          >
+                            Suspend User
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
