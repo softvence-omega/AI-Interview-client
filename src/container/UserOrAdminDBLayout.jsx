@@ -201,14 +201,14 @@ const UserOrAdminDBLayout = () => {
           </button>
 
           {/* Sidebar Header */}
-          <Link to="/">
-            <div className="p-4 text-2xl font-bold border-b border-gray-300">
+          <Link to="/" className="bg-white">
+            <div className="p-4 text-2xl font-bold border-b">
               <img src={dbLogo} alt="logo not available" />
             </div>
           </Link>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 bg-white">
             {(userType === "admin" ? adminRoutes : userRoutes).map(
               (route, index) => (
                 <button
@@ -230,7 +230,7 @@ const UserOrAdminDBLayout = () => {
           </nav>
 
           {/* Logout Button */}
-          <div className="p-4 border-t border-gray-300">
+          <div className="p-4 border-t bg-white">
             <button
               onClick={handleLogout}
               className="w-full text-left py-2 px-4 rounded transition"
