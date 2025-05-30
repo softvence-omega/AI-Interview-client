@@ -9,6 +9,7 @@ const CreateInterview = () => {
   const { user } = useAuth();
   const { request } = useApi();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     interview_name: '',
     description: '',
@@ -23,11 +24,8 @@ const CreateInterview = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Clean up preview URL when component unmounts or file changes
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
 
@@ -50,18 +48,14 @@ const CreateInterview = () => {
     } else {
       setFile(selectedFile);
       setErrors((prev) => ({ ...prev, file: '' }));
-      if (selectedFile) {
-        const url = URL.createObjectURL(selectedFile);
-        setPreviewUrl(url);
-      } else {
-        setPreviewUrl(null);
-      }
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
     }
   };
 
   const validateForm = () => {
-    let isValid = true;
     const newErrors = { interview_name: '', description: '', file: '' };
+    let isValid = true;
 
     if (!formData.interview_name.trim()) {
       newErrors.interview_name = 'Interview name is required.';
@@ -91,26 +85,20 @@ const CreateInterview = () => {
       return;
     }
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     const data = new FormData();
-    data.append('interview_name', formData.interview_name);
-    data.append('description', formData.description);
-    if (file) {
-      data.append('image', file); // Changed from 'file' to 'image'
-    }
-    if (user?.user_id) {
-      data.append('user_id', user.user_id);
-    }
+    const jsonData = {
+      interview_name: formData.interview_name,
+      description: formData.description,
+      user_id: user.user_id,
+    };
 
-    // Debug FormData contents
-    for (let [key, value] of data.entries()) {
-      console.log(`FormData: ${key} =`, value);
-    }
+    data.append('data', JSON.stringify(jsonData)); // Your backend expects this key
+    data.append('file', file); // Your backend expects this key
 
     setLoading(true);
+
     try {
       const res = await request({
         endpoint: '/interview/create_mock_interview',
@@ -118,7 +106,7 @@ const CreateInterview = () => {
         body: data,
         headers: {
           Authorization: user.approvalToken,
-          // Let FormData set Content-Type
+          // 'Content-Type' is not needed when sending FormData
         },
       });
 
@@ -128,15 +116,14 @@ const CreateInterview = () => {
         setFile(null);
         setPreviewUrl(null);
       } else {
-        console.log('API response:', res);
         toast.error(res.message || 'Failed to create interview.', {
-          description: res.data?.error || 'Check the form data and try again.',
+          description: res.data?.error || 'Check the form and try again.',
         });
       }
     } catch (err) {
       console.error('Create interview error:', err);
       toast.error('Error creating interview.', {
-        description: err.message || 'Network error.',
+        description: err.message || 'Something went wrong.',
       });
     } finally {
       setLoading(false);
@@ -148,7 +135,7 @@ const CreateInterview = () => {
       <h2 className="text-2xl font-bold mb-6 text-center text-black">Create Interview</h2>
       <div className="p-6 rounded-lg shadow-md bg-white">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* File Upload and Preview */}
+          {/* Image Upload */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
@@ -183,7 +170,7 @@ const CreateInterview = () => {
             <input
               type="text"
               name="interview_name"
-              value={formData.interview_name ?? ''}
+              value={formData.interview_name}
               onChange={handleInputChange}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B874]"
               placeholder="e.g., Software Developer 5x"
@@ -198,7 +185,7 @@ const CreateInterview = () => {
             <label className="block text-gray-700 font-medium">Description</label>
             <textarea
               name="description"
-              value={formData.description ?? ''}
+              value={formData.description}
               onChange={handleInputChange}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B874]"
               placeholder="e.g., A mock interview for software developer candidates."
@@ -216,7 +203,7 @@ const CreateInterview = () => {
               disabled={loading}
               className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-[#37B874] rounded-lg hover:bg-[#2e9b64] transition-colors disabled:opacity-50"
             >
-              {loading ? <LoaderCircle className="animate-spin w-4 h-4" /> : null}
+              {loading && <LoaderCircle className="animate-spin w-4 h-4" />}
               Create Interview
             </button>
           </div>
