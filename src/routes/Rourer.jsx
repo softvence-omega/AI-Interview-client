@@ -30,6 +30,7 @@ import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentMana
 import UserManagement from "../pages/adminPages/userManagement/UserManagement";
 import NotificationList from "../pages/userPages/notifications/NotificationList"; 
 import ContentManagement from "../pages/adminPages/ContentManajment/ContentManagement";
+import UserDetailsManagement from "../pages/adminPages/userManagement/UserDetailsManagement";
 
 const Router = () => {
   return (
@@ -78,6 +79,7 @@ const Router = () => {
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
         <Route path="content_management" element={<ContentManagement />} />
+        <Route path="user-details/:userId" element={<UserDetailsManagement />} />
       </Route>
     </Routes>
   );
