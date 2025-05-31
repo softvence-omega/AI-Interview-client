@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';
 import useApi from '../../../hook/apiHook';
 
-const CreateInterview = () => {
+const CreateInterview = ({setInterviwUploadReload}) => {
   const { user } = useAuth();
   const { request } = useApi();
   const navigate = useNavigate();
@@ -115,6 +115,7 @@ const CreateInterview = () => {
         setFormData({ interview_name: '', description: '' });
         setFile(null);
         setPreviewUrl(null);
+        setInterviwUploadReload(true)
       } else {
         toast.error(res.message || 'Failed to create interview.', {
           description: res.data?.error || 'Check the form and try again.',
@@ -197,7 +198,7 @@ const CreateInterview = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="text-center">
+          <div className="text-center w-full flex justify-center items-center">
             <button
               type="submit"
               disabled={loading}

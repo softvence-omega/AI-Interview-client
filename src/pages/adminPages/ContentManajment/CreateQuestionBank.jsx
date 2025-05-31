@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react'; // Add useRef
+import React, { useState, useEffect, useRef } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';
 import useApi from '../../../hook/apiHook';
 
-const CreateQuestionBank = () => {
+const CreateQuestionBank = ({ interviewUploadReload, setInterviwUploadReload }) => {
   const { user } = useAuth();
   const { request } = useApi();
   const navigate = useNavigate();
-  const fileInputRef = useRef(null); // Create a ref for the file input
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     interview_id: '',
@@ -18,8 +18,9 @@ const CreateQuestionBank = () => {
     difficulty_level: 'Intermediate',
     question_Type: 'Multiple Choice',
     description: '',
-    what_to_exhibit: '',
+    what_to_expect: [], // Store as array
   });
+  const [whatToExpectInput, setWhatToExpectInput] = useState(''); // Store raw input string
   const [file, setFile] = useState(null);
   const [previewUrlQB, setPreviewUrlQB] = useState(null);
   const [errors, setErrors] = useState({
@@ -29,7 +30,7 @@ const CreateQuestionBank = () => {
     difficulty_level: '',
     question_Type: '',
     description: '',
-    what_to_exhibit: '',
+    what_to_expect: '',
     file: '',
   });
   const [loading, setLoading] = useState(false);
@@ -61,10 +62,11 @@ const CreateQuestionBank = () => {
 
     if (user?.approvalToken) {
       fetchInterviews();
+      setInterviwUploadReload(false);
     } else {
       setFetchingInterviews(false);
     }
-  }, [user?.approvalToken]);
+  }, [user?.approvalToken, interviewUploadReload, setInterviwUploadReload]);
 
   // Clean up preview URL
   useEffect(() => {
@@ -77,7 +79,19 @@ const CreateQuestionBank = () => {
 
   const handleInputChangeQB = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value ?? '' }));
+    if (name === 'what_to_expect') {
+      // Update raw input string
+      setWhatToExpectInput(value);
+      // Convert to array for formData
+      const valueArray = value
+        .split(',')
+        .map((item) => item.trim().toLowerCase())
+        .filter((item) => item);
+      setFormData((prev) => ({ ...prev, [name]: valueArray }));
+      console.log('what_to_expect array:', valueArray); // Debugging
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value ?? '' }));
+    }
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -108,7 +122,7 @@ const CreateQuestionBank = () => {
       difficulty_level: '',
       question_Type: '',
       description: '',
-      what_to_exhibit: '',
+      what_to_expect: '',
       file: '',
     };
 
@@ -137,8 +151,8 @@ const CreateQuestionBank = () => {
       newErrors.description = 'Description is required.';
       isValid = false;
     }
-    if (!formData.what_to_exhibit.trim()) {
-      newErrors.what_to_exhibit = 'What to expect is required.';
+    if (!formData.what_to_expect.length) {
+      newErrors.what_to_expect = 'At least one item is required in What to Expect.';
       isValid = false;
     }
     if (!file) {
@@ -171,10 +185,7 @@ const CreateQuestionBank = () => {
       difficulty_level: formData.difficulty_level,
       question_Type: formData.question_Type,
       description: formData.description,
-      what_to_exhibit: formData.what_to_exhibit
-        .split(',')
-        .map((item) => item.trim())
-        .filter((item) => item),
+      what_to_expect: formData.what_to_expect, // Send as array
     };
     data.append('data', JSON.stringify(jsonData));
     if (file) {
@@ -201,8 +212,9 @@ const CreateQuestionBank = () => {
           difficulty_level: 'Intermediate',
           question_Type: 'Multiple Choice',
           description: '',
-          what_to_exhibit: '',
+          what_to_expect: [], // Reset to empty array
         });
+        setWhatToExpectInput(''); // Reset input string
         setFile(null);
         setPreviewUrlQB(null);
       } else {
@@ -223,15 +235,15 @@ const CreateQuestionBank = () => {
 
   return (
     <div className="w-full max-w-[1444px] mx-auto mt-20 mb-20 p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center text-black">Create Question Bank</h2>
-      <div className="p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-black">Create Position</h2>
+      <div className="p-6 rounded-lg shadow-md bg-white">
         <form onSubmit={handleSubmitQB} className="space-y-4">
           {/* Image File */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
               className="w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
-              onClick={() => fileInputRef.current.click()} // Use ref instead of getElementById
+              onClick={() => fileInputRef.current.click()}
             >
               {previewUrlQB ? (
                 <img
@@ -243,7 +255,7 @@ const CreateQuestionBank = () => {
                 <span className="text-gray-500">Click to upload image</span>
               )}
               <input
-                ref={fileInputRef} // Attach ref
+                ref={fileInputRef}
                 type="file"
                 accept="image/jpeg,image/png"
                 onChange={handleFileChangeQB}
@@ -282,7 +294,7 @@ const CreateQuestionBank = () => {
 
           {/* Question Bank Name */}
           <div>
-            <label className="block text-gray-700 font-medium">Question Bank Name</label>
+            <label className="block text-gray-700 font-medium">Position Name</label>
             <input
               type="text"
               name="questionBank_name"
@@ -369,15 +381,15 @@ const CreateQuestionBank = () => {
           <div>
             <label className="block text-gray-700 font-medium">What to Expect (comma-separated)</label>
             <textarea
-              name="what_to_exhibit"
-              value={formData.what_to_exhibit}
+              name="what_to_expect"
+              value={whatToExpectInput} // Use raw input string
               onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               placeholder="e.g., HTML fundamentals, CSS Flex/Grid, JavaScript variables and functions"
               rows={3}
             />
-            {errors.what_to_exhibit && (
-              <p className="text-sm mt-1 italic text-red-600">{errors.what_to_exhibit}</p>
+            {errors.what_to_expect && (
+              <p className="text-sm mt-1 italic text-red-600">{errors.what_to_expect}</p>
             )}
           </div>
 
@@ -389,7 +401,7 @@ const CreateQuestionBank = () => {
               className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-[#37B874] rounded-lg hover:bg-[#2e9b64] transition-colors disabled:opacity-50"
             >
               {loading ? <LoaderCircle className="animate-spin w-4 h-4" /> : null}
-              Create Question Bank
+              Create Position
             </button>
           </div>
         </form>

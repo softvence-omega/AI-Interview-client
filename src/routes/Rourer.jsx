@@ -31,6 +31,10 @@ import UserManagement from "../pages/adminPages/userManagement/UserManagement";
 import NotificationList from "../pages/userPages/notifications/NotificationList"; 
 import ContentManagement from "../pages/adminPages/ContentManajment/ContentManagement";
 import UserDetailsManagement from "../pages/adminPages/userManagement/UserDetailsManagement";
+import ViewInterviewForEdit from "../pages/adminPages/ContentManajment/ViewInterviewForEdit";
+import EditQuestionBank from "../pages/adminPages/ContentManajment/EditQuestionBank";
+import EditInterview from "../pages/adminPages/ContentManajment/EditInterview";
+import CreateInterviewAndPosition from "../pages/adminPages/ContentManajment/CreateInterviewAndPosition";
 
 const Router = () => {
   return (
@@ -78,8 +82,12 @@ const Router = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
-        <Route path="content_management" element={<ContentManagement />} />
+        <Route path="content_management" element={<ContentManagement />} />      
         <Route path="user-details/:userId" element={<UserDetailsManagement />} />
+        <Route path="content_management/addInterviewAndQuestionBank" element={<CreateInterviewAndPosition />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id" element={<ViewInterviewForEdit />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id/editPosition/:questionBank_id" element={<EditQuestionBank />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id/editInterview/:interview_id" element={<EditInterview />} />
       </Route>
     </Routes>
   );
