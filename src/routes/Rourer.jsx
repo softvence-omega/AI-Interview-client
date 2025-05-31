@@ -31,6 +31,10 @@ import UserManagement from "../pages/adminPages/userManagement/UserManagement";
 import NotificationList from "../pages/userPages/notifications/NotificationList"; 
 import ContentManagement from "../pages/adminPages/ContentManajment/ContentManagement";
 import UserDetailsManagement from "../pages/adminPages/userManagement/UserDetailsManagement";
+import SettingsManage from "../pages/adminPages/settings/SettingsManage";
+import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
+import Subscription from "../pages/adminPages/settings/Subscription";
+import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 
 const Router = () => {
   return (
@@ -80,6 +84,10 @@ const Router = () => {
         <Route path="user-management" element={<UserManagement />} />
         <Route path="content_management" element={<ContentManagement />} />
         <Route path="user-details/:userId" element={<UserDetailsManagement />} />
+        <Route path="settings-manage" element={<SettingsManage />} />
+        <Route path="settings-manage/general-settings" element={<GeneralSettings />} />
+        <Route path="settings-manage/subscription" element={<Subscription />} />
+        <Route path="settings-manage/privacy" element={<PrivacyOptions />} />
       </Route>
     </Routes>
   );

@@ -74,7 +74,7 @@ const UserOrAdminDBLayout = () => {
     {
       name: "Settings",
       logo: null,
-      to: "manage-admin",
+      to: "settings-manage",
     },
   ];
 

@@ -1,17 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { MoreVertical } from "lucide-react";
+import { FaFilter } from "react-icons/fa6";
 import { useAuth } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const UserManagement = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openMenuUserId, setOpenMenuUserId] = useState(null);
-  const menuRefs = useRef({}); // Store refs for each user's dropdown
+  const menuRefs = useRef({});
+  const filterRef = useRef(null); // Add ref for filter dropdown
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [plan, setPlan] = useState("");
+  const [status, setStatus] = useState("");
+  const [role, setRole] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleUserAction = async (userId, field, value) => {
     try {
@@ -33,8 +44,8 @@ const UserManagement = () => {
             : "User activated"
         } successfully`
       );
-      fetchData(); // Refresh data
-      setOpenMenuUserId(null); // Close dropdown
+      fetchData();
+      setOpenMenuUserId(null);
     } catch (err) {
       console.error("Failed to update user:", err);
       alert("Failed to update user");
@@ -43,16 +54,24 @@ const UserManagement = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Check all menu refs to see if the click was outside any dropdown
-      let clickedOutside = true;
+      let clickedOutsideMenus = true;
       Object.values(menuRefs.current).forEach((ref) => {
         if (ref && ref.contains(event.target)) {
-          clickedOutside = false;
+          clickedOutsideMenus = false;
         }
       });
 
-      if (clickedOutside) {
+      // Check if click is outside filter dropdown
+      const clickedOutsideFilter = filterRef.current && !filterRef.current.contains(event.target);
+
+      // Close menus if click is outside all user action menus
+      if (clickedOutsideMenus) {
         setOpenMenuUserId(null);
+      }
+
+      // Close filter dropdown if click is outside filter dropdown
+      if (clickedOutsideFilter) {
+        setShowFilters(false);
       }
     };
 
@@ -91,7 +110,7 @@ const UserManagement = () => {
       }
 
       const filteredUsers = (userRes.data?.data || []).filter(
-        (user) => user.isDeleted === false && user.role === "user"
+        (user) => user.isDeleted === false
       );
       console.log("Filtered users (non-deleted):", filteredUsers);
 
@@ -109,10 +128,28 @@ const UserManagement = () => {
       }));
       console.log("Merged users with profiles:", usersWithProfiles);
 
+      setPlans([...new Set(usersWithProfiles.map((u) => u.profile?.currentPlan || "No Profile"))]);
+      setStatuses([...new Set(usersWithProfiles.map((u) => (u.isLoggedIn ? "Active" : "Inactive")))]);
+      setRoles([...new Set(usersWithProfiles.map((u) => u.role))]);
+
+      let filtered = usersWithProfiles;
+      if (plan) {
+        filtered = filtered.filter((u) => (u.profile?.currentPlan || "No Profile") === plan);
+      }
+      if (status) {
+        filtered = filtered.filter((u) => (u.isLoggedIn ? "Active" : "Inactive") === status);
+      }
+      if (role) {
+        filtered = filtered.filter((u) => u.role === role);
+      }
+
       setUsers(usersWithProfiles);
+      setFilteredUsers(filtered);
     } catch (err) {
       console.error("Error fetching data:", err.response || err.message);
       setError("Failed to fetch users or profiles.");
+      setUsers([]);
+      setFilteredUsers([]);
     } finally {
       setLoading(false);
     }
@@ -127,7 +164,30 @@ const UserManagement = () => {
       setError("Authentication token missing.");
       setLoading(false);
     }
-  }, [user]);
+  }, [user, plan, status, role]);
+
+  useEffect(() => {
+    if (search) {
+      const filtered = users.filter(
+        (user) =>
+          user.name.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    } else {
+      let filtered = users;
+      if (plan) {
+        filtered = filtered.filter((u) => (u.profile?.currentPlan || "No Profile") === plan);
+      }
+      if (status) {
+        filtered = filtered.filter((u) => (u.isLoggedIn ? "Active" : "Inactive") === status);
+      }
+      if (role) {
+        filtered = filtered.filter((u) => u.role === role);
+      }
+      setFilteredUsers(filtered);
+    }
+  }, [search, users, plan, status, role]);
 
   return (
     <div className="text-black lg:p-6 md:p-6">
@@ -145,13 +205,101 @@ const UserManagement = () => {
       </div>
 
       <div className="mt-8">
+        {/* Search Bar with Filter Button */}
+        <div className="relative mb-6">
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              placeholder="Search for users by name or email..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full px-4 py-2 border border-[#E0E0E1] bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+            />
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg transition"
+            >
+              <FaFilter className="text-[#37B874]" />
+              <span className="text-[#37B874]">Filter</span>
+            </button>
+          </div>
+
+          {/* Filter Dropdown */}
+          {showFilters && (
+            <div
+              ref={filterRef} // Attach ref to filter dropdown
+              className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-10 border border-gray-200"
+            >
+              <h3 className="text-lg font-semibold mb-4 text-center">Filter</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[#676768] mb-1">
+                    Plan
+                  </label>
+                  <select
+                    value={plan}
+                    onChange={(e) => setPlan(e.target.value)}
+                    className="w-full text-[#37B874] px-2 py-[5px] border border-[#EBEBEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                  >
+                    <option value="">All Plans</option>
+                    {plans.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#676768] mb-1">
+                    Status
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="w-full text-[#37B874] px-2 py-[5px] border border-[#EBEBEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                  >
+                    <option value="">All Statuses</option>
+                    {statuses.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#676768] mb-1">
+                    Role
+                  </label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full text-[#37B874] px-2 py-[5px] border border-[#EBEBEB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37B874]"
+                  >
+                    <option value="">All Roles</option>
+                    {roles.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex justify-items-center items-center text-center space-x-3">
+            <div className="w-6 h-6 border-4 border-[#37B874] border-t-transparent rounded-full animate-spin text-center"></div>
+            <p className="text-[#676768] text-lg text-center">Loading...</p>
+          </div>
         ) : error ? (
           <p className="text-red-500">{error}</p>
+        ) : filteredUsers.length === 0 ? (
+          <p className="text-center text-gray-600">No users found.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div
                 key={user._id}
                 onClick={() => handleUserClick(user._id)}
@@ -216,20 +364,22 @@ const UserManagement = () => {
                   </button>
                   <div
                     className="relative"
-                    ref={(el) => (menuRefs.current[user._id] = el)} // Assign ref for this user's dropdown
+                    ref={(el) => (menuRefs.current[user._id] = el)}
                   >
                     <MoreVertical
                       className="cursor-pointer text-gray-500"
-                      onClick={(e) =>{
+                      onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuUserId(
                           openMenuUserId === user._id ? null : user._id
-                        )
-                      }
-                      }
+                        );
+                      }}
                     />
                     {openMenuUserId === user._id && (
-                      <div className="absolute right-0 z-20 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg" onClick={(e) => e.stopPropagation()}>
+                      <div
+                        className="absolute right-0 z-20 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           onClick={() =>
                             handleUserAction(user._id, "isDeleted", true)
