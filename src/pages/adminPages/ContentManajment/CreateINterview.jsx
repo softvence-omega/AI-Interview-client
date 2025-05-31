@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Add useRef
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ const CreateInterview = () => {
   const { user } = useAuth();
   const { request } = useApi();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null); // Create a ref for the file input
 
   const [formData, setFormData] = useState({
     interview_name: '',
@@ -94,8 +95,8 @@ const CreateInterview = () => {
       user_id: user.user_id,
     };
 
-    data.append('data', JSON.stringify(jsonData)); // Your backend expects this key
-    data.append('file', file); // Your backend expects this key
+    data.append('data', JSON.stringify(jsonData));
+    data.append('file', file);
 
     setLoading(true);
 
@@ -106,7 +107,6 @@ const CreateInterview = () => {
         body: data,
         headers: {
           Authorization: user.approvalToken,
-          // 'Content-Type' is not needed when sending FormData
         },
       });
 
@@ -140,7 +140,7 @@ const CreateInterview = () => {
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
               className="w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
-              onClick={() => document.getElementById('fileInput').click()}
+              onClick={() => fileInputRef.current.click()} // Use ref instead of getElementById
             >
               {previewUrl ? (
                 <img
@@ -152,7 +152,7 @@ const CreateInterview = () => {
                 <span className="text-gray-500">Click to upload image</span>
               )}
               <input
-                id="fileInput"
+                ref={fileInputRef} // Attach ref
                 type="file"
                 accept="image/jpeg,image/png"
                 onChange={handleFileChange}

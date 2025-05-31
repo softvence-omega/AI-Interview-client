@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Add useRef
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ const CreateQuestionBank = () => {
   const { user } = useAuth();
   const { request } = useApi();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null); // Create a ref for the file input
 
   const [formData, setFormData] = useState({
     interview_id: '',
@@ -20,7 +21,7 @@ const CreateQuestionBank = () => {
     what_to_exhibit: '',
   });
   const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrlQB, setPreviewUrlQB] = useState(null);
   const [errors, setErrors] = useState({
     interview_id: '',
     questionBank_name: '',
@@ -65,43 +66,40 @@ const CreateQuestionBank = () => {
     }
   }, [user?.approvalToken]);
 
-  console.log("yooooooo+++++++++++++---------->", interviews);
-
   // Clean up preview URL
   useEffect(() => {
-    console.log(previewUrl, "priview");
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
+      if (previewUrlQB) {
+        URL.revokeObjectURL(previewUrlQB);
       }
     };
-  }, [previewUrl]);
+  }, [previewUrlQB]);
 
-  const handleInputChange = (e) => {
+  const handleInputChangeQB = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value ?? '' }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChangeQB = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && !['image/jpeg', 'image/png'].includes(selectedFile.type)) {
       setErrors((prev) => ({ ...prev, file: 'Only JPEG or PNG files are allowed.' }));
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrlQB(null);
     } else if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
       setErrors((prev) => ({ ...prev, file: 'File size must be under 5MB.' }));
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrlQB(null);
     } else {
       setFile(selectedFile);
       setErrors((prev) => ({ ...prev, file: '' }));
       const url = URL.createObjectURL(selectedFile);
-      setPreviewUrl(url);
+      setPreviewUrlQB(url);
     }
   };
 
-  const validateForm = () => {
+  const validateFormQB = () => {
     let isValid = true;
     const newErrors = {
       interview_id: '',
@@ -152,7 +150,7 @@ const CreateQuestionBank = () => {
     return isValid;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitQB = async (e) => {
     e.preventDefault();
 
     if (!user?.approvalToken) {
@@ -161,7 +159,7 @@ const CreateQuestionBank = () => {
       return;
     }
 
-    if (!validateForm()) {
+    if (!validateFormQB()) {
       return;
     }
 
@@ -180,12 +178,7 @@ const CreateQuestionBank = () => {
     };
     data.append('data', JSON.stringify(jsonData));
     if (file) {
-      data.append('img', file); // Use 'img' as per requirement
-    }
-
-    // Debug FormData
-    for (let [key, value] of data.entries()) {
-      console.log(`FormData: ${key} =`, value);
+      data.append('file', file);
     }
 
     setLoading(true);
@@ -211,7 +204,7 @@ const CreateQuestionBank = () => {
           what_to_exhibit: '',
         });
         setFile(null);
-        setPreviewUrl(null);
+        setPreviewUrlQB(null);
       } else {
         console.log('API response:', res);
         toast.error(res.message || 'Failed to create question bank.', {
@@ -232,28 +225,28 @@ const CreateQuestionBank = () => {
     <div className="w-full max-w-[1444px] mx-auto mt-20 mb-20 p-6">
       <h2 className="text-2xl font-bold mb-6 text-center text-black">Create Question Bank</h2>
       <div className="p-6 rounded-lg shadow-md">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmitQB} className="space-y-4">
           {/* Image File */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
               className="w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
-              onClick={() => document.getElementById('fileInput').click()}
+              onClick={() => fileInputRef.current.click()} // Use ref instead of getElementById
             >
-              {previewUrl ? (
+              {previewUrlQB ? (
                 <img
-                  src={previewUrl}
-                  alt="Interview preview"
+                  src={previewUrlQB}
+                  alt="Question bank preview"
                   className="w-full h-full object-contain"
                 />
               ) : (
                 <span className="text-gray-500">Click to upload image</span>
               )}
               <input
-                id="fileInput"
+                ref={fileInputRef} // Attach ref
                 type="file"
                 accept="image/jpeg,image/png"
-                onChange={handleFileChange}
+                onChange={handleFileChangeQB}
                 className="hidden"
               />
             </div>
@@ -268,7 +261,7 @@ const CreateQuestionBank = () => {
             <select
               name="interview_id"
               value={formData.interview_id}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               disabled={fetchingInterviews || !interviews.length}
             >
@@ -294,7 +287,7 @@ const CreateQuestionBank = () => {
               type="text"
               name="questionBank_name"
               value={formData.questionBank_name}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               placeholder="e.g., Css fall"
             />
@@ -310,7 +303,7 @@ const CreateQuestionBank = () => {
               type="number"
               name="duration"
               value={formData.duration}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               placeholder="e.g., 45"
               min="1"
@@ -326,7 +319,7 @@ const CreateQuestionBank = () => {
             <select
               name="difficulty_level"
               value={formData.difficulty_level}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
             >
               <option value="Beginner">Beginner</option>
@@ -344,7 +337,7 @@ const CreateQuestionBank = () => {
             <select
               name="question_Type"
               value={formData.question_Type}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
             >
               <option value="Multiple Choice">Multiple Choice</option>
@@ -362,7 +355,7 @@ const CreateQuestionBank = () => {
             <textarea
               name="description"
               value={formData.description}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               placeholder="e.g., This question bank includes HTML, CSS, and JS questions."
               rows={4}
@@ -378,7 +371,7 @@ const CreateQuestionBank = () => {
             <textarea
               name="what_to_exhibit"
               value={formData.what_to_exhibit}
-              onChange={handleInputChange}
+              onChange={handleInputChangeQB}
               className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-black focus:ring-[#37B74]"
               placeholder="e.g., HTML fundamentals, CSS Flex/Grid, JavaScript variables and functions"
               rows={3}
