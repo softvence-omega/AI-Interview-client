@@ -35,6 +35,10 @@ import ViewInterviewForEdit from "../pages/adminPages/ContentManajment/ViewInter
 import EditQuestionBank from "../pages/adminPages/ContentManajment/EditQuestionBank";
 import EditInterview from "../pages/adminPages/ContentManajment/EditInterview";
 import CreateInterviewAndPosition from "../pages/adminPages/ContentManajment/CreateInterviewAndPosition";
+import SettingsManage from "../pages/adminPages/settings/SettingsManage";
+import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
+import Subscription from "../pages/adminPages/settings/Subscription";
+import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 
 const Router = () => {
   return (
@@ -88,6 +92,10 @@ const Router = () => {
         <Route path="content_management/view_Interview_To_Edit/:interview_id" element={<ViewInterviewForEdit />} />
         <Route path="content_management/view_Interview_To_Edit/:interview_id/editPosition/:questionBank_id" element={<EditQuestionBank />} />
         <Route path="content_management/view_Interview_To_Edit/:interview_id/editInterview/:interview_id" element={<EditInterview />} />
+        <Route path="settings-manage" element={<SettingsManage />} />
+        <Route path="settings-manage/general-settings" element={<GeneralSettings />} />
+        <Route path="settings-manage/subscription" element={<Subscription />} />
+        <Route path="settings-manage/privacy" element={<PrivacyOptions />} />
       </Route>
     </Routes>
   );
