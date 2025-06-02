@@ -69,7 +69,7 @@ const UserOrAdminDBLayout = () => {
     {
       name: "Notification",
       logo: null,
-      to: "manage-user",
+      to: "notifications",
     },
     {
       name: "Settings",
