@@ -39,6 +39,7 @@ import SettingsManage from "../pages/adminPages/settings/SettingsManage";
 import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
 import Subscription from "../pages/adminPages/settings/Subscription";
 import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
+import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
 
 const Router = () => {
   return (
@@ -86,6 +87,7 @@ const Router = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
+        <Route path="notifications" element={<NotificationPage />} />
         <Route path="content_management" element={<ContentManagement />} />      
         <Route path="user-details/:userId" element={<UserDetailsManagement />} />
         <Route path="content_management/addInterviewAndQuestionBank" element={<CreateInterviewAndPosition />} />
