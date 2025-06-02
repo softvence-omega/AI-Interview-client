@@ -53,7 +53,7 @@ const MockInterview = () => {
   // Reusable Interview Card Component
   const InterviewCard = ({ interview }) => (
     <div className="bg-white">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between">
+      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between mt-4">
         <div className="flex items-center gap-6">
           <img
             src={interview.img}

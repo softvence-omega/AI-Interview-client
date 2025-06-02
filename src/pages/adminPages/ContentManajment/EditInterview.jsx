@@ -144,7 +144,11 @@ const EditInterview = () => {
           ...prev,
           ...changes,
         }));
-        setPreviewUrl(changes.img instanceof File ? URL.createObjectURL(changes.img) : changes.img || "");
+        setPreviewUrl(
+          changes.img instanceof File
+            ? URL.createObjectURL(changes.img)
+            : changes.img || ""
+        );
         setEditingFields({});
         navigate(-1);
       } else {
@@ -180,7 +184,7 @@ const EditInterview = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="mb-4 flex items-center justify-between">
             <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#3A4C67]">
                 Interview Name
               </label>
               <input
@@ -189,23 +193,24 @@ const EditInterview = () => {
                 value={formData.interview_name}
                 onChange={handleInputChange}
                 disabled={!editingFields.interview_name}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.interview_name ? "text-gray-900" : "text-gray-500"
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.interview_name
+                    ? "text-gray-900"
+                    : "text-gray-500"
                 }`}
               />
             </div>
             <button
               onClick={() => toggleEditField("interview_name")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
             >
               <FaPen />
-              Edit
             </button>
           </div>
 
           <div className="mb-4 flex items-center justify-between">
             <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#3A4C67]">
                 Description
               </label>
               <textarea
@@ -213,7 +218,7 @@ const EditInterview = () => {
                 value={formData.description}
                 onChange={handleInputChange}
                 disabled={!editingFields.description}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
                   editingFields.description ? "text-gray-900" : "text-gray-500"
                 }`}
                 rows="3"
@@ -221,22 +226,27 @@ const EditInterview = () => {
             </div>
             <button
               onClick={() => toggleEditField("description")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67]rounded-md transition"
             >
               <FaPen />
-              Edit
             </button>
           </div>
 
           <div className="mb-4 flex items-center justify-between">
             <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#3A4C67]">
                 Image Preview
               </label>
-              {(previewUrl || (formData.img && formData.img instanceof File)) && (
+              {(previewUrl ||
+                (formData.img && formData.img instanceof File)) && (
                 <div className="mt-1">
                   <img
-                    src={previewUrl || (formData.img instanceof File ? URL.createObjectURL(formData.img) : "")}
+                    src={
+                      previewUrl ||
+                      (formData.img instanceof File
+                        ? URL.createObjectURL(formData.img)
+                        : "")
+                    }
                     alt="Interview Preview"
                     className="h-[68px] w-[64px] object-cover rounded-lg"
                     onError={(e) => {
@@ -244,9 +254,6 @@ const EditInterview = () => {
                       e.target.nextSibling.style.display = "block";
                     }}
                   />
-                  <div className="h-[68px] w-[64px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 hidden">
-                    No Image
-                  </div>
                 </div>
               )}
               {editingFields.img && (
@@ -255,25 +262,24 @@ const EditInterview = () => {
                   name="img"
                   accept="image/*"
                   onChange={handleInputChange}
-                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm"
                 />
               )}
             </div>
             <button
               onClick={() => toggleEditField("img")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
             >
               <FaPen />
-              Edit
             </button>
           </div>
 
           {/* Submit and Cancel Buttons */}
           {Object.values(editingFields).some((val) => val) && (
-            <div className="mt-6 flex justify-end gap-4">
+            <div className="mt-6 md:flex lg:flex justify-items-center md:justify-end lg:justify-end gap-4">
               <button
                 onClick={handleSubmitAll}
-                className="flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                className="flex items-center gap-1 px-4 py-2 bg-[#37B874] text-white rounded-md hover:bg-[#2e9b64] transition mb-4 md:mb-0 lg:mb-0"
               >
                 Submit All Changes
               </button>

@@ -132,7 +132,7 @@ const CreateInterview = ({setInterviwUploadReload}) => {
   };
 
   return (
-    <div className="w-full max-w-[1444px] mx-auto mt-20 mb-20 p-6">
+    <div className="w-full max-w-[1444px] mx-auto md:mt-2 lg:mt-2 mb-20 p-6">
       <h2 className="text-2xl font-bold mb-6 text-center text-black">Create Interview</h2>
       <div className="p-6 rounded-lg shadow-md bg-white">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -140,7 +140,7 @@ const CreateInterview = ({setInterviwUploadReload}) => {
           <div>
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
-              className="w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
+              className="md:w-[300px] lg:w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
               onClick={() => fileInputRef.current.click()} // Use ref instead of getElementById
             >
               {previewUrl ? (

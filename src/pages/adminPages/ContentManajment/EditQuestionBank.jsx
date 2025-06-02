@@ -115,12 +115,17 @@ const EditQuestionBank = () => {
 
     const changes = {};
     Object.keys(formData).forEach((field) => {
-      const originalValue = questionBank[field] || (field === "what_to_expect" ? questionBank[field]?.join(", ") : "");
+      const originalValue =
+        questionBank[field] ||
+        (field === "what_to_expect" ? questionBank[field]?.join(", ") : "");
       const newValue = formData[field];
       if (field === "img" && newValue instanceof File) {
         changes[field] = newValue;
       } else if (originalValue !== newValue) {
-        changes[field] = field === "what_to_expect" ? newValue.split(",").map((item) => item.trim()) : newValue;
+        changes[field] =
+          field === "what_to_expect"
+            ? newValue.split(",").map((item) => item.trim())
+            : newValue;
       }
     });
 
@@ -152,7 +157,11 @@ const EditQuestionBank = () => {
           ...prev,
           ...changes,
         }));
-        setPreviewUrl(changes.img instanceof File ? URL.createObjectURL(changes.img) : changes.img || "");
+        setPreviewUrl(
+          changes.img instanceof File
+            ? URL.createObjectURL(changes.img)
+            : changes.img || ""
+        );
         setEditingFields({});
         navigate(-1);
       } else {
@@ -192,172 +201,21 @@ const EditQuestionBank = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="mb-4 flex items-center justify-between">
             <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                Question Bank Name
-              </label>
-              <input
-                type="text"
-                name="questionBank_name"
-                value={formData.questionBank_name}
-                onChange={handleInputChange}
-                disabled={!editingFields.questionBank_name}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.questionBank_name ? "text-gray-900" : "text-gray-500"
-                }`}
-              />
-            </div>
-            <button
-              onClick={() => toggleEditField("questionBank_name")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                Duration (minutes)
-              </label>
-              <input
-                type="number"
-                name="duration"
-                value={formData.duration}
-                onChange={handleInputChange}
-                disabled={!editingFields.duration}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.duration ? "text-gray-900" : "text-gray-500"
-                }`}
-              />
-            </div>
-            <button
-              onClick={() => toggleEditField("duration")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                Difficulty Level
-              </label>
-              <select
-                name="difficulty_level"
-                value={formData.difficulty_level}
-                onChange={handleInputChange}
-                disabled={!editingFields.difficulty_level}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.difficulty_level ? "text-gray-900" : "text-gray-500"
-                }`}
-              >
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-            <button
-              onClick={() => toggleEditField("difficulty_level")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                Question Type
-              </label>
-              <select
-                name="question_Type"
-                value={formData.question_Type}
-                onChange={handleInputChange}
-                disabled={!editingFields.question_Type}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.question_Type ? "text-gray-900" : "text-gray-500"
-                }`}
-              >
-                <option value="Multiple Choice">Multiple Choice</option>
-                <option value="Open-Ended">Open-Ended</option>
-                <option value="Coding">Coding</option>
-              </select>
-            </div>
-            <button
-              onClick={() => toggleEditField("question_Type")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                disabled={!editingFields.description}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.description ? "text-gray-900" : "text-gray-500"
-                }`}
-                rows="3"
-              />
-            </div>
-            <button
-              onClick={() => toggleEditField("description")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
-                What to Expect (comma-separated)
-              </label>
-              <input
-                type="text"
-                name="what_to_expect"
-                value={formData.what_to_expect}
-                onChange={handleInputChange}
-                disabled={!editingFields.what_to_expect}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                  editingFields.what_to_expect ? "text-gray-900" : "text-gray-500"
-                }`}
-                placeholder="e.g., HTML, CSS, JavaScript"
-              />
-            </div>
-            <button
-              onClick={() => toggleEditField("what_to_expect")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-              <FaPen />
-              Edit
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#3A4C67]">
                 Image Preview
               </label>
-              {(previewUrl || (formData.img && formData.img instanceof File)) && (
+              {(previewUrl ||
+                (formData.img && formData.img instanceof File)) && (
                 <div className="mt-1">
                   <img
-                    src={previewUrl || (formData.img instanceof File ? URL.createObjectURL(formData.img) : "")}
+                    src={
+                      previewUrl ||
+                      (formData.img instanceof File
+                        ? URL.createObjectURL(formData.img)
+                        : "")
+                    }
                     alt="Question Bank Preview"
-                    className="h-[68px] w-[64px] object-cover rounded-lg"
+                    className="h-[96px] w-[96px] object-cover rounded-lg"
                     onError={(e) => {
                       e.target.style.display = "none";
                       e.target.nextSibling.style.display = "block";
@@ -374,25 +232,182 @@ const EditQuestionBank = () => {
                   name="img"
                   accept="image/*"
                   onChange={handleInputChange}
-                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm"
                 />
               )}
             </div>
             <button
               onClick={() => toggleEditField("img")}
-              className="ml-4 flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
             >
               <FaPen />
-              Edit
+            </button>
+          </div>
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                Question Bank Name
+              </label>
+              <input
+                type="text"
+                name="questionBank_name"
+                value={formData.questionBank_name}
+                onChange={handleInputChange}
+                disabled={!editingFields.questionBank_name}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.questionBank_name
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+              />
+            </div>
+            <button
+              onClick={() => toggleEditField("questionBank_name")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
+            </button>
+          </div>
+
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                Duration (minutes)
+              </label>
+              <input
+                type="number"
+                name="duration"
+                value={formData.duration}
+                onChange={handleInputChange}
+                disabled={!editingFields.duration}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.duration ? "text-gray-900" : "text-gray-500"
+                }`}
+              />
+            </div>
+            <button
+              onClick={() => toggleEditField("duration")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
+            </button>
+          </div>
+
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                Difficulty Level
+              </label>
+              <select
+                name="difficulty_level"
+                value={formData.difficulty_level}
+                onChange={handleInputChange}
+                disabled={!editingFields.difficulty_level}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.difficulty_level
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+            <button
+              onClick={() => toggleEditField("difficulty_level")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
+            </button>
+          </div>
+
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                Question Type
+              </label>
+              <select
+                name="question_Type"
+                value={formData.question_Type}
+                onChange={handleInputChange}
+                disabled={!editingFields.question_Type}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.question_Type
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+              >
+                <option value="Multiple Choice">Multiple Choice</option>
+                <option value="Open-Ended">Open-Ended</option>
+                <option value="Coding">Coding</option>
+              </select>
+            </div>
+            <button
+              onClick={() => toggleEditField("question_Type")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
+            </button>
+          </div>
+
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                disabled={!editingFields.description}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.description ? "text-gray-900" : "text-gray-500"
+                }`}
+                rows="3"
+              />
+            </div>
+            <button
+              onClick={() => toggleEditField("description")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
+            </button>
+          </div>
+
+          <div className="mb-4 flex items-center justify-between">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-[#3A4C67]">
+                What to Expect (comma-separated)
+              </label>
+              <input
+                type="text"
+                name="what_to_expect"
+                value={formData.what_to_expect}
+                onChange={handleInputChange}
+                disabled={!editingFields.what_to_expect}
+                className={`mt-1 block w-full rounded-md p-1 border-1 border-gray-100 shadow-sm focus:border-[#3A4C67] focus:ring-[#3A4C67] sm:text-sm ${
+                  editingFields.what_to_expect
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+                placeholder="e.g., HTML, CSS, JavaScript"
+              />
+            </div>
+            <button
+              onClick={() => toggleEditField("what_to_expect")}
+              className="ml-4 flex items-center gap-1 px-4 py-2 text-[#3A4C67] rounded-md transition"
+            >
+              <FaPen />
             </button>
           </div>
 
           {/* Submit and Cancel Buttons */}
           {Object.values(editingFields).some((val) => val) && (
-            <div className="mt-6 flex justify-end gap-4">
+            <div className="mt-6 md:flex lg:flex justify-items-center md:justify-end lg:justify-end gap-4">
               <button
                 onClick={handleSubmitAll}
-                className="flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                className="flex items-center gap-1 px-4 py-2 bg-[#37B874] text-white rounded-md hover:bg-[#2e9b64] transition mb-2 md:mb-0 lg:mb-0"
               >
                 Submit All Changes
               </button>

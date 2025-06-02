@@ -402,7 +402,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl lg:text-3xl font-bold mb-6">Admin Dashboard</h1>
 
-          <div className="flex items-center gap-3 my-6">
+          <div className="block md:flex lg:flex items-center gap-3 my-6">
             {/* Avatar Stack */}
             <div className="flex -space-x-3">
               {users?.data?.slice(0, 4).map((user, index) => (

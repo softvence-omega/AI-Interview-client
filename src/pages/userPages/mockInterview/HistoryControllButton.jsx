@@ -18,7 +18,7 @@ const HistoryButtonControls = ({
       </button>
       <button
         onClick={handleGoBack}
-        className="bg-blue-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+        className="bg-[#3A4C67] w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
         disabled={isProcessing || loading || retakeLoading}
       >
         Go Back 

@@ -39,7 +39,8 @@ const JobDetails = () => {
     fetchJobDetails();
   }, [jobId]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading job details...</p>;
+  if (loading)
+    return <p className="text-center text-gray-500">Loading job details...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!job) return <p className="text-center text-gray-600">Job not found.</p>;
 
@@ -48,19 +49,19 @@ const JobDetails = () => {
       {/* <h1 className="text-3xl font-bold mb-6 text-center">{job.title}</h1> */}
       <div className="bg-white shadow-sm rounded-xl p-6 border border-gray-200">
         <div className="mb-4">
-          <div  className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-[#212121]">
-            {job.title}
-          </h2>
-          <p
-                className={`w-26 text-center text-sm font-medium mb-2 rounded-lg p-2 ${
-                  job.isApplied
-                    ? "bg-[#EBF8F1] text-[#37B874]"
-                    : "bg-[#EF9614]/15 text-[#EF9614]"
-                }`}
-              >
-                {job.isApplied ? "Applied" : "Not Applied"}
-              </p>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-[#212121]">
+              {job.title}
+            </h2>
+            <p
+              className={`w-26 text-center text-sm font-medium mb-2 rounded-lg p-2 ${
+                job.isApplied
+                  ? "bg-[#EBF8F1] text-[#37B874]"
+                  : "bg-[#EF9614]/15 text-[#EF9614]"
+              }`}
+            >
+              {job.isApplied ? "Applied" : "Not Applied"}
+            </p>
           </div>
           <a
             href={job.link}
@@ -70,7 +71,10 @@ const JobDetails = () => {
           >
             Start Mock Interview
           </a>
-          <p className="mb-2 text-[#AFAFAF] mt-6"><span className="text-[#37B874]">Company: </span>{job.company || "Not specified"}</p>
+          <p className="mb-2 text-[#AFAFAF] mt-6">
+            <span className="text-[#37B874]">Company: </span>
+            {job.company || "Not specified"}
+          </p>
           <p className="flex items-center gap-2 text-[#3A4C67] mb-4">
             <span className="text-[#37B874]">Location: </span>
             <FaLocationDot className="bg-[#3A4C67] text-white p-[4px] rounded-full w-6 h-6" />
@@ -78,7 +82,6 @@ const JobDetails = () => {
               {job.location || "Remote"}
             </span>
           </p>
-          
         </div>
 
         {job.description && (
