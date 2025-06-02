@@ -69,7 +69,7 @@ const QuestionBankDetail = () => {
           {questionBankData.map((item, index) => (
             <div key={item._id || index} className="w-full bg-white p-6 rounded-lg shadow mb-6">
                 <Buttons.LinkButton
-                text="Start mick interview"
+                text="Start Mock Interview"
                 width="w-full"
                 height="h-[50px]"
                 to={`/userDashboard/mockInterview/startInterview?questionBank_id=${item._id}`}/>

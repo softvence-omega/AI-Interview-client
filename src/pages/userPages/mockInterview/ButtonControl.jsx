@@ -16,7 +16,7 @@ const ButtonControls = ({
         {isVideoState && (
           <button
             onClick={handleNextQuestion}
-            className="bg-blue-500 w-[50%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+            className="bg-[#3A4C67] w-[50%] h-[40px] rounded-[12px] text-white disabled:opacity-50"
             disabled={isProcessing || loading || retakeLoading}
           >
             {currentQuestionIndex < totalQuestions - 1 ? (
@@ -32,7 +32,7 @@ const ButtonControls = ({
           <div className="flex justify-center gap-6 w-full">
             <button
               onClick={handleContinueClick}
-              className="bg-blue-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+              className="bg-[#3A4C67] w-[30%] h-[40px] rounded-[12px] text-white disabled:opacity-50"
               disabled={isProcessing || loading || retakeLoading}
             >
               {summeryState && returnOrFullRetakeState
@@ -43,7 +43,7 @@ const ButtonControls = ({
             </button>
             <button
               onClick={handleRetakeClick}
-              className="bg-green-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+              className="bg-green-500 w-[30%] h-[40px] rounded-[12px] text-white disabled:opacity-50"
               disabled={isProcessing || loading || retakeLoading}
             >
               {retakeLoading

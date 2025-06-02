@@ -115,8 +115,8 @@ const ViewInterviewForEdit = () => {
   // Question Bank Card Component
   const QuestionBankCard = ({ questionBank }) => (
     <div className="bg-white mb-5">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition block md:flex lg:flex items-center justify-between">
+        <div className="flex items-center gap-6 mb-6 md:mb-0 lg:mb-0">
           {questionBank.img ? (
             <img
               src={questionBank.img}
@@ -137,14 +137,14 @@ const ViewInterviewForEdit = () => {
         </div>
         <div className="flex items-center gap-4">
           <button
-            className="flex justify-center items-center gap-1 h-[50px] w-[130px] bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] text-white rounded-md hover:bg-[#3A4C67] transition"
             onClick={() => navigate(`editPosition/${questionBank._id}`)}
           >
             <FaPen />
             <h6>Edit</h6>
           </button>
           <button
-            className=""
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] text-white rounded-md"
             onClick={() => handleQuestionBankDelete(questionBank._id)}
           >
             DELETE
@@ -161,7 +161,7 @@ const ViewInterviewForEdit = () => {
 
       {!loading && !error && interview && (
         <div className="w-full">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex gap-2 items-center justify-between mb-6">
             <div className="flex items-center gap-6">
               {interview.img ? (
                 <img
@@ -187,7 +187,7 @@ const ViewInterviewForEdit = () => {
             </div>
 
             <button
-              className="flex justify-center items-center gap-1 h-[50px] w-[130px] bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] text-white rounded-md hover:bg-[#3A4D67] transition"
               onClick={() => navigate(`editInterview/${interview._id}`)}
             >
               <FaPen />
@@ -219,7 +219,7 @@ const ViewInterviewForEdit = () => {
       {/* Custom Modal for Delete Confirmation */}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-[80%] md:w-full lg:w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
             <p className="mb-6">Are you sure you want to delete this question bank? This action cannot be undone.</p>
             <div className="flex justify-end gap-4">

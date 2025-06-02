@@ -232,7 +232,7 @@ const PaymentManagement = () => {
       </div>
 
       {/* Payment transaction history */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 md:gap-4 lg:gap-4 mt-6">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-4 lg:gap-4 mt-6">
         <div className="col-span-3">
         <RecentTransactions user={user} />
         </div>
@@ -246,7 +246,7 @@ const PaymentManagement = () => {
             <Check className="bg-[#37B874] font-bold text-white w-5 h-5 rounded-md" />
           </div>
 
-          <button className="w-[82%] mx-auto flex items-center justify-center gap-2 bg-[#37B874] hover:bg-[#37B874] text-white text-sm font-normal px-2 md:px-0 lg:px-0 py-2 rounded-lg transition mt-6">
+          <button className="w-[72%] md:w-full lg:w-[90%] mx-auto flex items-center justify-center gap-2 bg-[#37B874] hover:bg-[#37B874] text-white text-sm font-normal px-2 md:px-0 lg:px-0 py-2 rounded-lg transition mt-6">
             Add Payment Methods
             <span className="text-xl leading-none">+</span>
           </button>

@@ -103,8 +103,8 @@ const ViewAllInterviews = () => {
   // Reusable Interview Card Component
   const InterviewCard = ({ interview }) => (
     <div className="bg-white mb-5">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition block md:flex lg:flex items-center justify-between">
+        <div className="flex flex-row items-center gap-6 mb-6 md:mb-0 lg:mb-0">
           {interview.img ? (
             <img
               src={interview.img}
@@ -130,7 +130,7 @@ const ViewAllInterviews = () => {
 
         <div className="flex items-center gap-5 text-white">
           <button
-            className="flex justify-center items-center gap-1 h-[50px] w-[130px] bg-[#Ef4444] rounded-md"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] rounded-md"
             onClick={() => handleDeleteInterview(interview._id)}
           >
             <RiDeleteBin5Fill />
@@ -138,7 +138,7 @@ const ViewAllInterviews = () => {
           </button>
 
           <button
-            className="flex justify-center items-center gap-1 h-[50px] w-[130px] bg-blue-500 rounded-md"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] rounded-md"
             onClick={() => navigate(`view_Interview_To_Edit/${interview._id}`)}
           >
             <FaPen />
@@ -150,7 +150,7 @@ const ViewAllInterviews = () => {
   );
 
   return (
-    <div className="text-black w-full px-6">
+    <div className="text-black w-full px-6 mt-12">
       <h1 className="text-2xl font-bold mb-4">All Interviews</h1>
 
       {loading && <p>Loading interviews...</p>}
@@ -173,7 +173,7 @@ const ViewAllInterviews = () => {
       {/* Custom Modal for Delete Confirmation */}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-[80%] md:w-full lg:w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
             <p className="mb-6">Are you sure you want to delete this interview? This action cannot be undone.</p>
             <div className="flex justify-end gap-4">

@@ -34,7 +34,7 @@ const QuestionSection = ({
       Question {currentQuestionIndex + 1} of {totalQuestions} Questions
     </h1>
     <div className="w-full flex justify-center items-center mb-10">
-      <p className="text-[24px] font-normal text-[#278352]">
+      <p className="text-[17px] md:text-[24px] lg:text-[24px] font-normal text-[#278352]">
         Q. {question?.question || "No question text available"}
       </p>
     </div>
@@ -338,7 +338,8 @@ const StartInterviewPage = () => {
         await saveAiResponse(aiResponse);
       }
 
-      const questionBankId = ongoingQuestion?.questionBank_id || aiResponse?.questionBank_id;
+      const questionBankId =
+        ongoingQuestion?.questionBank_id || aiResponse?.questionBank_id;
 
       if (!questionBankId) {
         throw new Error("questionBank_id not found in the response");
@@ -524,7 +525,7 @@ const StartInterviewPage = () => {
 
   return (
     <ErrorBoundary>
-      <div className="text-black w-full px-6 py-8 h-auto bg-black">
+      <div className="text-black w-full px-4 md:px-6 lg:px-6 py-8 h-auto">
         <LoadingErrorDisplay loading={loading} error={error} />
         {historyState ? (
           <div className="w-full bg-white p-6 rounded-lg shadow h-full">

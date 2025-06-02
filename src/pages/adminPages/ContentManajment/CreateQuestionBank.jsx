@@ -242,7 +242,7 @@ const CreateQuestionBank = ({ interviewUploadReload, setInterviwUploadReload }) 
           <div>
             <label className="block text-gray-700 font-medium mb-2">Image File</label>
             <div
-              className="w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
+              className="md:w-[300px] lg:w-[300px] h-[200px] border border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
               onClick={() => fileInputRef.current.click()}
             >
               {previewUrlQB ? (

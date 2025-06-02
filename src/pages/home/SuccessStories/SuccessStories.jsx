@@ -47,7 +47,7 @@ const TestimonialCard = ({ review }) => (
     <div className="flex gap-4 items-center">
       <StarRating />
       <div className="flex items-center gap-2 text-sm mt-1">
-        <span className="text-blue-500">
+        <span className="text-[#3A4C67]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

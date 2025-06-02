@@ -6,7 +6,7 @@ const ContentManagement = () => {
   const navigate=useNavigate()
   return (
     <div>
-    <div className="flex items-start justify-between px-4 py-6 bg-white rounded-md shadow-sm">
+    <div className="block md:flex lg:flex items-start justify-between px-4 py-6 bg-white rounded-md shadow-sm">
       <div>
         <h2 className="text-xl font-bold text-gray-900">Content & Interview Management</h2>
         <p className="text-sm text-gray-500">
@@ -16,7 +16,7 @@ const ContentManagement = () => {
 
       <button
         onClick={() => navigate("addInterviewAndQuestionBank")}
-        className="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded flex items-center gap-2"
+        className="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded flex items-center gap-2 mt-4 md:mt-0 lg:mt-0"
       >
         Add Interview
         <span className="text-xl leading-none">+</span>

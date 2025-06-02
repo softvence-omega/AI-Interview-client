@@ -51,13 +51,13 @@ const MockInterviewDetail = () => {
   // Reusable Interview Card Component (adapted for question banks)
   const QuestionBankCard = ({ qb }) => (
     <div className="bg-white">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition flex items-center justify-between mt-4">
+        <div className="grid grid-cols-3 md:flex lg:flex justify-items-center items-center gap-6">
           {/* Use a placeholder image since question_bank_ids doesn't have img */}
           <div className="h-[68px] w-[64px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
-            <img src={qb.img} alt="no Img" />
+            <img src={qb.img} alt="no Img" className="w-full h-full"/>
           </div>
-          <div>
+          <div className="col-span-2">
             <h2 className="text-lg font-semibold">
               {qb.questionBank_name || "No name available"}
             </h2>
@@ -100,7 +100,7 @@ const MockInterviewDetail = () => {
           {/* Display Question Banks as Links */}
           {interviewData.question_bank_ids &&
             interviewData.question_bank_ids.length > 0 && (
-              <div className="list-disc pl-5 space-y-4">
+              <div className="list-disc md:pl-5 lg:pl-5 space-y-4">
                 {interviewData.question_bank_ids.map((qb) => (
                   <div key={qb._id}>
                     <QuestionBankCard qb={qb} interviewId={interviewData._id} />
