@@ -36,7 +36,7 @@ const Notification = () => {
 
       if (res.ok) {
         console.log("Notification fetched successfully:",res.data.data)
-        setNotifications(res.data);
+        setNotifications(res.data.data.notifications || []);
         setNewNotificationCount(res.data.data.newNotification || 0);
         setError(null);
       } 
