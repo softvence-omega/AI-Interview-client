@@ -129,7 +129,7 @@ const Settings = () => {
   return (
     <Container>
       <div className="min-h-screen flex justify-center w-full max-w-[1444px] mx-auto text-gray-900">
-        <div className="w-[80%] space-y-6">
+        <div className="md:w-[80%] lg:w-[80%] space-y-6">
           <h1 className="text-3xl font-bold mb-6 text-center">Settings</h1>
           <h2 className="text-2xl font-bold mb-4 text-center">Account Settings</h2>
 

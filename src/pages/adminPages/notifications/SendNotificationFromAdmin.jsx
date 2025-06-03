@@ -105,10 +105,10 @@ const SendNotificationFromAdmin = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 mb-10 px-4">
-      <h2 className="text-2xl font-bold mb-6 text-center text-black">Create New Notification</h2>
+    <div className="max-w-3xl mx-auto mt-8 mb-10 px-0 md:px-4 lg:px-4">
+      <h2 className="text-xl sm:text-3xl font-bold mb4 text-center text-[#37B874] mb-4">Create New Notification</h2>
 
-      <form onSubmit={handleSubmit} className="bg-white text-black   p-6 rounded-lg shadow-md space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white text-black  p-6 rounded-lg shadow-md space-y-6">
         {/* Dropdown */}
         <div className="relative">
           <label className="block mb-2 font-medium">Recipients</label>

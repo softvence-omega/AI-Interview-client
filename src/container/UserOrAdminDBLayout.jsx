@@ -171,8 +171,7 @@ const UserOrAdminDBLayout = () => {
   }, [userType, navigate, userMeta]); // Dependencies: userType, navigate, userMeta
 
   return (
-    <Container>
-      <div className="h-screen w-screen flex bg-gray-100 max-w-[1440px]">
+      <div className="h-screen mx-auto flex bg-gray-100 max-w-9xl">
         {/* Overlay for mobile when sidebar is open */}
         {isSidebarOpen && (
           <div
@@ -282,7 +281,6 @@ const UserOrAdminDBLayout = () => {
           </div>
         </div>
       </div>
-    </Container>
   );
 };
 

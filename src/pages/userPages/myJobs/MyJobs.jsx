@@ -110,7 +110,7 @@ const JobList = () => {
   }, [search, jobs]);
 
   return (
-    <div className="text-black p-4 max-w-6xl mx-auto">
+    <div className="text-black md:p-4 lg:p-4 max-w-6xl mx-auto">
       {/* <h1 className="text-3xl font-bold mb-6 text-center">My Applied Jobs</h1> */}
 
       {/* Search Bar with Filter Button */}

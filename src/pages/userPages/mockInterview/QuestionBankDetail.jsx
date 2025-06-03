@@ -61,7 +61,7 @@ const QuestionBankDetail = () => {
   }, [questionBankId, interviewId, AuthorizationToken]);
 
   return (
-    <div className="text-black w-full px-6 py-8">
+    <div className="text-black w-full md:px-6 lg:px-6 py-8">
       {loading && <p>Loading question bank data...</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
       {Array.isArray(questionBankData) && questionBankData.length > 0 ? (

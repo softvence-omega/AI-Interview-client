@@ -16,6 +16,7 @@ const Notification = () => {
   const [error, setError] = useState(null);
 
   console.log("just to remove the red line",notifications)
+  console.log(loading, error)
 
   const fetchNotifications = async () => {
     if (!user?.approvalToken) {
@@ -27,7 +28,7 @@ const Notification = () => {
     setLoading(true);
     try {
       const res = await request({
-        endpoint: '/notifications/getAllNotifications',
+        endpoint: '/notifications/getNotificationForNotificationBell',
         method: 'GET',
         headers: {
           Authorization: user.approvalToken,
@@ -58,7 +59,7 @@ const Notification = () => {
     fetchNotifications();
 
     // Set up interval to fetch every 2 minutes (120,000 ms)
-    const intervalId = setInterval(fetchNotifications, 120000);
+    const intervalId = setInterval(fetchNotifications, 1200);
 
     // Clean up interval on unmount
     return () => clearInterval(intervalId);
@@ -66,11 +67,6 @@ const Notification = () => {
 
   return (
     <div className="relative">
-      {loading ? (
-        <LoaderCircle className="animate-spin w-6 h-6 text-gray-600" />
-      ) : error ? (
-        <span className="text-red-600 text-sm">Error</span>
-      ) : (
         <div className="relative" onClick={()=>navigate("notificationList")}>
           <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
           {newNotificationCount > 0 && (
@@ -79,7 +75,6 @@ const Notification = () => {
             </span>
           )}
         </div>
-      )}
     </div>
   );
 };

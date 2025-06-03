@@ -133,7 +133,7 @@ const Insights = () => {
   }));
 
   return (
-    <div className="p-6 text-black">
+    <div className="md:p-6 lg:p-6 text-black">
       {/* Top Summary & Download */}
       <div className="block md:flex lg:flex items-center justify-between mb-6">
         <div className="bg-[#3A4C67] text-white px-8 py-6 rounded-md text-center">
@@ -213,7 +213,7 @@ const Insights = () => {
           return (
             <div
               key={metric.key}
-              className="w-[320px] bg-white shadow-md rounded-xl p-4 border-1 border-[#E0E0E1]"
+              className="w-[320px] bg-white shadow-md rounded-xl p-2 md:p-4 lg:p-4 border-1 border-[#E0E0E1]"
             >
               <p className="font-semibold">{metric.label}</p>
               <p className="text-xl font-bold">{score}%</p>

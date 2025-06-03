@@ -15,14 +15,17 @@ const NotificationList = () => {
   const [selectedNotificationId, setSelectedNotificationId] = useState(null);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    let intervalId;
+  
+    const fetchNotifications = async (showLoading = true) => {
       if (!user?.approvalToken) {
         toast.error('You must be logged in to view notifications.');
         setTimeout(() => navigate('/login'), 1500);
         return;
       }
-
-      setLoading(true);
+  
+      if (showLoading) setLoading(true);
+  
       try {
         const res = await request({
           endpoint: '/notifications/getAllNotifications',
@@ -31,7 +34,7 @@ const NotificationList = () => {
             Authorization: user.approvalToken,
           },
         });
-
+  
         if (res.ok) {
           setNotifications(res.data.data.notificationList || []);
           setError(null);
@@ -44,12 +47,20 @@ const NotificationList = () => {
         toast.error('Error fetching notifications.');
         console.error('Fetch notifications error:', err);
       } finally {
-        setLoading(false);
+        if (showLoading) setLoading(false);
       }
     };
-
-    fetchNotifications();
-  }, [user?.approvalToken,   navigate]);
+  
+    fetchNotifications(); // Initial load with loading
+  
+    // Auto-refetch every 30 seconds, no loading UI
+    intervalId = setInterval(() => {
+      fetchNotifications(false);
+    }, 3000);
+  
+    return () => clearInterval(intervalId);
+  }, [user?.approvalToken, navigate]);
+  
 
   const handleNotificationClick = async (notificationId) => {
     if (selectedNotificationId === notificationId) {
@@ -90,8 +101,8 @@ const NotificationList = () => {
   };
 
   return (
-    <div className="w-full max-w-[1444px] mx-auto  p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center text-[#37B874]">Notifications</h2>
+    <div className="w-full max-w-[1444px] mx-auto md:p-6 lg:p-6">
+      <h2 className="text-3xl font-bold mb-6 text-center text-[#37B874]">Notifications</h2>
       {loading ? (
         <div className="flex justify-center">
           <LoaderCircle className="animate-spin w-8 h-8 text-gray-600" />
