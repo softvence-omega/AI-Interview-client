@@ -77,8 +77,8 @@ const NotificationViewer = () => {
   };
 
   return (
-    <div className="w-full max-w-[1444px] mx-auto mt-10 mb-10 px-4 sm:px-6 lg:px-8">
-      <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-black">Notification Viewer</h2>
+    <div className="w-full max-w-[1444px] mx-auto mt-6 mb-10 px-0 sm:px-6 lg:px-8">
+      <h2 className="text-xl sm:text-3xl font-bold mb-6 text-center text-[#37B874]">Notification Viewer</h2>
       <div className="p-4 sm:p-6 rounded-lg shadow-md bg-white">
         {/* Filter Dropdown */}
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-start gap-2">
@@ -129,19 +129,19 @@ const NotificationViewer = () => {
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
                     <div className="flex-1">
                       <span className="font-medium text-gray-700">Notification ID:</span>{' '}
-                      <span className="break-all">#{notification._id}</span>
+                      <span className="break-all text-green-400">#{notification._id}</span>
                     </div>
-                    <div className="flex-1 sm:text-right">
+                    <div className="flex-1 sm:text-right text-green-400">
                       <span className="font-medium text-gray-700">Type:</span>{' '}
                       {notification.notificationType}
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 text-green-400">
                       <span className="font-medium text-gray-700">Date:</span>{' '}
                       {formatDate(notification.createdAt)}
                     </div>
-                    <div className="flex-1 sm:text-right">
+                    <div className="flex-1 sm:text-right text-green-400">
                       <span className="font-medium text-gray-700">User:</span>{' '}
                       {notification.Profile_id?.name || 'Unknown'}
                     </div>
@@ -153,7 +153,7 @@ const NotificationViewer = () => {
                     notification.isSeen ? 'bg-gray-300' : 'bg-[#37B874]'
                   } text-white rounded-full w-6 h-6 flex items-center justify-center mt-2 sm:mt-0 sm:ml-4 flex-shrink-0`}
                 >
-                  {notification.isSeen ? '0' : '1'}
+                  {notification.isSeen ? 'S' : 'U'}
                 </span>
               </div>
             ))}

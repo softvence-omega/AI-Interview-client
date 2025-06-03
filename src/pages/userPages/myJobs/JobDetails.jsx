@@ -45,7 +45,7 @@ const JobDetails = () => {
   if (!job) return <p className="text-center text-gray-600">Job not found.</p>;
 
   return (
-    <div className="text-black p-4 max-w-full mx-auto">
+    <div className="text-black md:p-4 lg:p-4 max-w-full mx-auto">
       {/* <h1 className="text-3xl font-bold mb-6 text-center">{job.title}</h1> */}
       <div className="bg-white shadow-sm rounded-xl p-6 border border-gray-200">
         <div className="mb-4">
