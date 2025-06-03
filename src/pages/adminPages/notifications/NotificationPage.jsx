@@ -6,7 +6,7 @@ const NotificationPage = () => {
   return (
     <div>
       <NotificationViewer/>
-      {/* <SendNotificationFromAdmin/> */}
+      <SendNotificationFromAdmin/>
     </div>
   )
 }

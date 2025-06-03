@@ -4,9 +4,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';
 import useApi from '../../../hook/apiHook';
-
-// Default image URL for when Profile_id.img is missing
-const DEFAULT_PROFILE_IMAGE = 'https://via.placeholder.com/48?text=User';
+import humanAvatar from "../../../assets/imgs/gray-human-icon-profile-placeholder-vector-35850819.jpg"
 
 const NotificationViewer = () => {
   const { user } = useAuth();
@@ -123,7 +121,7 @@ const NotificationViewer = () => {
                 className="border border-gray-300 rounded-lg p-4 flex flex-col sm:flex-row sm:items-start sm:space-x-4 hover:shadow-md transition-shadow"
               >
                 <img
-                  src={notification.Profile_id?.img || DEFAULT_PROFILE_IMAGE}
+                  src={notification.Profile_id?.img || humanAvatar}
                   alt="Profile"
                   className="w-12 h-12 rounded-full object-cover mb-2 sm:mb-0"
                 />
