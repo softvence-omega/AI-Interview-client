@@ -37,7 +37,7 @@ const ResumeUpload = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/resume/upload-resume`,
+        `${import.meta.env.VITE_BASE_URL}/resume/upload-resume`,
         {
           method: "POST",
           headers: {

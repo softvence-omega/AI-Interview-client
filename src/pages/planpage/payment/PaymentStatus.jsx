@@ -21,9 +21,12 @@ const PaymentStatus = () => {
           sessionId &&
           !paymentSaved // ✅ check if already saved
         ) {
-          await axios.post("http://localhost:5000/api/v1/payment/save-payment", {
-            sessionId,
-          });
+          await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/payment/save-payment`,
+            {
+              sessionId,
+            }
+          );
           console.log("✅ Payment manually saved.");
           setPaymentSaved(true); // ✅ prevent future saves
         }

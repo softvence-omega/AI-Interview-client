@@ -36,7 +36,7 @@ const PaymentManagement = () => {
   const fetchPaymentsData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/payment/getAllPayments`,
+        `${import.meta.env.VITE_BASE_URL}/payment/getAllPayments`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -53,7 +53,7 @@ const PaymentManagement = () => {
   const fetchPayments = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/payment/getAllPayments`,
+        `${import.meta.env.VITE_BASE_URL}/payment/getAllPayments`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -234,7 +234,7 @@ const PaymentManagement = () => {
       {/* Payment transaction history */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-4 lg:gap-4 mt-6">
         <div className="col-span-3">
-        <RecentTransactions user={user} />
+          <RecentTransactions user={user} />
         </div>
         <div className="col-span-1 bg-white p-4 rounded-xl shadow-md w-full h-48 mt-6">
           <h2 className="text-[16px] font-semibold text-[#212121] mb-2">

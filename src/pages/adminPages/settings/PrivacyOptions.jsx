@@ -10,7 +10,7 @@ import "react-tabs/style/react-tabs.css";
 import { useAuth } from "../../../context/AuthProvider";
 import "./styles/PrivacyOptions.css";
 
-const baseUrl = "http://localhost:5000/api/v1";
+const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
 const flattenInterviewData = (data) => {
   return data.map((item) => ({
@@ -231,15 +231,21 @@ const PrivacyOptions = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 justify-between gap-4 my-8">
         <div className="flex flex-col justify-items-center items-center bg-blue-400 text-white py-4 rounded-md">
-          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">Total Users</h2>
+          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">
+            Total Users
+          </h2>
           <p className="text-3xl font-semibold">{users?.length}</p>
         </div>
         <div className="flex flex-col justify-items-center items-center bg-orange-400 text-white py-4 rounded-md">
-          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">Total Payments</h2>
+          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">
+            Total Payments
+          </h2>
           <p className="text-3xl font-semibold">{payments?.length}</p>
         </div>
         <div className="flex flex-col justify-items-center items-center bg-teal-400 text-white py-4 rounded-md">
-          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">Total Interviews</h2>
+          <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold">
+            Total Interviews
+          </h2>
           <p className="text-3xl font-semibold">{interviews?.length}</p>
         </div>
       </div>

@@ -19,7 +19,7 @@ const UserDetailsManagement = () => {
 
   const approvalToken = user?.approvalToken ? `${user.approvalToken}` : null;
 
-  console.log(openMenuUserId)
+  console.log(openMenuUserId);
 
   // Price mapping for planIds
   const priceMapping = {
@@ -31,7 +31,7 @@ const UserDetailsManagement = () => {
   const fetchPayments = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/payment/getAllPayments`,
+        `${import.meta.env.VITE_BASE_URL}/payment/getAllPayments`,
         {
           headers: {
             Authorization: `${user?.approvalToken}`,
@@ -79,7 +79,7 @@ const UserDetailsManagement = () => {
   const handleUserAction = async (userId, field, value) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/v1/users/update-user/${userId}`,
+        `${import.meta.env.VITE_BASE_URL}/users/update-user/${userId}`,
         { [field]: value },
         {
           headers: {
@@ -135,7 +135,7 @@ const UserDetailsManagement = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/api/v1/users/userDetails/${userId}`,
+        `${import.meta.env.VITE_BASE_URL}/users/userDetails/${userId}`,
         {
           headers: { Authorization: approvalToken },
         }
@@ -272,8 +272,8 @@ const UserDetailsManagement = () => {
               handleUserAction(userId, "isBlocked", !userData.isBlocked)
             }
             className={`flex items-center gap-1 border-none px-4 py-2 rounded-lg ${
-                userData.isBlocked ? "bg-[#37B874]" : "bg-[#3A4C67]"
-              } text-sm text-white`}
+              userData.isBlocked ? "bg-[#37B874]" : "bg-[#3A4C67]"
+            } text-sm text-white`}
           >
             {userData.isBlocked ? "Activate" : "Suspend"}
             <IoIosPause

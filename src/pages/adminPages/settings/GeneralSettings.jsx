@@ -28,7 +28,7 @@ const GeneralSettings = () => {
     try {
       setLoading(true);
       const response = await axios.put(
-        `http://localhost:5000/api/v1/website/update-website`,
+        `${import.meta.env.VITE_BASE_URL}/website/update-website`,
         formData,
         {
           headers: {

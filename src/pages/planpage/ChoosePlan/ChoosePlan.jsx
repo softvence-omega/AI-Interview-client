@@ -8,7 +8,9 @@ const ChoosePlan = () => {
 
   const fetchPlans = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/plan/all-plans");
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/plan/all-plans`
+      );
       const json = await res.json();
       setPlans(json?.data || []);
     } catch (error) {
@@ -30,7 +32,7 @@ const ChoosePlan = () => {
         return;
       }
       const response = await fetch(
-        "http://localhost:5000/api/v1/payment/create-checkout-session",
+        `${import.meta.env.VITE_BASE_URL}/payment/create-checkout-session`,
         {
           method: "POST",
           headers: {
@@ -56,7 +58,7 @@ const ChoosePlan = () => {
   //   // For example, call your backend to activate free plan:
   //   try {
   //     const res = await fetch(
-  //       "http://localhost:5000/api/v1/plan/activate-free",
+  //       "${import.meta.env.VITE_BASE_URL}/plan/activate-free",
   //       {
   //         method: "POST",
   //         headers: {

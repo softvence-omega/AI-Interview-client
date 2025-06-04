@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthProvider";
 import { FaArrowRight, FaLocationDot, FaFilter } from "react-icons/fa6";
 import { SlCalender } from "react-icons/sl";
@@ -22,15 +22,19 @@ const JobList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showFilters, setShowFilters] = useState(false); // Toggle filter dropdown
+  const filterRef = useRef(null);
 
   // Fetch all jobs to derive filter options
   const fetchFilterOptions = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/v1/job/applied-job`, {
-        headers: {
-          Authorization: `${user?.user?.approvalToken}`,
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/job/applied-job`,
+        {
+          headers: {
+            Authorization: `${user?.user?.approvalToken}`,
+          },
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch jobs for filter options");
       const data = await res.json();
 
@@ -44,9 +48,7 @@ const JobList = () => {
         ),
       ]);
       setStatuses([
-        ...new Set(
-          data.map((job) => (job.isApplied ? "true" : "false"))
-        ),
+        ...new Set(data.map((job) => (job.isApplied ? "true" : "false"))),
       ]);
     } catch (err) {
       console.error("Error fetching filter options:", err.message);
@@ -69,7 +71,7 @@ const JobList = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/job/applied-job?${params.toString()}`,
+        `${import.meta.env.VITE_BASE_URL}/job/applied-job?${params.toString()}`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -109,6 +111,20 @@ const JobList = () => {
     }
   }, [search, jobs]);
 
+  // when click the outside then automatic close
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilters(false); // 👈 Step 3
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside); // 👈 Step 2
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="text-black md:p-4 lg:p-4 max-w-6xl mx-auto">
       {/* <h1 className="text-3xl font-bold mb-6 text-center">My Applied Jobs</h1> */}
@@ -134,7 +150,10 @@ const JobList = () => {
 
         {/* Filter Dropdown */}
         {showFilters && (
-          <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-10 border border-gray-200">
+          <div
+            ref={filterRef}
+            className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-10 border border-gray-200"
+          >
             <h3 className="text-lg font-semibold mb-4 text-center">Filter</h3>
             <div className="space-y-4">
               <div>
@@ -246,7 +265,9 @@ const JobList = () => {
               <p className="mb-2 text-[#AFAFAF]">{job.company}</p>
               <p className="flex items-center gap-2 text-[#3A4C67] mb-4">
                 <FaLocationDot className="bg-[#3A4C67] text-white p-[4px] rounded-full w-6 h-6" />
-                <span className="text-sm text-[#676768]">{job.location ? job.location : "Remote"}</span>
+                <span className="text-sm text-[#676768]">
+                  {job.location ? job.location : "Remote"}
+                </span>
               </p>
               <p
                 className={`w-26 text-center text-sm font-medium mb-2 rounded-lg p-2 ${

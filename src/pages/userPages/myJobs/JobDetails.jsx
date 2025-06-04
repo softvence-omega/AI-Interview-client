@@ -16,7 +16,7 @@ const JobDetails = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/job/single-job/${jobId}`,
+        `${import.meta.env.VITE_BASE_URL}/job/single-job/${jobId}`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,

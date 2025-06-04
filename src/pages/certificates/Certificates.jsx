@@ -124,7 +124,7 @@ const EducationCertificate = () => {
       console.log("Data to Submit:", dataToSubmit); // Debug log data before sending
 
       const response = await axios.put(
-        `http://localhost:5000/api/v1/resume/update-resume`,
+        `${import.meta.env.VITE_BASE_URL}/resume/update-resume`,
         { education: dataToSubmit },
         {
           headers: {
@@ -133,7 +133,7 @@ const EducationCertificate = () => {
         }
       );
 
-      console.log("API Response:", response);  // Log the complete response
+      console.log("API Response:", response); // Log the complete response
 
       if (response.status === 200) {
         toast.success("Education details saved successfully!");
@@ -143,7 +143,9 @@ const EducationCertificate = () => {
       }
     } catch (error) {
       console.error("Error during API call:", error);
-      toast.error("An error occurred while saving education details. Please try again.");
+      toast.error(
+        "An error occurred while saving education details. Please try again."
+      );
     }
   };
 
@@ -270,10 +272,7 @@ const EducationCertificate = () => {
                 </div>
               ))}
 
-              <Buttons.SubmitButton
-                title="Continue"
-                onClick={handleContinue}
-              />
+              <Buttons.SubmitButton title="Continue" onClick={handleContinue} />
             </form>
           </div>
         </div>

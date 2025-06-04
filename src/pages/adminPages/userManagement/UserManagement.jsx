@@ -27,7 +27,7 @@ const UserManagement = () => {
   const handleUserAction = async (userId, field, value) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/v1/users/update-user/${userId}`,
+        `${import.meta.env.VITE_BASE_URL}/users/update-user/${userId}`,
         { [field]: value },
         {
           headers: {
@@ -62,7 +62,8 @@ const UserManagement = () => {
       });
 
       // Check if click is outside filter dropdown
-      const clickedOutsideFilter = filterRef.current && !filterRef.current.contains(event.target);
+      const clickedOutsideFilter =
+        filterRef.current && !filterRef.current.contains(event.target);
 
       // Close menus if click is outside all user action menus
       if (clickedOutsideMenus) {
@@ -88,7 +89,7 @@ const UserManagement = () => {
   const fetchData = async () => {
     try {
       const userRes = await axios.get(
-        "http://localhost:5000/api/v1/users/getAlluser",
+        `${import.meta.env.VITE_BASE_URL}/users/getAlluser`,
         {
           headers: {
             Authorization: `${user?.approvalToken}`,
@@ -100,7 +101,7 @@ const UserManagement = () => {
       let profileRes;
       try {
         profileRes = await axios.get(
-          "http://localhost:5000/api/v1/users/all-profiles",
+          `${import.meta.env.VITE_BASE_URL}/users/all-profiles`,
           {}
         );
         console.log("Raw profiles response:", profileRes.data);
@@ -128,16 +129,28 @@ const UserManagement = () => {
       }));
       console.log("Merged users with profiles:", usersWithProfiles);
 
-      setPlans([...new Set(usersWithProfiles.map((u) => u.profile?.currentPlan || "No Profile"))]);
-      setStatuses([...new Set(usersWithProfiles.map((u) => (u.isLoggedIn ? "Active" : "Inactive")))]);
+      setPlans([
+        ...new Set(
+          usersWithProfiles.map((u) => u.profile?.currentPlan || "No Profile")
+        ),
+      ]);
+      setStatuses([
+        ...new Set(
+          usersWithProfiles.map((u) => (u.isLoggedIn ? "Active" : "Inactive"))
+        ),
+      ]);
       setRoles([...new Set(usersWithProfiles.map((u) => u.role))]);
 
       let filtered = usersWithProfiles;
       if (plan) {
-        filtered = filtered.filter((u) => (u.profile?.currentPlan || "No Profile") === plan);
+        filtered = filtered.filter(
+          (u) => (u.profile?.currentPlan || "No Profile") === plan
+        );
       }
       if (status) {
-        filtered = filtered.filter((u) => (u.isLoggedIn ? "Active" : "Inactive") === status);
+        filtered = filtered.filter(
+          (u) => (u.isLoggedIn ? "Active" : "Inactive") === status
+        );
       }
       if (role) {
         filtered = filtered.filter((u) => u.role === role);
@@ -177,10 +190,14 @@ const UserManagement = () => {
     } else {
       let filtered = users;
       if (plan) {
-        filtered = filtered.filter((u) => (u.profile?.currentPlan || "No Profile") === plan);
+        filtered = filtered.filter(
+          (u) => (u.profile?.currentPlan || "No Profile") === plan
+        );
       }
       if (status) {
-        filtered = filtered.filter((u) => (u.isLoggedIn ? "Active" : "Inactive") === status);
+        filtered = filtered.filter(
+          (u) => (u.isLoggedIn ? "Active" : "Inactive") === status
+        );
       }
       if (role) {
         filtered = filtered.filter((u) => u.role === role);

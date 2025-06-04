@@ -195,7 +195,7 @@ const Experience = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/v1/resume/update-resume`,
+        `${import.meta.env.VITE_BASE_URL}/resume/update-resume`,
         { experience: dataToSubmit },
         {
           headers: {
