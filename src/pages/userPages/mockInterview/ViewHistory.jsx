@@ -19,7 +19,7 @@ const ViewHistory = ({ history }) => {
   }
 
   return (
-    <div className="w-full px-6 py-8 bg-black">
+    <div className="w-full px-6 py-8">
       <div className="bg-white p-6 rounded-lg shadow">
         <h1 className="text-center text-2xl font-bold mb-4 text-[#293649]">
           You Have Completed this Interview
