@@ -20,12 +20,12 @@ const RecentTransactions = ({ user }) => {
     const fetchData = async () => {
       try {
         const [paymentRes, userRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/v1/payment/getAllPayments", {
+          axios.get(`${import.meta.env.VITE_BASE_URL}/payment/getAllPayments`, {
             headers: {
               Authorization: `${user?.user?.approvalToken}`,
             },
           }),
-          axios.get("http://localhost:5000/api/v1/users/getAlluser", {
+          axios.get(`${import.meta.env.VITE_BASE_URL}/users/getAlluser`, {
             headers: {
               Authorization: `${user?.user?.approvalToken}`,
             },

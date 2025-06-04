@@ -15,7 +15,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import { Link } from "react-router-dom";
 import RecentTransactions from "./RecentTransactions";
 
-// const baseUrl = "http://localhost:5000/api/v1"; // Replace with your base URL
+// const baseUrl = "${import.meta.env.VITE_BASE_URL}"; // Replace with your base URL
 // const userEndpoint = "/users/getAlluser";
 
 const Dashboard = () => {
@@ -29,7 +29,7 @@ const Dashboard = () => {
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/users/getAlluser`,
+        `${import.meta.env.VITE_BASE_URL}/users/getAlluser`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -49,7 +49,7 @@ const Dashboard = () => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/v1/users/getProfile`,
+          `${import.meta.env.VITE_BASE_URL}/users/getProfile`,
           {
             headers: {
               Authorization: user?.user?.approvalToken,
@@ -68,7 +68,7 @@ const Dashboard = () => {
   const fetchInterviews = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/video/getAllInterviews`,
+        `${import.meta.env.VITE_BASE_URL}/video/getAllInterviews`,
         {
           headers: {
             Authorization: `${user?.user.approvalToken}`,
@@ -87,7 +87,7 @@ const Dashboard = () => {
   const fetchPayments = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/payment/getAllPayments`,
+        `${import.meta.env.VITE_BASE_URL}/payment/getAllPayments`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -400,7 +400,9 @@ const Dashboard = () => {
     <div className="md:p-6 lg:p-6 text-gray-800">
       <div className="flex justify-between items-center gap-6">
         <div>
-          <h1 className="text-2xl md:text-3xl lg:text-3xl font-bold mb-6">Admin Dashboard</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-3xl font-bold mb-6">
+            Admin Dashboard
+          </h1>
 
           <div className="block md:flex lg:flex items-center gap-3 my-6">
             {/* Avatar Stack */}
@@ -428,14 +430,14 @@ const Dashboard = () => {
             </span>
           </div>
         </div>
-        <div>
+        {/* <div>
           <Link
             to="/"
             className="btn border-none rounded-lg bg-[#37B874] text-white text-sm md:text-md lg:text-lg font-medium w-24 md:w-32 lg:w-42 h-12"
           >
             Add Interview
           </Link>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 md:gap-6 lg:gap-6">
@@ -508,7 +510,9 @@ const Dashboard = () => {
         </div> */}
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-1 gap-6">
           <div className="bg-white p-4 rounded-xl shadow">
-            <h3 className="font-semibold mb-4 text-[#676768]">User Growth Chart</h3>
+            <h3 className="font-semibold mb-4 text-[#676768]">
+              User Growth Chart
+            </h3>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={userGrowthData}>
                 <XAxis
@@ -539,7 +543,9 @@ const Dashboard = () => {
           </div>
 
           <div className="bg-white p-4 rounded-xl shadow">
-            <h3 className="font-semibold mb-4 text-[#676768]">Revenue Trends Chart</h3>
+            <h3 className="font-semibold mb-4 text-[#676768]">
+              Revenue Trends Chart
+            </h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={revenueTrendsData} barCategoryGap={40} barGap={5}>
                 <XAxis
@@ -562,11 +568,10 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Payment transactions history */}
-        
       </div>
       <div className="">
-          <RecentTransactions user={user} />
-        </div>
+        <RecentTransactions user={user} />
+      </div>
     </div>
   );
 };

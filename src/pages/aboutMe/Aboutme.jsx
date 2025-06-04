@@ -162,7 +162,7 @@ const AboutMe = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/v1/resume/update-resume`,
+        `${import.meta.env.VITE_BASE_URL}/resume/update-resume`,
         modifyIncommingData,
         {
           headers: {
@@ -178,7 +178,7 @@ const AboutMe = () => {
         toast.error("Error updating resume!");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -188,7 +188,9 @@ const AboutMe = () => {
       <div className="flex flex-col lg:flex-row w-screen min-h-screen items-center justify-center px-4 pt-24 gap-12 max-w-[1440px]">
         {/* Left Section */}
         <div className="flex flex-col items-center text-center space-y-6 flex-1">
-          <h1 className="text-4xl font-bold">Hello {user.user.userData.name}!</h1>
+          <h1 className="text-4xl font-bold">
+            Hello {user.user.userData.name}!
+          </h1>
           <h2 className="text-3xl font-semibold">Welcome</h2>
           <img
             src={botImg}
@@ -200,7 +202,9 @@ const AboutMe = () => {
         {/* Right Section */}
         <div className="flex-1 flex justify-center">
           <div className="w-full max-w-md">
-            <h3 className="text-2xl font-semibold mb-6 text-center">About Me</h3>
+            <h3 className="text-2xl font-semibold mb-6 text-center">
+              About Me
+            </h3>
             <form className="space-y-4">
               {/* City */}
               <div>
@@ -218,7 +222,9 @@ const AboutMe = () => {
 
               {/* Country Select */}
               <div>
-                <label className="block text-sm font-medium mb-1">Country</label>
+                <label className="block text-sm font-medium mb-1">
+                  Country
+                </label>
                 <Select
                   options={countryOptions}
                   value={formData.country}

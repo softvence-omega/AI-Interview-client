@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { throttle } from "lodash";
 import Buttons from "./AllButtons";
-import img1 from "../assets/logos/inprep.png";
+// import img1 from "../assets/logos/inprep.png";
 import { TiThMenu } from "react-icons/ti";
 import { useAuth } from "../context/AuthProvider";
+import axios from "axios";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -12,6 +13,7 @@ const Navbar = () => {
   // const location = useLocation();
   // const currentPath = location.pathname;
   const [scrolled, setScrolled] = useState(false);
+  const [websiteData, setWebsiteData] = useState(null);
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -31,6 +33,13 @@ const Navbar = () => {
     { name: "Pricing", to: "/pricing" },
     { name: "About US", to: "/About-US" },
     { name: "Contact Us", to: "/Contact-Us" },
+
+
+    ...(user?.userData?.role === 'user'
+      ? [{ name: "Dashboard", to: "/userDashboard/mockInterview" }]
+      : user?.userData?.role === 'admin'
+      ? [{ name: "Dashboard", to: "/userDashboard/dashboard" }]
+      : []),
   ];
 
   // let authButtonText = "Log In";
@@ -50,6 +59,29 @@ const Navbar = () => {
     navigate("/login");
     window.location.href = "/login"
   }
+
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      setScrolled(window.scrollY > 50);
+    }, 100);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  
+  useEffect(() => {
+    const fetchWebsiteData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/website/get-website`);
+        setWebsiteData(response.data?.data); // adjust based on actual response shape
+      } catch (error) {
+        console.error("Error fetching website data:", error);
+      }
+    };
+  
+    fetchWebsiteData();
+  }, []);
+  
 
   return (
     <div className="fixed top-0 left-0 w-full z-[1000]">
@@ -82,8 +114,11 @@ const Navbar = () => {
                 ))}
               </ul>
             </div>
-            <Link to="/">
+            {/* <Link to="/">
               <img src={img1} alt="logo" className="h-[40px] w-[118px]" />
+            </Link> */}
+            <Link to="/">
+              <img src={websiteData?.logoUrl} alt="logo" className="h-[40px] w-[118px]" />
             </Link>
           </div>
 

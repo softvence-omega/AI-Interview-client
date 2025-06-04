@@ -12,7 +12,9 @@ const Subscription = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/plan/all-plans");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/plan/all-plans`
+      );
       setPlans(response.data.data);
     } catch (error) {
       console.error("Failed to fetch plans:", error);
@@ -39,7 +41,8 @@ const Subscription = () => {
         Subscription and Payment Settings
       </h1>
       <p className="text-[#3A4C67] text-[12px] mt-4">
-        <span className="text-[#878788]">Settings</span> / Subscription and Payment Settings
+        <span className="text-[#878788]">Settings</span> / Subscription and
+        Payment Settings
       </p>
 
       <div className="flex justify-end items-center gap-4 mb-6 mt-6">
@@ -59,11 +62,15 @@ const Subscription = () => {
                 <h3 className="text-[24px] font-bold mb-2">{plan.name}</h3>
                 <p className="text-[#676768] text-[16px]">{plan.description}</p>
                 <h3 className="text-[16px] font-bold mt-6">
-                  <span className="text-[#37B874] text-3xl">${plan.priceMonthly}</span>
+                  <span className="text-[#37B874] text-3xl">
+                    ${plan.priceMonthly}
+                  </span>
                   {plan.priceLabel}
                 </h3>
               </div>
-              <h3 className="text-[20px] font-bold mt-4 mb-2">What's included</h3>
+              <h3 className="text-[20px] font-bold mt-4 mb-2">
+                What's included
+              </h3>
               <ul className="flex flex-col gap-2 text-[16px] text-[#3A4C67] font-medium">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2">

@@ -46,7 +46,7 @@ const EditPlanModal = ({ isOpen, onRequestClose, plan, onUpdated }) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/api/v1/plan/update-plan/${plan._id}`,
+        `${import.meta.env.VITE_BASE_URL}/plan/update-plan/${plan._id}`,
         formData,
         {
           headers: {
@@ -69,7 +69,9 @@ const EditPlanModal = ({ isOpen, onRequestClose, plan, onUpdated }) => {
       className="bg-white text-black p-8 max-w-2xl mx-auto my-10 rounded-xl shadow-lg border border-[#37B874] max-h-[90vh] overflow-y-auto"
       overlayClassName="fixed inset-0 bg-white/10 backdrop-blur-sm flex justify-center items-start z-50 mx-2 md:mx-0 lg:mx-0"
     >
-      <h2 className="text-2xl text-center font-semibold mb-6 text-[#37B874]">Edit Plan</h2>
+      <h2 className="text-2xl text-center font-semibold mb-6 text-[#37B874]">
+        Edit Plan
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <input
@@ -103,7 +105,9 @@ const EditPlanModal = ({ isOpen, onRequestClose, plan, onUpdated }) => {
         />
 
         <div>
-          <label className="font-semibold text-[#37B874] mb-2 block">Features</label>
+          <label className="font-semibold text-[#37B874] mb-2 block">
+            Features
+          </label>
           {formData.features.map((feature, i) => (
             <div key={i} className="flex items-center gap-2 mb-2">
               <input
@@ -112,7 +116,11 @@ const EditPlanModal = ({ isOpen, onRequestClose, plan, onUpdated }) => {
                 className="border border-[#37B874] p-2 w-full rounded-md"
                 placeholder={`Feature ${i + 1}`}
               />
-              <button type="button" onClick={() => removeFeature(i)} className="text-red-600">
+              <button
+                type="button"
+                onClick={() => removeFeature(i)}
+                className="text-red-600"
+              >
                 <Trash2 size={18} />
               </button>
             </div>

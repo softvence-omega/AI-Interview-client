@@ -80,6 +80,9 @@ const UserOrAdminDBLayout = () => {
 
   const handleNavigation = (path) => {
     navigate(`/userDashboard/${path}`);
+    if(window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleLogout = () => {

@@ -42,7 +42,7 @@ const Insights = () => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/v1/graph/average-data",
+          `${import.meta.env.VITE_BASE_URL}/graph/average-data`,
           {
             headers: {
               Authorization: `${user.user.approvalToken}`,
@@ -62,7 +62,7 @@ const Insights = () => {
   // const handleDownload = () => {
   //   const token = user.user.approvalToken;
   //   window.open(
-  //     `http://localhost:5000/api/v1/graph/download-report?token=${token}`,
+  //     `${import.meta.env.VITE_BASE_URL}/graph/download-report?token=${token}`,
   //     "_blank"
   //   );
   // };
@@ -207,7 +207,7 @@ const Insights = () => {
       <div className="flex flex-wrap justify-center gap-6">
         {metrics.map((metric) => {
           const score = totalAverage[metric.key] || 0;
-          // 
+          //
           const diff = differenceBetweenTotalAndWithoutLast?.[metric.key] ?? 0;
 
           return (
