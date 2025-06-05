@@ -15,6 +15,8 @@ const NotificationViewer = () => {
   const [selectedType, setSelectedType] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Fetch notifications from the API
   const fetchNotifications = async (type = '') => {
@@ -68,6 +70,7 @@ const NotificationViewer = () => {
   // Handle notification type filter change
   const handleTypeChange = (e) => {
     setSelectedType(e.target.value);
+    setCurrentPage(1); // Reset page when filter changes
   };
 
   // Format date to YYYY-MM-DD
@@ -75,6 +78,12 @@ const NotificationViewer = () => {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
   };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentNotifications = notifications.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(notifications.length / itemsPerPage);
 
   return (
     <div className="w-full max-w-[1444px] mx-auto mt-6 mb-10 px-0 sm:px-6 lg:px-8">
@@ -114,50 +123,81 @@ const NotificationViewer = () => {
           <p className="text-center text-gray-500">No notifications found.</p>
         )}
         {!loading && !error && notifications.length > 0 && (
-          <div className="space-y-4">
-            {notifications.map((notification) => (
-              <div
-                key={notification._id}
-                className="border border-gray-300 rounded-lg p-4 flex flex-col sm:flex-row sm:items-start sm:space-x-4 hover:shadow-md transition-shadow"
-              >
-                <img
-                  src={notification.Profile_id?.img || humanAvatar}
-                  alt="Profile"
-                  className="w-12 h-12 rounded-full object-cover mb-2 sm:mb-0"
-                />
-                <div className="flex-1">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
-                    <div className="flex-1">
-                      <span className="font-medium text-gray-700">Notification ID:</span>{' '}
-                      <span className="break-all text-green-400">#{notification._id}</span>
-                    </div>
-                    <div className="flex-1 sm:text-right text-green-400">
-                      <span className="font-medium text-gray-700">Type:</span>{' '}
-                      {notification.notificationType}
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
-                    <div className="flex-1 text-green-400">
-                      <span className="font-medium text-gray-700">Date:</span>{' '}
-                      {formatDate(notification.createdAt)}
-                    </div>
-                    <div className="flex-1 sm:text-right text-green-400">
-                      <span className="font-medium text-gray-700">User:</span>{' '}
-                      {notification.Profile_id?.name || 'Unknown'}
-                    </div>
-                  </div>
-                  <p className="text-gray-600 break-words">{notification.notificationDetail}</p>
-                </div>
-                <span
-                  className={`${
-                    notification.isSeen ? 'bg-gray-300' : 'bg-[#37B874]'
-                  } text-white rounded-full w-6 h-6 flex items-center justify-center mt-2 sm:mt-0 sm:ml-4 flex-shrink-0`}
+          <>
+            <div className="space-y-4">
+              {currentNotifications.map((notification) => (
+                <div
+                  key={notification._id}
+                  className="border border-gray-300 rounded-lg p-4 flex flex-col sm:flex-row sm:items-start sm:space-x-4 hover:shadow-md transition-shadow"
                 >
-                  {notification.isSeen ? 'S' : 'U'}
-                </span>
-              </div>
-            ))}
-          </div>
+                  <img
+                    src={notification.Profile_id?.img || humanAvatar}
+                    alt="Profile"
+                    className="w-12 h-12 rounded-full object-cover mb-2 sm:mb-0"
+                  />
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
+                      <div className="flex-2">
+                        <span className="font-medium text-gray-700">Notification ID:</span>{' '}
+                        <span className="break-all text-green-400">#{notification._id}</span>
+                      </div>
+                      <div className="flex-1 sm:text-right text-green-400">
+                        <span className="font-medium text-gray-700">Type:</span>{' '}
+                        {notification.notificationType}
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
+                      <div className="flex-1 text-green-400">
+                        <span className="font-medium text-gray-700">Date:</span>{' '}
+                        {formatDate(notification.createdAt)}
+                      </div>
+                      <div className="flex-1 sm:text-right text-green-400">
+                        <span className="font-medium text-gray-700">User:</span>{' '}
+                        {notification.Profile_id?.name || 'Unknown'}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 break-words">{notification.notificationDetail}</p>
+                  </div>
+                  <span
+                    className={`${
+                      notification.isSeen ? 'bg-gray-300' : 'bg-[#37B874]'
+                    } text-white rounded-full w-6 h-6 flex items-center justify-center mt-2 sm:mt-0 sm:ml-4 flex-shrink-0`}
+                  >
+                    {notification.isSeen ? 'S' : 'U'}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-6 space-x-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-200 text-black rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`px-3 py-2 rounded ${
+                    currentPage === index + 1 ? 'bg-[#37B874] text-white' : 'bg-gray-200'
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-200 text-black rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

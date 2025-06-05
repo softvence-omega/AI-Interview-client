@@ -89,7 +89,7 @@ const UserManagement = () => {
   const fetchData = async () => {
     try {
       const userRes = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/users/getAlluser`,
+        `${import.meta.env.VITE_BASE_URL}/users/getAllUsersWithoutDeleted`,
         {
           headers: {
             Authorization: `${user?.approvalToken}`,

@@ -90,7 +90,7 @@ const MockInterview = () => {
   const InterviewSection = ({ title, interviews }) =>
     interviews.length > 0 && (
       <div className="w-full mb-16">
-        <h1 className="text-2xl font-bold mb-4 text-[#37B874] text-center">
+        <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold mb-4 text-[#37B874] text-center tracking-wide">
           {title}
         </h1>
         {interviews.length === 0 ? (
