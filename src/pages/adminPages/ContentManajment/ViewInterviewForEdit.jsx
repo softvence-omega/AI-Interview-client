@@ -114,8 +114,8 @@ const ViewInterviewForEdit = () => {
 
   // Question Bank Card Component
   const QuestionBankCard = ({ questionBank }) => (
-    <div className="bg-white mb-5">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition block md:flex lg:flex items-center justify-between">
+    <div className="bg-white mb-5 hover:shadow-md rounded-lg">
+      <div className="p-4 rounded-lg shadow border-1 border-gray-300 hover:border-1 hover:border-[#37B874] transition block md:flex lg:flex items-center justify-between">
         <div className="flex items-center gap-6 mb-6 md:mb-0 lg:mb-0">
           {questionBank.img ? (
             <img
@@ -137,14 +137,14 @@ const ViewInterviewForEdit = () => {
         </div>
         <div className="flex items-center gap-4">
           <button
-            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] text-white rounded-md hover:bg-[#3A4C67] transition"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] text-white rounded-md hover:bg-[#3A4C67] transition hover:shadow-md cursor-pointer"
             onClick={() => navigate(`editPosition/${questionBank._id}`)}
           >
             <FaPen />
             <h6>Edit</h6>
           </button>
           <button
-            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] text-white rounded-md"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] text-white rounded-md hover:shadow-md cursor-pointer"
             onClick={() => handleQuestionBankDelete(questionBank._id)}
           >
             DELETE
