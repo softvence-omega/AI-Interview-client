@@ -557,6 +557,7 @@ const StartInterviewPage = () => {
               videoControllerRefCallback={videoControllerRefCallback}
               isProcessingRef={isProcessingRef}
               setAiResponse={setAiResponse}
+              handleNextQuestion={handleNextQuestion}
             />
             <ButtonControls
               isVideoState={isVideoState}

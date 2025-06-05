@@ -54,7 +54,7 @@ const ResumeUpload = () => {
       }
 
       toast.success("Resume uploaded successfully!");
-      setTimeout(() => navigate("/userDashboard"), 1500);
+      setTimeout(() => navigate("/userDashboard/mockInterview"), 1500);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error(`Upload failed: ${error.message}`);

@@ -103,7 +103,7 @@ const ViewAllInterviews = () => {
   // Reusable Interview Card Component
   const InterviewCard = ({ interview }) => (
     <div className="bg-white mb-5">
-      <div className="p-4 rounded-lg shadow hover:bg-gray-100 transition block md:flex lg:flex items-center justify-between">
+      <div className="p-4 rounded-lg shadow border-1 border-gray-100 hover:shadow-lg hover:border-1 hover:border-[#37B874] transition block md:flex lg:flex items-center justify-between">
         <div className="flex flex-row items-center gap-6 mb-6 md:mb-0 lg:mb-0">
           {interview.img ? (
             <img
@@ -130,7 +130,7 @@ const ViewAllInterviews = () => {
 
         <div className="flex items-center gap-5 text-white">
           <button
-            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] rounded-md"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#Ef4444] rounded-md cursor-pointer hover:shadow-lg"
             onClick={() => handleDeleteInterview(interview._id)}
           >
             <RiDeleteBin5Fill />
@@ -138,7 +138,7 @@ const ViewAllInterviews = () => {
           </button>
 
           <button
-            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] rounded-md"
+            className="flex justify-center items-center gap-1 h-[40px] w-[130px] bg-[#3A4C67] rounded-md cursor-pointer hover:shadow-lg"
             onClick={() => navigate(`view_Interview_To_Edit/${interview._id}`)}
           >
             <FaPen />

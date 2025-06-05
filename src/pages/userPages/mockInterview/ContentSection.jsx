@@ -100,6 +100,7 @@ const ContentSection = ({
   videoControllerRefCallback,
   isProcessingRef,
   setAiResponse,
+  handleNextQuestion
 }) => (
   <div className="h-full w-full mx-auto">
     {isVideoState ? (
@@ -109,7 +110,7 @@ const ContentSection = ({
           <LoadingCircle />
         </div>
       ) : (
-        <div className="w-full h-[80%] border-[1px] rounded-sm">
+        <div className="w-full h-[80%] border-[1px] border-[#37B874] rounded-sm p-2">
           <p className="text-lg mb-4">
             {ongoingQuestion.time_to_answer &&
               `${Math.floor(Number(ongoingQuestion.time_to_answer) / 60)} minute(s)`}
@@ -123,6 +124,7 @@ const ContentSection = ({
             isProcessingRef={isProcessingRef}
             setAiResponse={setAiResponse}
             aiResponse={aiResponse}
+            handleNextQuestion={handleNextQuestion}
           />
         </div>
       )
@@ -134,7 +136,8 @@ const ContentSection = ({
             currentQuestionIndex={currentQuestionIndex}
           />
         ) : (
-          <div className="flex justify-center items-center">
+          <div className="flex gap-2 justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid" />
             <p>Processing video analysis...</p>
             <LoadingCircle />
           </div>

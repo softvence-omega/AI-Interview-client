@@ -29,7 +29,7 @@ const Dashboard = () => {
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/users/getAlluser`,
+        `${import.meta.env.VITE_BASE_URL}/users/getAllUsersWithoutDeleted`,
         {
           headers: {
             Authorization: `${user?.user?.approvalToken}`,
@@ -122,7 +122,7 @@ const Dashboard = () => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    return user.isDeleted === false && updatedAt && updatedAt >= sevenDaysAgo;
+    return user.isDeleted === false && updatedAt && updatedAt >= sevenDaysAgo && user.isBlocked === false;
   });
 
   // calculate user increase in monthly

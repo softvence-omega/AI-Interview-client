@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ const SendNotificationFromAdmin = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -104,16 +105,29 @@ const SendNotificationFromAdmin = () => {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [])
+
   return (
     <div className="max-w-3xl mx-auto mt-8 mb-10 px-0 md:px-4 lg:px-4">
       <h2 className="text-xl sm:text-3xl font-bold mb4 text-center text-[#37B874] mb-4">Create New Notification</h2>
 
       <form onSubmit={handleSubmit} className="bg-white text-black  p-6 rounded-lg shadow-md space-y-6">
         {/* Dropdown */}
-        <div className="relative">
-          <label className="block mb-2 font-medium">Recipients</label>
+        <div className="relative" ref={dropdownRef}>
+          <label className="block mb-2 font-medium text-gray-700">Recipients</label>
           <div
-            className="border rounded p-2 cursor-pointer flex justify-between items-center"
+            className="border-1 border-gray-300 rounded p-2 cursor-pointer flex justify-between items-center"
             onClick={() => setDropdownOpen((prev) => !prev)}
           >
             <span className="text-gray-800">
@@ -132,7 +146,7 @@ const SendNotificationFromAdmin = () => {
           </div>
 
           {dropdownOpen && (
-            <div className="absolute z-10 mt-1 w-full border bg-white rounded shadow max-h-72 overflow-y-auto">
+            <div className="absolute z-10 mt-1 w-full border-1 border-gray-300 bg-white rounded shadow max-h-72 overflow-y-auto">
               <div
                 className={`p-2 hover:bg-gray-100 cursor-pointer ${
                   selectedRecipients.includes('all') ? 'font-bold' : ''
@@ -144,7 +158,7 @@ const SendNotificationFromAdmin = () => {
               {users.map((user) => (
                 <div
                   key={user._id}
-                  className={`p-2 hover:bg-gray-100 cursor-pointer ${
+                  className={`p-2 hover:bg-[#37B874] hover:text-[#FFF] cursor-pointer ${
                     selectedRecipients.includes(user._id) ? 'font-bold text-green-600' : ''
                   }`}
                   onClick={() => toggleRecipient(user._id)}
