@@ -129,12 +129,14 @@ const Settings = () => {
   return (
     <Container>
       <div className="min-h-screen flex justify-center w-full max-w-[1444px] mx-auto text-gray-900">
-        <div className="md:w-[80%] lg:w-[80%] space-y-6">
-          <h1 className="text-3xl font-bold mb-6 text-center">Settings</h1>
-          <h2 className="text-2xl font-bold mb-4 text-center">Account Settings</h2>
+        <div className="md:w-[80%] lg:w-[80%] space-y-6 mt-10">
+          {
+            user?.role === "user" &&(<h1 className="text-3xl font-bold mb-6 text-center">Settings</h1>)
+          }
+          <h2 className="text-3xl font-bold mb-4 text-center">Account Settings</h2>
 
           {/* Change Password Section */}
-          <div className="p-6 rounded-lg shadow-md bg-white">
+          <div className="p-6 rounded-lg shadow-md bg-white w-full">
             <h3 className="text-xl font-semibold mb-4">Change Password</h3>
             <form onSubmit={onChangePasswordSubmit} className="space-y-4">
               {/* Old Password */}
@@ -201,7 +203,7 @@ const Settings = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="text-center">
+              <div className="text-center flex justify-center items-center">
                 <button
                   type="submit"
                   disabled={loading}
@@ -214,21 +216,22 @@ const Settings = () => {
             </form>
           </div>
 
-          {/* Delete Account Section */}
-          <div className="p-6 rounded-lg shadow-md bg-white">
-            <h3 className="text-xl font-semibold mb-4">Delete Account</h3>
-            <p className="mb-4">Deleting your account is permanent and cannot be undone.</p>
-            <div className="text-center">
-              <button
-                onClick={handleDeleteAccount}
-                disabled={loading}
-                className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                {loading ? <LoaderCircle className="animate-spin w-4 h-4" /> : null}
-                Delete Account
-              </button>
+          {user?.role === 'user' && (
+            <div className="p-6 rounded-lg shadow-md bg-white">
+              <h3 className="text-xl font-semibold mb-4">Delete Account</h3>
+              <p className="mb-4 text-gray-600">Deleting your account is permanent and cannot be undone.</p>
+              <div className="text-center">
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={loading}
+                  className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                >
+                  {loading ? <LoaderCircle className="animate-spin w-4 h-4" /> : null}
+                  Delete Account
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
