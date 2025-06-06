@@ -42,6 +42,8 @@ import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
 import PrivateRoute from "../privateRoutes/PrivateRoute";
 import Unauthorized from "../privateRoutes/Unauthorized";
+import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage";
+
 
 
 const Router = () => {
@@ -173,6 +175,14 @@ const Router = () => {
           element={
             <PrivateRoute allowedRoles={["admin"]}>
               <UserManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="user-management/create-admin"
+          element={
+            <PrivateRoute allowedRoles={["admin"]}>
+              <CreateAdminPage />
             </PrivateRoute>
           }
         />

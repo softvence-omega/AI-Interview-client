@@ -3,7 +3,7 @@ import axios from "axios";
 import { MoreVertical } from "lucide-react";
 import { FaFilter } from "react-icons/fa6";
 import { useAuth } from "../../../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserManagement = () => {
   const { user } = useAuth();
@@ -219,6 +219,8 @@ const UserManagement = () => {
             as needed.
           </p>
         </div>
+        <Link to="create-admin">
+        <button className="bg-[#37B874] text-white p-4 rounded-xl">Create Admin</button></Link>
       </div>
 
       <div className="mt-8">
