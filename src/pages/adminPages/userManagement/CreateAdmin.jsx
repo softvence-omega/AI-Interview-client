@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import useApi from '../../../hook/apiHook';
 
 const CreateAdmin = ({ setNewAdminOTPToken }) => {
+  const { request } = useApi();
   const initialFormData = {
     name: '',
     phone: '',
@@ -10,96 +11,51 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
     confirmPassword: '',
     email: '',
     role: 'admin',
+    aggriedToTerms: true,
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { request } = useApi();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validateForm = () => {
-    if (!formData.name.trim()) return 'Name is required';
-    if (!formData.email.trim()) return 'Email is required';
-    if (!formData.phone.trim()) return 'Phone number is required';
-    if (!formData.password) return 'Password is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return 'Invalid email format';
-    return null;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationError = validateForm();
-
-    if (validationError) {
-      setError(validationError);
-      toast.error(validationError);
-      return;
-    }
-
-    // Construct JSON payload directly
-    const payload = {
-      name: formData.name,
-      phone: formData.phone,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword, // Include confirmPassword
-      email: formData.email,
-      role: formData.role,
-      aggriedToTerms: true,
-      OTPverified: false, // OTP verification handled by OtpCrossCheck
-    };
 
     try {
-      setLoading(true);
-      setError(null);
-
-      // Log payload and headers for debugging
-      console.log('Submitting payload:', payload);
-      console.log('Request headers:', { 'Content-Type': 'application/json' });
-
       const res = await request({
         endpoint: '/users/createUser',
         method: 'POST',
-        data: payload
+        body: {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          role: formData.role,
+          aggriedToTerms: formData.aggriedToTerms,
+        },
       });
 
-      if (res.ok) {
-        toast.success('Admin creation initiated! Please verify OTP.');
-        setFormData(initialFormData); // Reset form
-        console.log('API response:', res.data);
-        if (res.data?.token) {
-          setNewAdminOTPToken(res.data.token); // Set OTP token for OtpCrossCheck
-        } else {
-          toast.error('No OTP token received. Please try again.');
-        }
+      if (res.ok && res.data?.data?.token) {
+        setNewAdminOTPToken(res.data.data.token);
+        toast.success('✅ Check your email for OTP!');
+        setFormData(initialFormData);
       } else {
-        throw new Error(res.message || 'Failed to create admin');
+        toast.error(res.data.message || 'Admin creation failed');
+        console.error('Admin creation failed', res);
       }
     } catch (err) {
-      const errorMessage = err.message || 'Failed to create admin';
-      setError(errorMessage);
-      toast.error('Error creating admin.', {
-        description: errorMessage,
-      });
-      console.error('Create admin error:', err);
-    } finally {
-      setLoading(false);
+      console.error('Admin creation error', err);
+      toast.error('An error occurred during admin creation.');
     }
   };
 
   return (
     <div className="text-black w-full px-4 py-8 max-w-lg mx-auto bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Create Admin</h2>
-
-      {error && (
-        <p className="text-red-500 text-sm mb-4 bg-red-50 p-3 rounded-md transition-all duration-300">
-          {error}
-        </p>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
@@ -114,6 +70,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
             onChange={handleChange}
             required
             className="mt-1 p-3 w-full border border-gray-300 rounded-md hover:border-[#37B874] focus:border-[#37B874] focus:ring-2 focus:ring-[#37B874] transition duration-200"
+            placeholder="Your name"
           />
         </div>
         <div>
@@ -128,6 +85,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
             onChange={handleChange}
             required
             className="mt-1 p-3 w-full border border-gray-300 rounded-md hover:border-[#37B874] focus:border-[#37B874] focus:ring-2 focus:ring-[#37B874] transition duration-200"
+            placeholder="you@example.com"
           />
         </div>
         <div>
@@ -142,6 +100,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
             onChange={handleChange}
             required
             className="mt-1 p-3 w-full border border-gray-300 rounded-md hover:border-[#37B874] focus:border-[#37B874] focus:ring-2 focus:ring-[#37B874] transition duration-200"
+            placeholder="Your phone number"
           />
         </div>
         <div>
@@ -156,6 +115,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
             onChange={handleChange}
             required
             className="mt-1 p-3 w-full border border-gray-300 rounded-md hover:border-[#37B874] focus:border-[#37B874] focus:ring-2 focus:ring-[#37B874] transition duration-200"
+            placeholder="Create a password"
           />
         </div>
         <div>
@@ -170,6 +130,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
             onChange={handleChange}
             required
             className="mt-1 p-3 w-full border border-gray-300 rounded-md hover:border-[#37B874] focus:border-[#37B874] focus:ring-2 focus:ring-[#37B874] transition duration-200"
+            placeholder="Confirm your password"
           />
         </div>
         <div>
@@ -187,34 +148,9 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
         </div>
         <button
           type="submit"
-          disabled={loading}
-          className={`w-full py-3 px-4 bg-[#37B874] text-white rounded-md hover:bg-[#2ea664] transition duration-200 hover:shadow-md flex items-center justify-center ${
-            loading ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className="w-full py-3 px-4 bg-[#37B874] text-white rounded-md hover:bg-[#2ea664] transition duration-200 hover:shadow-md"
         >
-          {loading ? (
-            <svg
-              className="animate-spin h-5 w-5 mr-2 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              ></path>
-            </svg>
-          ) : null}
-          {loading ? 'Creating...' : 'Create Admin'}
+          Create Admin
         </button>
       </form>
     </div>

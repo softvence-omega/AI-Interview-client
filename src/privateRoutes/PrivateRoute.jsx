@@ -1,25 +1,31 @@
-import React from 'react'
-import { useAuth } from '../context/AuthProvider';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthProvider';
+import LoadingCircle from '../reuseable/LoadingCircle';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
-    const { user } = useAuth();
-    const UserRole = user.userData.role
-    console.log("from private route", user);
-  
-    // Check if user is authenticated and has one of the allowed roles
-    if (!user) {
-      // Redirect to login if not authenticated
-      return <Navigate to="/login" replace />;
-    }
-  
-    if (!allowedRoles.includes(UserRole)) {
-      // Redirect to unauthorized page if role doesn't match any allowed roles
-      return <Navigate to="/unauthorized" replace />;
-    }
-  
-    // Render children if authenticated and role matches
-    return children;
-  };
-  
-  export default PrivateRoute;
+  const { user, isLoading } = useAuth();
+
+  // Show loading state while authentication is being resolved
+  if (isLoading) {
+    return (
+  <LoadingCircle/>
+    );
+  }
+
+  // Redirect to login if user is not authenticated
+  if (!user || !user.userData) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Check if user has one of the allowed roles
+  const userRole = user.userData.role;
+  if (!allowedRoles || !Array.isArray(allowedRoles) || !allowedRoles.includes(userRole)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // Render children if authenticated and role matches
+  return children;
+};
+
+export default PrivateRoute;
