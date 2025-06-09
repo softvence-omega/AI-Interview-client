@@ -9,6 +9,7 @@ import { MdOutlineInsights } from "react-icons/md";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
 import Notification from "../pages/userPages/notifications/Notification";
+import { toast } from "sonner";
 
 const UserOrAdminDBLayout = () => {
   const { user, logout } = useAuth();
@@ -73,18 +74,27 @@ const UserOrAdminDBLayout = () => {
     if (!hasRedirected) {
       if (userType !== "admin" && userMeta) {
         const completedSteps = userMeta;
+        if(!userData.OTPverified)
+        {
+          console.log("user is not otp verified navigating to setting")
+          navigate("settings")
+          toast.error("please get OTP verified")
+          return;
+        }
 
-        if (
+        else if (
           !completedSteps.isResumeUploaded &&
           currentPath !== "/resume-upload"
-        ) {
+        ) 
+        {
           console.log(
             "Redirecting to /resume-upload due to isResumeUploaded=false"
           );
           localStorage.setItem("hasRedirected", "true");
           navigate("/resume-upload");
           return;
-        } else if (
+        } 
+        else if (
           !completedSteps.isAboutMeGenerated &&
           currentPath !== "/generateAboutMe"
         ) {
@@ -212,7 +222,8 @@ const UserOrAdminDBLayout = () => {
             ☰
           </button>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center space-x-2 w-full">
+            <div className="w-full">
             <div className="w-16 h-16 rounded-[8px]">
               <img
                 src={
@@ -229,6 +240,9 @@ const UserOrAdminDBLayout = () => {
                 {userData?.name?.toUpperCase() || "Guest"}
               </h2>
             </div>
+            </div>
+
+
             {userType === "user" && <Notification />}
           </div>
         </div>

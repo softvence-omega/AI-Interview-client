@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import img1 from '../../assets/mobileDroied.png';
-import Buttons from '../../reuseable/AllButtons';
 import { useAuth } from '../../context/AuthProvider';
 import useApi from '../../hook/apiHook';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const OtpCrossCheck = ({ adminOTPToken }) => {
-  const { setOtpToken } = useAuth();
+const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
+  console.log(".......>>>>>>>>>>>>>>>>>>>>>>>>======>>>>>>>>>>>", adminOTPToken);
+
+  const { setOtpToken, otpToken, logout } = useAuth(); // Added logout from useAuth
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(true);
@@ -15,7 +16,8 @@ const OtpCrossCheck = ({ adminOTPToken }) => {
   const { request } = useApi();
   const navigate = useNavigate();
 
-  const tokenToUse = adminOTPToken; // Use adminOTPToken if provided
+  // Use adminOTPToken if provided, otherwise fall back to otpToken from useAuth
+  const tokenToUse = adminOTPToken || otpToken;
 
   const handleChange = (index, value) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -58,7 +60,14 @@ const OtpCrossCheck = ({ adminOTPToken }) => {
         toast.success(`${res.data.message}`);
         setTimeout(() => {
           setOtp(['', '', '', '', '', '']);
-          navigate(adminOTPToken ? '/userDashboard/user-management' : '/login');
+
+          // Check if request is from /userDashBoard/settings
+          if (navigateTo === '/userDashBoard/mockInterview') {
+            logout(); // Log out the user
+            navigate('/login'); // Navigate to login
+          } else {
+            navigate(navigateTo || '/login'); // Use navigateTo or default to /login
+          }
         }, 1500);
       } else {
         toast.error(res?.message || '❌ OTP verification failed.');
@@ -127,7 +136,7 @@ const OtpCrossCheck = ({ adminOTPToken }) => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-100">
+    <div className="w-full h-screen flex items-center justify-center bg-gray-100 text-black">
       <div className="shadow-lg rounded-2xl p-8 w-full max-w-md bg-white">
         <div className="flex flex-col items-center">
           <img src={img1} alt="mobile" className="w-24 h-24 mb-6" />
