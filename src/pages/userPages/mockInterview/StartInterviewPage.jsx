@@ -1,10 +1,9 @@
-// import React, { useState, useEffect, useRef, Component } from "react";
+// import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate, useSearchParams } from "react-router-dom";
 // import { useAuth } from "../../../context/AuthProvider";
 // import useApi from "../../../hook/apiHook";
 // import LoadingCircle from "../../../reuseable/LoadingCircle";
 // import ErrorBoundary from "../../../reuseable/ErrorBoundary";
-// import AssessmentDisplay from "./AssesmrntDisplay";
 // import ViewHistory from "./ViewHistory";
 // import ContentSection from "./ContentSection";
 // import ButtonControls from "./ButtonControl";
@@ -62,6 +61,7 @@
 //   const [summeryState, setSumarryState] = useState(false);
 //   const [returnOrFullRetakeState, setReturnOrFullRetakeState] = useState(false);
 //   const [aiResponse, setAiResponse] = useState(null);
+//   const [isSummaryLoading, setIsSummaryLoading] = useState(false); // New state for summary loading
 //   const videoControllerRef = useRef(null);
 //   const navigate = useNavigate();
 //   const isProcessingRef = useRef(false);
@@ -69,10 +69,7 @@
 //   // Fetch AI-generated questions
 //   useEffect(() => {
 //     const fetchGeneratedQuestions = async () => {
-//       if (isProcessingRef.current) {
-//         console.log("Skipping fetchGeneratedQuestions: already processing");
-//         return;
-//       }
+//       if (isProcessingRef.current) return;
 //       isProcessingRef.current = true;
 
 //       try {
@@ -109,8 +106,6 @@
 //         }
 
 //         const data = res.data.body;
-//         console.log("dataaaaaaaaaaaaaa", data);
-
 //         if (data?.remainingQuestions || data?.question_Set) {
 //           generatedQuestions.current =
 //             data?.remainingQuestions || data?.question_Set || [];
@@ -144,12 +139,9 @@
 //     fetchGeneratedQuestions();
 //   }, [questionBankId, interviewId, AuthorizationToken]);
 
-//   // Save AI response to database without state changes
+//   // Save AI response
 //   const saveAiResponse = async (response) => {
-//     if (!response) {
-//       console.log("No AI response to save");
-//       return;
-//     }
+//     if (!response) return;
 
 //     try {
 //       const dataToSave = {
@@ -165,10 +157,9 @@
 //         delete dataToSave.qid;
 //       }
 
-//       console.log("Saving AI response:", dataToSave);
+//       console.log("data to save", dataToSave);
 
 //       const endpoint = `/video/submit_Video_Analysis_and_Summary`;
-
 //       const res = await request({
 //         endpoint,
 //         method: "POST",
@@ -182,22 +173,16 @@
 //       if (!res.ok) {
 //         throw new Error(res.message || "Failed to save video analysis");
 //       }
-//       console.log("AI response saved successfully:", res.data);
 //     } catch (err) {
 //       console.error("Error saving AI response:", err);
-//       // Optionally set error state if needed, but avoiding state changes here
 //     }
 //   };
 
 //   // Handle retake
 //   const handleRetake = async () => {
-//     if (!ongoingQuestion || isProcessingRef.current) {
-//       console.log("Skipping handleRetake: no question or processing");
-//       return;
-//     }
+//     if (!ongoingQuestion || isProcessingRef.current) return;
 //     isProcessingRef.current = true;
 
-//     console.log("handleRetake called");
 //     React.startTransition(() => {
 //       setIsVideoState(true);
 //       setAiResponse(null);
@@ -229,8 +214,6 @@
 //       }
 
 //       const newQuestion = res.data.body;
-//       console.log("New Retake Question:", newQuestion);
-
 //       React.startTransition(() => {
 //         setOngoingQuestion(newQuestion);
 //       });
@@ -239,7 +222,6 @@
 //         const updatedQuestions = [...generatedQuestions.current];
 //         updatedQuestions[currentQuestionIndex] = newQuestion;
 //         generatedQuestions.current = updatedQuestions;
-//         console.log("Updated Questions List:", generatedQuestions.current);
 //       }
 //     } catch (err) {
 //       setError(err.message || "Failed to generate new question for retake");
@@ -252,13 +234,9 @@
 
 //   // Handle continue
 //   const handleContinue = async () => {
-//     if (isProcessingRef.current) {
-//       console.log("Skipping handleContinue: already processing");
-//       return;
-//     }
+//     if (isProcessingRef.current) return;
 //     isProcessingRef.current = true;
 
-//     console.log("handleContinue called");
 //     try {
 //       if (aiResponse) {
 //         await saveAiResponse(aiResponse);
@@ -276,9 +254,8 @@
 //           setAiResponse(null);
 //           setError(null);
 //         } else {
-//           console.log("Reached last question, setting summeryState");
 //           setSumarryState(true);
-//           setAiResponse(null); // Clear aiResponse to avoid showing last question analysis
+//           setAiResponse(null);
 //         }
 //       });
 //     } catch (err) {
@@ -291,13 +268,8 @@
 
 //   // Handle next question
 //   const handleNextQuestion = () => {
-//     if (isProcessingRef.current) {
-//       console.log("Skipping handleNextQuestion: already processing");
-//       return;
-//     }
-//     isProcessingRef.current = true;
+//     if (isProcessingRef.current) return;
 
-//     console.log("handleNextQuestion called");
 //     React.startTransition(() => {
 //       setIsVideoState(false);
 //       setError(null);
@@ -307,6 +279,7 @@
 //       videoControllerRef.current &&
 //       videoControllerRef.current.stopRecording
 //     ) {
+//       isProcessingRef.current = true; // Set processing state before stopping
 //       videoControllerRef.current.stopRecording();
 //     }
 
@@ -319,21 +292,15 @@
 //         setSumarryState(true);
 //       });
 //     }
-
-//     isProcessingRef.current = false;
 //   };
 
 //   // Handle summary generation
 //   const handleSummaryGenaration = async () => {
-//     console.log("handleSummaryGenaration called");
-//     if (isProcessingRef.current) {
-//       console.log("Skipping handleSummaryGenaration: already processing");
-//       return;
-//     }
+//     if (isProcessingRef.current) return;
 //     isProcessingRef.current = true;
+//     setIsSummaryLoading(true); // Set loading state for summary
 
 //     try {
-//       // Save the last question's AI response if it exists
 //       if (aiResponse) {
 //         await saveAiResponse(aiResponse);
 //       }
@@ -345,10 +312,7 @@
 //         throw new Error("questionBank_id not found in the response");
 //       }
 
-//       console.log("Fetching summary for questionBankId:", questionBankId);
-
 //       const endpoint = `/video/getSummary?questionBank_id=${questionBankId}`;
-
 //       const res = await request({
 //         endpoint,
 //         method: "GET",
@@ -362,8 +326,6 @@
 //         throw new Error(res.message || "Failed to generate summary");
 //       }
 
-//       console.log("Summary generated successfully:", res.data.data);
-
 //       React.startTransition(() => {
 //         setAiResponse(res.data.data);
 //         setReturnOrFullRetakeState(true);
@@ -372,6 +334,7 @@
 //       setError(err.message || "Failed to generate summary");
 //       console.error("Error generating summary:", err);
 //     } finally {
+//       setIsSummaryLoading(false); // Reset loading state
 //       isProcessingRef.current = false;
 //     }
 //   };
@@ -385,13 +348,10 @@
 //       setError(
 //         "No ongoing question, questionBank_id, or history available for full retake"
 //       );
-//       console.log("Skipping handleFullRetaake: invalid state");
 //       isProcessingRef.current = false;
 //       return;
 //     }
 //     isProcessingRef.current = true;
-
-//     console.log("handleFullRetaake called");
 //     setRetakeLoading(true);
 
 //     try {
@@ -427,7 +387,6 @@
 //       }
 
 //       const data = res.data.body;
-//       console.log("Generated Questions for Full Retake:", data.question_Set);
 //       generatedQuestions.current = data.question_Set || [];
 
 //       if (
@@ -460,31 +419,31 @@
 
 //   // Handle return to interview
 //   const handleReturnInterview = () => {
-//     if (isProcessingRef.current) {
-//       console.log("Skipping handleReturnInterview: already processing");
-//       return;
-//     }
+//     if (isProcessingRef.current) return;
 //     isProcessingRef.current = true;
 
-//     console.log("handleReturnInterview called");
 //     navigate(`/userDashboard/mockInterview`);
 //     isProcessingRef.current = false;
 //   };
 
-//   // Handle go back to dashboard for history state
+//   // Handle go back
 //   const handleGoBack = () => {
-//     if (isProcessingRef.current) {
-//       console.log("Skipping handleGoBack: already processing");
-//       return;
-//     }
+//     if (isProcessingRef.current) return;
 //     isProcessingRef.current = true;
 
-//     console.log("handleGoBack called");
 //     navigate("/userDashboard/mockInterview");
 //     isProcessingRef.current = false;
 //   };
 
-//   // Define onClick handlers
+//   // Handle stop recording
+//   const handleStopRecording = () => {
+//     React.startTransition(() => {
+//       setIsVideoState(false);
+//       setError(null);
+//     });
+//   };
+
+//   // Define click handlers
 //   const handleContinueClick = () => {
 //     if (summeryState && returnOrFullRetakeState) {
 //       handleReturnInterview();
@@ -505,23 +464,10 @@
 
 //   // Ref callback for VideoController
 //   const videoControllerRefCallback = (node) => {
-//     if (node) {
-//       videoControllerRef.current = {
-//         stopRecording: node.stopRecording,
-//       };
-//     }
+//     videoControllerRef.current = node
+//       ? { stopRecording: node.stopRecording }
+//       : null;
 //   };
-
-//   // Debug render
-//   console.log("Render with states:", {
-//     isVideoState,
-//     summeryState,
-//     currentQuestionIndex,
-//     aiResponse,
-//     loading,
-//     error,
-//     isProcessing: isProcessingRef.current,
-//   });
 
 //   return (
 //     <ErrorBoundary>
@@ -540,25 +486,38 @@
 //           </div>
 //         ) : ongoingQuestion ? (
 //           <div className="w-full bg-white p-6 rounded-lg shadow h-full">
-//             <QuestionSection
-//               currentQuestionIndex={currentQuestionIndex}
-//               totalQuestions={generatedQuestions.current?.length || 0}
-//               question={ongoingQuestion}
-//             />
-//             <ContentSection
-//               isVideoState={isVideoState}
-//               retakeLoading={retakeLoading}
-//               ongoingQuestion={ongoingQuestion}
-//               summeryState={summeryState}
-//               currentQuestionIndex={currentQuestionIndex}
-//               totalQuestions={generatedQuestions.current?.length || 0}
-//               aiResponse={aiResponse}
-//               error={error}
-//               videoControllerRefCallback={videoControllerRefCallback}
-//               isProcessingRef={isProcessingRef}
-//               setAiResponse={setAiResponse}
-//               handleNextQuestion={handleNextQuestion}
-//             />
+//             {!returnOrFullRetakeState && (
+//               <QuestionSection
+//                 currentQuestionIndex={currentQuestionIndex}
+//                 totalQuestions={generatedQuestions.current?.length || 0}
+//                 question={ongoingQuestion}
+//               />
+//             )}
+
+//             {summeryState && isSummaryLoading ? (
+//               <div className="flex gap-2 justify-center items-center">
+//                 <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid" />
+//                 <p>Generating summary...</p>
+//                 <LoadingCircle />
+//               </div>
+//             ) : (
+//               <ContentSection
+//                 isVideoState={isVideoState}
+//                 retakeLoading={retakeLoading}
+//                 ongoingQuestion={ongoingQuestion}
+//                 summeryState={summeryState}
+//                 currentQuestionIndex={currentQuestionIndex}
+//                 totalQuestions={generatedQuestions.current?.length || 0}
+//                 aiResponse={aiResponse}
+//                 error={error}
+//                 videoControllerRefCallback={videoControllerRefCallback}
+//                 isProcessingRef={isProcessingRef}
+//                 setAiResponse={setAiResponse}
+//                 handleNextQuestion={handleNextQuestion}
+//                 onStopRecording={handleStopRecording}
+//                 setIsVideoState={setIsVideoState}
+//               />
+//             )}
 //             <ButtonControls
 //               isVideoState={isVideoState}
 //               summeryState={summeryState}
@@ -566,7 +525,7 @@
 //               currentQuestionIndex={currentQuestionIndex}
 //               totalQuestions={generatedQuestions.current?.length || 0}
 //               isProcessing={isProcessingRef.current}
-//               loading={loading}
+//               loading={loading || isSummaryLoading} // Disable buttons during summary loading
 //               retakeLoading={retakeLoading}
 //               handleNextQuestion={handleNextQuestion}
 //               handleContinueClick={handleContinueClick}
@@ -587,6 +546,10 @@
 // };
 
 // export default StartInterviewPage;
+
+
+
+
 
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -651,6 +614,7 @@ const StartInterviewPage = () => {
   const [summeryState, setSumarryState] = useState(false);
   const [returnOrFullRetakeState, setReturnOrFullRetakeState] = useState(false);
   const [aiResponse, setAiResponse] = useState(null);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const videoControllerRef = useRef(null);
   const navigate = useNavigate();
   const isProcessingRef = useRef(false);
@@ -746,7 +710,7 @@ const StartInterviewPage = () => {
         delete dataToSave.qid;
       }
 
-      console.log("data to save", dataToSave)
+      console.log("data to save", dataToSave);
 
       const endpoint = `/video/submit_Video_Analysis_and_Summary`;
       const res = await request({
@@ -858,7 +822,6 @@ const StartInterviewPage = () => {
   // Handle next question
   const handleNextQuestion = () => {
     if (isProcessingRef.current) return;
-    isProcessingRef.current = true;
 
     React.startTransition(() => {
       setIsVideoState(false);
@@ -869,6 +832,7 @@ const StartInterviewPage = () => {
       videoControllerRef.current &&
       videoControllerRef.current.stopRecording
     ) {
+      isProcessingRef.current = true;
       videoControllerRef.current.stopRecording();
     }
 
@@ -881,14 +845,13 @@ const StartInterviewPage = () => {
         setSumarryState(true);
       });
     }
-
-    isProcessingRef.current = false;
   };
 
   // Handle summary generation
   const handleSummaryGenaration = async () => {
     if (isProcessingRef.current) return;
     isProcessingRef.current = true;
+    setIsSummaryLoading(true);
 
     try {
       if (aiResponse) {
@@ -924,6 +887,7 @@ const StartInterviewPage = () => {
       setError(err.message || "Failed to generate summary");
       console.error("Error generating summary:", err);
     } finally {
+      setIsSummaryLoading(false);
       isProcessingRef.current = false;
     }
   };
@@ -1075,7 +1039,7 @@ const StartInterviewPage = () => {
           </div>
         ) : ongoingQuestion ? (
           <div className="w-full bg-white p-6 rounded-lg shadow h-full">
-            {!summeryState && !returnOrFullRetakeState && (
+            {!returnOrFullRetakeState && (
               <QuestionSection
                 currentQuestionIndex={currentQuestionIndex}
                 totalQuestions={generatedQuestions.current?.length || 0}
@@ -1083,21 +1047,30 @@ const StartInterviewPage = () => {
               />
             )}
 
-            <ContentSection
-              isVideoState={isVideoState}
-              retakeLoading={retakeLoading}
-              ongoingQuestion={ongoingQuestion}
-              summeryState={summeryState}
-              currentQuestionIndex={currentQuestionIndex}
-              totalQuestions={generatedQuestions.current?.length || 0}
-              aiResponse={aiResponse}
-              error={error}
-              videoControllerRefCallback={videoControllerRefCallback}
-              isProcessingRef={isProcessingRef}
-              setAiResponse={setAiResponse}
-              handleNextQuestion={handleNextQuestion}
-              onStopRecording={handleStopRecording}
-            />
+            {summeryState && isSummaryLoading ? (
+              <div className="flex gap-2 justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid" />
+                <p>Generating summary...</p>
+                <LoadingCircle />
+              </div>
+            ) : (
+              <ContentSection
+                isVideoState={isVideoState}
+                retakeLoading={retakeLoading}
+                ongoingQuestion={ongoingQuestion}
+                summeryState={summeryState}
+                currentQuestionIndex={currentQuestionIndex}
+                totalQuestions={generatedQuestions.current?.length || 0}
+                aiResponse={aiResponse}
+                error={error}
+                videoControllerRefCallback={videoControllerRefCallback}
+                isProcessingRef={isProcessingRef}
+                setAiResponse={setAiResponse}
+                handleNextQuestion={handleNextQuestion}
+                onStopRecording={handleStopRecording}
+                setIsVideoState={setIsVideoState}
+              />
+            )}
             <ButtonControls
               isVideoState={isVideoState}
               summeryState={summeryState}
@@ -1105,8 +1078,9 @@ const StartInterviewPage = () => {
               currentQuestionIndex={currentQuestionIndex}
               totalQuestions={generatedQuestions.current?.length || 0}
               isProcessing={isProcessingRef.current}
-              loading={loading}
+              loading={loading || isSummaryLoading}
               retakeLoading={retakeLoading}
+              error={error} // Pass error prop
               handleNextQuestion={handleNextQuestion}
               handleContinueClick={handleContinueClick}
               handleRetakeClick={handleRetakeClick}

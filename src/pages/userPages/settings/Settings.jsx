@@ -517,7 +517,7 @@ const Settings = () => {
               <button
                 onClick={handleOTPVerification}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-6 py-2 text-white bg-[#37B874] rounded-lg hover:bg-green-400 transition-colors disabled:opacity-50"
               >
                 {loading ? <LoaderCircle className="animate-spin w-4 h-4" /> : null}
                 Get OTP
