@@ -43,6 +43,7 @@ import NotificationPage from "../pages/adminPages/notifications/NotificationPage
 import PrivateRoute from "../privateRoutes/PrivateRoute";
 import Unauthorized from "../privateRoutes/Unauthorized";
 import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage";
+import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
 
 
 
@@ -68,6 +69,7 @@ const Router = () => {
         <Route path="/help-center" element={<HelpCenter />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
 
       {/* User and Admin routes under /userDashboard */}
