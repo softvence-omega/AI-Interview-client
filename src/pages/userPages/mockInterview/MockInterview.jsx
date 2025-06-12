@@ -3,6 +3,8 @@ import { useAuth } from "../../../context/AuthProvider";
 import useApi from "../../../hook/apiHook";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import IncompleateInterviews from "./IncompleateInterviews";
+
 
 const MockInterview = () => {
   const { user } = useAuth();
@@ -111,6 +113,10 @@ const MockInterview = () => {
       {error && <p className="text-red-500">Error: {error}</p>}
       {!loading && !error && (
         <div className="w-full">
+
+        <IncompleateInterviews/>
+
+
           {/* Search Input */}
           <div className="mb-8 w-[60%] mx-auto relative">
             <input
@@ -137,6 +143,8 @@ const MockInterview = () => {
               </svg>
             </div>
           </div>
+
+        
 
           <InterviewSection
             title="Suggested Interviews"

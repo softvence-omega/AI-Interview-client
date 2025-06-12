@@ -16,6 +16,7 @@ const AboutMeVideoTest = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { request } = useApi();
+  const [isAboutMeVideoProssing, setIsAboutMeVideoProcessing]= useState(false)
 
   const submitAboutMeVideoTest = async () => {
     if (!user?.approvalToken) {
@@ -62,7 +63,7 @@ const AboutMeVideoTest = () => {
             {aboutMeResult ? "About Me Video Assessment" : "Record Your About Me Video"}
           </h1>
 
-          {!aboutMeResult ? (
+          {!isAboutMeVideoProssing ?(<div>{!aboutMeResult ? (
             <>
               <VideoController
                 ref={videoControllerRef}
@@ -73,6 +74,7 @@ const AboutMeVideoTest = () => {
                 setAiResponse={() => {}}
                 aiResponse={null}
                 aboutMeTry={true}
+                setIsAboutMeVideoProcessing={setIsAboutMeVideoProcessing}
                 onAboutMeResponse={(data) => setAboutMeResult(data)}
               />
               <div className="mt-6 text-center">
@@ -84,7 +86,9 @@ const AboutMeVideoTest = () => {
                 </button>
               </div>
             </>
-          ) : (
+          ) 
+          : 
+          (
             <div>
               <AssessmentDisplay
                 response={aboutMeResult}
@@ -107,7 +111,12 @@ const AboutMeVideoTest = () => {
                 </button>
               </div>
             </div>
-          )}
+          )}</div>)
+          :
+          (<div> your video is being rocessed <LoadingCircle/> </div>)}
+          
+
+
         </div>
       </div>
     </Container>
@@ -115,3 +124,5 @@ const AboutMeVideoTest = () => {
 };
 
 export default AboutMeVideoTest;
+
+

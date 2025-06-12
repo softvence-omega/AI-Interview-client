@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Settings from "../../userPages/settings/Settings";
 
 const GeneralSettings = () => {
   const [title, setTitle] = useState("");
@@ -130,6 +131,8 @@ const GeneralSettings = () => {
           </div>
         </div>
       </div>
+
+      <Settings/>
     </div>
   );
 };

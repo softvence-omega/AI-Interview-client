@@ -24,6 +24,10 @@ const VideoController = forwardRef(
       onAboutMeResponse,
       isProcessingRef,
       handleNextQuestion,
+      setIsProcessing, // Added prop
+      setIsAboutMeVideoProcessing,
+      setIsVideoState,
+      onStopRecording,
     },
     ref
   ) => {
@@ -39,22 +43,20 @@ const VideoController = forwardRef(
     const [processing, setProcessing] = useState(false);
     const { request } = useApi();
     const navigate = useNavigate();
-    const [aboutMeData, setAboutMeData] = useState(""); // Added for aboutMeData state
-    const [error, setError] = useState(null); // Added for error state
-    const [loading, setLoading] = useState(false); // Added for loading state
+    const [aboutMeData, setAboutMeData] = useState("");
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const videoRef = useRef(null);
     const recorderRef = useRef(null);
     const isStoppingRef = useRef(false);
 
-    console.log(error, loading,videoBlob); //not in use but just to remove red lines
-
     const aiBaseUrl = import.meta.env.VITE_AI_INTERVIEW_URL;
 
-    // Handle aboutMeTry logic in useEffect to support async/await
+    // Handle aboutMeTry logic
     useEffect(() => {
       if (aboutMeTry) {
-        if (!user?.approvalToken) {
+        if (!AuthorizationToken) {
           toast.error("You must be logged in to view this page.");
           setTimeout(() => navigate("/login"), 1500);
           return;
@@ -67,7 +69,7 @@ const VideoController = forwardRef(
               endpoint: "/users/getProfile",
               method: "GET",
               headers: {
-                Authorization: AuthorizationToken, // Send approvalToken without "Bearer"
+                Authorization: AuthorizationToken,
               },
             });
 
@@ -88,11 +90,8 @@ const VideoController = forwardRef(
               return;
             }
 
-            console.log("find about me", profile.isAboutMeGenerated);
-
             if (profile.isAboutMeGenerated && profile.generatedAboutMe) {
-              setAboutMeData(profile.generatedAboutMe); // Update state
-              toast.success("About Me loaded from profile!");
+              setAboutMeData(profile.generatedAboutMe);
             } else {
               const errorMessage = "No About Me data available.";
               setError(errorMessage);
@@ -111,7 +110,7 @@ const VideoController = forwardRef(
 
         findAboutMeData();
       }
-    }, [aboutMeTry]); // Dependencies for useEffect
+    }, [aboutMeTry, AuthorizationToken, request, navigate]);
 
     const aboutMeQuestion = {
       _id: "no_question_Id",
@@ -119,8 +118,8 @@ const VideoController = forwardRef(
       questionBank_id: "no_questionBank_id",
       user_id: "no_user_id",
       question: "tell me about yourself",
-      expected_answer: aboutMeData, // Use state-managed aboutMeData
-      time_to_answer: 120, // 2 minutes
+      expected_answer: aboutMeData,
+      time_to_answer: 120,
       isSummary: false,
       islast: false,
     };
@@ -137,6 +136,7 @@ const VideoController = forwardRef(
 
     // Countdown before recording starts
     useEffect(() => {
+      if (!isVideoState) return;
       if (countdown > 0) {
         const timer = setInterval(() => {
           setCountdown((prev) => prev - 1);
@@ -151,23 +151,22 @@ const VideoController = forwardRef(
         startRecording();
         setHasRecorded(true);
       }
-    }, [countdown, isRecording, hasRecorded]);
+    }, [countdown, isRecording, hasRecorded, isVideoState]);
 
     // Recording timer
     useEffect(() => {
-      if (isRecording && recordingTimeLeft > 0) {
+      if (!isVideoState || !isRecording) return;
+      if (recordingTimeLeft > 0) {
         const timer = setInterval(() => {
           setRecordingTimeLeft((prev) => prev - 1);
         }, 1000);
         return () => clearInterval(timer);
-      } else if (
-        isRecording &&
-        recordingTimeLeft === 0 &&
-        !isStoppingRef.current
-      ) {
+      } else if (isRecording && recordingTimeLeft === 0 && !isStoppingRef.current) {
         stopRecording();
+        isProcessingRef.current = true;
+        setIsVideoState(false);
       }
-    }, [isRecording, recordingTimeLeft]);
+    }, [isRecording, recordingTimeLeft, isVideoState]);
 
     // Stop recording if video state changes
     useEffect(() => {
@@ -185,13 +184,15 @@ const VideoController = forwardRef(
       setVideoBlob(null);
       setAiResponse(null);
       setProcessing(false);
+      setError(null);
       isStoppingRef.current = false;
       if (recorderRef.current) {
         recorderRef.current = null;
       }
-    }, [question]);
+    }, [question, setAiResponse]);
 
     const startRecording = async () => {
+      if (!isVideoState) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -200,11 +201,9 @@ const VideoController = forwardRef(
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          // Attempt to record in MP4 if supported, fallback to WebM
           const mimeType = MediaRecorder.isTypeSupported("video/mp4")
             ? "video/mp4"
             : "video/webm";
-          console.log("Recording with MIME type:", mimeType);
           recorderRef.current = new RecordRTC(stream, {
             type: "video",
             mimeType: mimeType,
@@ -218,12 +217,19 @@ const VideoController = forwardRef(
         }
       } catch (error) {
         console.error("Error starting recording:", error);
+        setError(error.message || "Failed to start recording");
+        toast.error("Failed to start recording");
       }
     };
 
     const stopRecording = () => {
       if (recorderRef.current && isRecording && !isStoppingRef.current) {
         isStoppingRef.current = true;
+        if(!aboutMeTry)
+        {
+          setIsProcessing(true);
+        }
+        
         recorderRef.current.stopRecording(async () => {
           let blob = recorderRef.current.getBlob();
           setVideoBlob(blob);
@@ -231,7 +237,7 @@ const VideoController = forwardRef(
             videoRef.current.srcObject
               .getTracks()
               .forEach((track) => track.stop());
-              videoRef.current.srcObject = null;
+            videoRef.current.srcObject = null;
           }
           setIsRecording(false);
           setProcessing(true);
@@ -242,6 +248,14 @@ const VideoController = forwardRef(
           link.download = blob.type.includes("mp4") ? "test.mp4" : "test.webm";
           link.click();
 
+          // Call onStopRecording to update parent state
+          if (onStopRecording) {
+            onStopRecording();
+          }
+          if (aboutMeTry) {
+            setIsAboutMeVideoProcessing(true);
+          }
+
           await callAIApiforVideoAnalysis(blob);
           isStoppingRef.current = false;
         });
@@ -249,24 +263,29 @@ const VideoController = forwardRef(
     };
 
     const callAIApiforVideoAnalysis = async (videoBlob) => {
+      console.log("<<<=======calling api for analysis ======>>>>>");
       const API_URL = `${aiBaseUrl}/video_process/process-video/`;
-      // Define activeQuestion outside try block for scope
       const activeQuestion = aboutMeTry ? aboutMeQuestion : question;
 
       try {
-        // Validate video blob
         if (!videoBlob || videoBlob.size === 0) {
           console.error("Video blob is empty or not ready:", videoBlob);
+          const errorMessage = "Invalid video data";
           if (aboutMeTry && onAboutMeResponse) {
-            onAboutMeResponse({ error: "Invalid video data" });
+            setIsAboutMeVideoProcessing(false);
+            onAboutMeResponse({ error: errorMessage });
           } else {
-            setAiResponse({ error: "Invalid video data" });
+            setAiResponse({ error: errorMessage });
           }
           setProcessing(false);
+          if(!aboutMeTry)
+          {
+            setIsProcessing(false);
+          }
+          
           return;
         }
 
-        // Validate question props
         if (
           !activeQuestion._id ||
           !activeQuestion.interview_id ||
@@ -274,16 +293,18 @@ const VideoController = forwardRef(
           !activeQuestion.user_id ||
           !activeQuestion.question
         ) {
-          console.error(
-            "Missing required question properties:",
-            activeQuestion
-          );
+          console.error("Missing required question properties:", activeQuestion);
+          const errorMessage = "Invalid question data";
           if (aboutMeTry && onAboutMeResponse) {
-            onAboutMeResponse({ error: "Invalid question data" });
+            onAboutMeResponse({ error: errorMessage });
           } else {
-            setAiResponse({ error: "Invalid question data" });
+            setAiResponse({ error: errorMessage });
           }
           setProcessing(false);
+          if(!aboutMeTry)
+            {
+              setIsProcessing(false);
+            }
           return;
         }
 
@@ -298,26 +319,10 @@ const VideoController = forwardRef(
         formData.append("interview_id", activeQuestion.interview_id);
         formData.append("questionBank_id", activeQuestion.questionBank_id);
         formData.append("user_id", activeQuestion.user_id);
-        formData.append(
-          "isSummary",
-          activeQuestion.isSummary ? "true" : "false"
-        );
+        formData.append("isSummary", activeQuestion.isSummary ? "true" : "false");
         formData.append("islast", activeQuestion.islast ? "true" : "false");
         formData.append("question", activeQuestion.question);
-        formData.append(
-          "expected_answer",
-          activeQuestion.expected_answer || ""
-        );
-
-        // Log FormData for debugging
-        console.log("FormData contents:", [...formData.entries()]);
-        console.log("Video Blob:", {
-          size: videoBlob.size,
-          type: videoBlob.type,
-          name: file.name,
-        });
-
-        console.log("Sending request to:", API_URL);
+        formData.append("expected_answer", activeQuestion.expected_answer || "");
 
         const response = await fetch(API_URL, {
           method: "POST",
@@ -327,11 +332,6 @@ const VideoController = forwardRef(
           body: formData,
         });
 
-        console.log("Fetch Response:", {
-          status: response.status,
-          statusText: response.statusText,
-        });
-
         if (!response.ok) {
           throw new Error(
             `HTTP error! Status: ${response.status} ${response.statusText}`
@@ -339,40 +339,46 @@ const VideoController = forwardRef(
         }
 
         const data = await response.json();
-        console.log("API Response Data:************************set AI", data);
+
+        console.log("ai response ==========>>>>>>", data);
 
         if (aboutMeTry && onAboutMeResponse) {
+          setIsAboutMeVideoProcessing(false);
           onAboutMeResponse(data);
         } else {
           setAiResponse(data);
-          // Trigger handleNextQuestion automatically after successful analysis
-          // Only if not in aboutMeTry mode and not the last question
-          if (!aboutMeTry && !activeQuestion.islast) {
-            handleNextQuestion();
-          }
         }
         setProcessing(false);
+        if(!aboutMeTry)
+          {
+            setIsProcessing(false);
+          }
         if (!aboutMeTry && onVideoAnalysisComplete) {
           onVideoAnalysisComplete(data);
         }
       } catch (error) {
         console.error("Error calling AI API:", error);
-        let errorMessage = `Failed to process video: ${error.message}`;
+        const errorMessage = `Failed to process video: ${error.message}`;
         if (aboutMeTry && onAboutMeResponse) {
+          setIsAboutMeVideoProcessing(false);
           onAboutMeResponse({ error: errorMessage });
         } else {
           setAiResponse({ error: errorMessage });
-          // Trigger handleNextQuestion even on error, unless it's the last question
-          if (!aboutMeTry && !activeQuestion.islast) {
-            handleNextQuestion();
-          }
         }
         setProcessing(false);
+        if(!aboutMeTry)
+          {
+            setIsProcessing(false);
+          }
         if (!aboutMeTry && onVideoAnalysisComplete) {
           onVideoAnalysisComplete({ error: errorMessage });
         }
       }
     };
+
+    if (!isVideoState) {
+      return null;
+    }
 
     return (
       <div className="" style={{ textAlign: "center", padding: "20px" }}>
@@ -400,12 +406,6 @@ const VideoController = forwardRef(
                     transform: "rotate(360deg)",
                   }}
                 />
-              </div>
-            )}
-            {processing && !aiResponse && !isRecording && (
-              <div className="flex gap-2 justify-center items-center mt-2">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid" />
-                <h3>Your video is being processed...</h3>
               </div>
             )}
           </div>
