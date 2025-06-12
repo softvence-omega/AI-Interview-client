@@ -65,6 +65,32 @@ const Router = () => {
         <Route path="/payment-status" element={<PaymentStatus />} />
       </Route>
 
+      {/* User and Admin routes under /userDash */}
+      <Route
+        path="/userDashboard"
+        element={
+          <PrivateRoute allowedRoles={["user", "admin"]}>
+            <UserOrAdminDBLayout />
+          </PrivateRoute>
+        }
+      >
+        {/* User routes */}
+        <Route
+          path="mockInterview"
+          element={
+            <PrivateRoute allowedRoles={["user", "admin"]}>
+              <MockInterview />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="mockInterview/:id"
+          element={
+            <PrivateRoute allowedRoles={["user", "admin"]}>
+              <MockInterviewDetail />
+            </PrivateRoute>
+          }
+        />
       <Route path="/userDashboard" element={<UserOrAdminDBLayout />}>
         <Route path="mockInterview" element={<MockInterview />} />
         <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
