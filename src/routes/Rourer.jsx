@@ -72,7 +72,7 @@ const Router = () => {
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
 
-      {/* User and Admin routes under /userDashboard */}
+      {/* User and Admin routes under /userDash */}
       <Route
         path="/userDashboard"
         element={
