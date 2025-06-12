@@ -59,7 +59,7 @@ const Notification = () => {
     fetchNotifications();
 
     // Set up interval to fetch every 2 minutes (120,000 ms)
-    const intervalId = setInterval(fetchNotifications, 120000);
+    const intervalId = setInterval(fetchNotifications, 12000);
 
     // Clean up interval on unmount
     return () => clearInterval(intervalId);
