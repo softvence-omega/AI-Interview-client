@@ -73,7 +73,7 @@ const Router = () => {
             <UserOrAdminDBLayout />
           </PrivateRoute>
         }
-      >
+      />
         {/* User routes */}
         <Route
           path="mockInterview"
