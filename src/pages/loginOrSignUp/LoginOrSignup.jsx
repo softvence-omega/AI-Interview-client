@@ -319,7 +319,7 @@ const LoginOrSignup = () => {
     password: "",
     confirmPassword: "",
     phone: "",
-    agreedToTerms: false,
+    aggriedToTerms: false,
   });
   const [isLoggingIn, setIsLoggingIn] = useState(false); // Loader state
 
@@ -330,7 +330,7 @@ const LoginOrSignup = () => {
       password: "",
       confirmPassword: "",
       phone: "",
-      agreedToTerms: false,
+      aggriedToTerms: false,
     });
   }, [location.pathname]);
 
@@ -341,8 +341,8 @@ const LoginOrSignup = () => {
         ...prev,
         [name]: type === "checkbox" ? checked : value,
       };
-      if (name === "agreedToTerms") {
-        console.log("agreedToTerms changed to:", checked); // Debug log
+      if (name === "aggriedToTerms") {
+        console.log("aggriedToTerms changed to:", checked); // Debug log
       }
       return newData;
     });
@@ -389,7 +389,7 @@ const LoginOrSignup = () => {
   const triggerFunctionForSignUp = async (e) => {
     e.preventDefault();
 
-    if (!formData.agreedToTerms) {
+    if (!formData.aggriedToTerms) {
       toast.error("You must agree to the terms and conditions to sign up.");
       return;
     }
@@ -404,7 +404,7 @@ const LoginOrSignup = () => {
           email: formData.email,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-          agreedToTerms: formData.agreedToTerms,
+          aggriedToTerms: formData.aggriedToTerms,
         },
       });
 
@@ -620,8 +620,8 @@ const LoginOrSignup = () => {
                 <div className="relative">
                   <input
                     type="checkbox"
-                    name="agreedToTerms"
-                    checked={formData.agreedToTerms}
+                    name="aggriedToTerms"
+                    checked={formData.aggriedToTerms}
                     onChange={handleChange}
                     className="sr-only"
                     required
@@ -629,11 +629,11 @@ const LoginOrSignup = () => {
                   <span
                     className="block w-5 h-5 rounded border-[1px] border-white flex items-center justify-center"
                     style={{
-                      backgroundColor: formData.agreedToTerms ? '#37B874' : '#ffffff',
+                      backgroundColor: formData.aggriedToTerms ? '#37B874' : '#ffffff',
                       transition: 'background-color 0.2s',
                     }}
                   >
-                    {formData.agreedToTerms && (
+                    {formData.aggriedToTerms && (
                       <TiTick className="w-4 h-4 text-white" />
                     )}
                   </span>

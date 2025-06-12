@@ -490,7 +490,7 @@ const UserOrAdminDBLayout = () => {
             </div>
             </div>
 
-            {userType === "user" && <Notification />}
+            {userType === "user" && <Link to="notificationList"><Notification /></Link>}
           </div>
         </div>
 

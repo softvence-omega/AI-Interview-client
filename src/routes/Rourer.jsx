@@ -6,7 +6,7 @@ import Planpage from "../pages/planpage/Planpage";
 import AboutUs from "../pages/AboutUs/AboutUs";
 import ContuctUs from "../pages/contuctus/ContuctUs";
 import LoginOrSignup from "../pages/loginOrSignUp/LoginOrSignup";
-import CommonLayout from "../container/commonLayout";
+import CommonLayout from "../container/CommonLayout";
 import OtpCrossCheck from "../pages/OtpCrosscheck/OtpCrossCheck";
 import ResumeUpload from "../pages/resumeUpload/ResumeUplod";
 import AboutMe from "../pages/Aboutme/Aboutme";
@@ -28,7 +28,7 @@ import AboutMeVideoTest from "../pages/aboutMeVidioTest/AboutMeVideoTest";
 import Settings from "../pages/userPages/settings/Settings";
 import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentManagement";
 import UserManagement from "../pages/adminPages/userManagement/UserManagement";
-import NotificationList from "../pages/userPages/notifications/NotificationList";
+import NotificationList from "../pages/userPages/notifications/NotificationList"; 
 import ContentManagement from "../pages/adminPages/ContentManajment/ContentManagement";
 import UserDetailsManagement from "../pages/adminPages/userManagement/UserDetailsManagement";
 import ViewInterviewForEdit from "../pages/adminPages/ContentManajment/ViewInterviewForEdit";
@@ -40,18 +40,13 @@ import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
 import Subscription from "../pages/adminPages/settings/Subscription";
 import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
-import PrivateRoute from "../privateRoutes/PrivateRoute";
-import Unauthorized from "../privateRoutes/Unauthorized";
-import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage";
-import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
-
-
 
 const Router = () => {
   return (
     <Routes>
-      {/* Public routes with common navbar */}
+      {/* Root layout with common navbar */}
       <Route path="/" element={<CommonLayout />}>
+        {/* Nested routes */}
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Planpage />} />
@@ -68,214 +63,41 @@ const Router = () => {
         <Route path="/certificates" element={<EducationCertificate />} />
         <Route path="/help-center" element={<HelpCenter />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
 
-      {/* User and Admin routes under /userDashboard */}
-      <Route
-        path="/userDashboard"
-        element={
-          <PrivateRoute allowedRoles={["user", "admin"]}>
-            <UserOrAdminDBLayout />
-          </PrivateRoute>
-        }
-      >
-        {/* User routes */}
-        <Route
-          path="mockInterview"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterview />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="mockInterview/:id"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterviewDetail />
-            </PrivateRoute>
-          }
-        />
+      <Route path="/userDashboard" element={<UserOrAdminDBLayout />}>
+        <Route path="mockInterview" element={<MockInterview />} />
+        <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
         <Route
           path="mockInterview/questionBank"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <QuestionBankDetail />
-            </PrivateRoute>
-          }
+          element={<QuestionBankDetail />}
         />
         <Route
           path="mockInterview/startInterview"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <StartInterviewPage />
-            </PrivateRoute>
-          }
+          element={<StartInterviewPage />}
         />
-        <Route
-          path="incites"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <Insights />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="notificationList"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <NotificationList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="myJobs"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MyJobs />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="job-details/:jobId"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <JobDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <Settings />
-            </PrivateRoute>
-          }
-        />
+        <Route path="incites" element={<Insights />} />
+        <Route path="notificationList" element={<NotificationList />} />
+        <Route path="myJobs" element={<MyJobs />} />
+        <Route path="job-details/:jobId" element={<JobDetails />} />
 
-        {/* Admin routes */}
-        <Route
-          path="dashboard"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="payment-management"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <PaymentManagement />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="user-management"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <UserManagement />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="user-management/create-admin"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <CreateAdminPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="notifications"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <NotificationPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="content_management"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <ContentManagement />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="user-details/:userId"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <UserDetailsManagement />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="content_management/addInterviewAndQuestionBank"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <CreateInterviewAndPosition />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="content_management/view_Interview_To_Edit/:interview_id"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <ViewInterviewForEdit />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="content_management/view_Interview_To_Edit/:interview_id/editPosition/:questionBank_id"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <EditQuestionBank />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="content_management/view_Interview_To_Edit/:interview_id/editInterview/:interview_id"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <EditInterview />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings-manage"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <SettingsManage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings-manage/general-settings"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <GeneralSettings />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings-manage/subscription"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <Subscription />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings-manage/privacy"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <PrivacyOptions />
-            </PrivateRoute>
-          }
-        />
+
+        //admin routes
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="payment-management" element={<PaymentManagement />} />
+        <Route path="user-management" element={<UserManagement />} />
+        <Route path="notifications" element={<NotificationPage />} />
+        <Route path="content_management" element={<ContentManagement />} />      
+        <Route path="user-details/:userId" element={<UserDetailsManagement />} />
+        <Route path="content_management/addInterviewAndQuestionBank" element={<CreateInterviewAndPosition />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id" element={<ViewInterviewForEdit />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id/editPosition/:questionBank_id" element={<EditQuestionBank />} />
+        <Route path="content_management/view_Interview_To_Edit/:interview_id/editInterview/:interview_id" element={<EditInterview />} />
+        <Route path="settings-manage" element={<SettingsManage />} />
+        <Route path="settings-manage/general-settings" element={<GeneralSettings />} />
+        <Route path="settings-manage/subscription" element={<Subscription />} />
+        <Route path="settings-manage/privacy" element={<PrivacyOptions />} />
       </Route>
     </Routes>
   );
