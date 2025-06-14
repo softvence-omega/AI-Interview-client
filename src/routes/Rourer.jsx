@@ -276,7 +276,6 @@ const Router = () => {
             </PrivateRoute>
           }
         />
-      </Route>
     </Routes>
   );
 };
