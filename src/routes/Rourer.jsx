@@ -44,6 +44,8 @@ import PrivateRoute from "../privateRoutes/PrivateRoute";
 import Unauthorized from "../privateRoutes/Unauthorized";
 import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage";
 import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
+import ErrorPage from "../reuseable/ErrorPage";
+import LandingPageManage from "../pages/adminPages/settings/LandingPageManage";
 
 const Router = () => {
   return (
@@ -204,6 +206,14 @@ const Router = () => {
           }
         />
         <Route
+          path="settings-manage/landing-page-manage"
+          element={
+            <PrivateRoute allowedRoles={["admin"]}>
+              <LandingPageManage />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="settings-manage/privacy"
           element={
             <PrivateRoute allowedRoles={["admin"]}>
@@ -212,6 +222,9 @@ const Router = () => {
           }
         />
       </Route>
+
+      {/* Error page route */}
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 };
