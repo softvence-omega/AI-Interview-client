@@ -214,8 +214,8 @@ const UserOrAdminDBLayout = () => {
           </button>
 
           <div className="flex items-center justify-center space-x-2 w-full">
-            <div className="w-full">
-              <div className="w-16 h-16 rounded-[8px]">
+            <div className="w-full flex gap-2 justify-items-center items-center">
+              <div className="w-18 h-18 rounded-[8px]">
                 <img
                   src={
                     userData?.profilePicture ||

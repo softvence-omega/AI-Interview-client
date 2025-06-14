@@ -148,7 +148,7 @@ const CreateAdmin = ({ setNewAdminOTPToken }) => {
         </div>
         <button
           type="submit"
-          className="w-full py-3 px-4 bg-[#37B874] text-white rounded-md hover:bg-[#2ea664] transition duration-200 hover:shadow-md"
+          className="w-full py-3 px-4 bg-[#37B874] text-white rounded-md hover:bg-[#2ea664] transition duration-200 hover:shadow-md cursor-pointer"
         >
           Create Admin
         </button>

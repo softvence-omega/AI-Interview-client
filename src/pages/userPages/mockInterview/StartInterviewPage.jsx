@@ -561,17 +561,18 @@ import ViewHistory from "./ViewHistory";
 import ContentSection from "./ContentSection";
 import ButtonControls from "./ButtonControl";
 import HistoryButtonControls from "./HistoryControllButton";
+import ErrorPage from "../../../reuseable/ErrorPage";
 
 // LoadingErrorDisplay Component
 const LoadingErrorDisplay = ({ loading, error }) => (
   <>
     {loading && (
-      <div className="flex justify-center items-center">
-        <p className="text-white text-lg">Loading generated questions...</p>
-        <LoadingCircle />
+      <div className="flex justify-center items-center text-[#278352]">
+        <p className="text-[#278352] text-lg">Loading generated questions...</p>
+        <LoadingCircle className="" />
       </div>
     )}
-    {error && <p className="text-red-500 text-center">Error: {error}</p>}
+    {error && <div><p className="text-red-500 text-center"></p> <ErrorPage message={error} /> </div>}
   </>
 );
 

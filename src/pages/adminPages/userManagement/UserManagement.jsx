@@ -220,7 +220,7 @@ const UserManagement = () => {
           </p>
         </div>
         <Link to="create-admin">
-        <button className="bg-[#37B874] text-white p-4 rounded-xl">Create Admin</button></Link>
+        <button className="bg-[#37B874] hover:bg-[#174D31] text-white p-4 rounded-xl cursor-pointer">Create Admin</button></Link>
       </div>
 
       <div className="mt-8">
