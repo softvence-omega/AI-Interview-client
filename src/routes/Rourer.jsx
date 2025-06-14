@@ -40,7 +40,8 @@ import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
 import Subscription from "../pages/adminPages/settings/Subscription";
 import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
-import PrivateRoute from "./PrivateRoute"; // Assuming you have a PrivateRoute wrapper
+import PrivateRoute from "../privateRoutes/PrivateRoute";
+
 
 const Router = () => {
   return (
