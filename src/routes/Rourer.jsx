@@ -40,13 +40,13 @@ import GeneralSettings from "../pages/adminPages/settings/GeneralSettings";
 import Subscription from "../pages/adminPages/settings/Subscription";
 import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
+import PrivateRoute from "./PrivateRoute"; // Assuming you have a PrivateRoute wrapper
 
 const Router = () => {
   return (
     <Routes>
       {/* Root layout with common navbar */}
       <Route path="/" element={<CommonLayout />}>
-        {/* Nested routes */}
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Planpage />} />
@@ -65,7 +65,7 @@ const Router = () => {
         <Route path="/payment-status" element={<PaymentStatus />} />
       </Route>
 
-      {/* User and Admin routes under /userDash */}
+      {/* User and Admin dashboard routes */}
       <Route
         path="/userDashboard"
         element={
@@ -74,47 +74,23 @@ const Router = () => {
           </PrivateRoute>
         }
       >
-        {/* User routes */}
-        <Route
-          path="mockInterview"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterview />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="mockInterview/:id"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterviewDetail />
-            </PrivateRoute>
-          }
-        />
-      <Route path="/userDashboard" element={<UserOrAdminDBLayout />}>
+        {/* user routes */}
         <Route path="mockInterview" element={<MockInterview />} />
         <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
-        <Route
-          path="mockInterview/questionBank"
-          element={<QuestionBankDetail />}
-        />
-        <Route
-          path="mockInterview/startInterview"
-          element={<StartInterviewPage />}
-        />
+        <Route path="mockInterview/questionBank" element={<QuestionBankDetail />} />
+        <Route path="mockInterview/startInterview" element={<StartInterviewPage />} />
         <Route path="incites" element={<Insights />} />
         <Route path="notificationList" element={<NotificationList />} />
         <Route path="myJobs" element={<MyJobs />} />
         <Route path="job-details/:jobId" element={<JobDetails />} />
 
-
-        //admin routes
+        {/* admin routes */}
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="settings" element={<Settings />} />
         <Route path="payment-management" element={<PaymentManagement />} />
         <Route path="user-management" element={<UserManagement />} />
         <Route path="notifications" element={<NotificationPage />} />
-        <Route path="content_management" element={<ContentManagement />} />      
+        <Route path="content_management" element={<ContentManagement />} />
         <Route path="user-details/:userId" element={<UserDetailsManagement />} />
         <Route path="content_management/addInterviewAndQuestionBank" element={<CreateInterviewAndPosition />} />
         <Route path="content_management/view_Interview_To_Edit/:interview_id" element={<ViewInterviewForEdit />} />
