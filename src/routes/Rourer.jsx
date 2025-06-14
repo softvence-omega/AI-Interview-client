@@ -45,12 +45,10 @@ import Unauthorized from "../privateRoutes/Unauthorized";
 import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage";
 import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
 
-
-
 const Router = () => {
   return (
     <Routes>
-      {/* Public routes with common      navbar */}
+      {/* Public routes with common layout */}
       <Route path="/" element={<CommonLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Features />} />
@@ -72,7 +70,7 @@ const Router = () => {
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
 
-      {/* User and Admin routes under /userDash */}
+      {/* Protected routes for both users and admins */}
       <Route
         path="/userDashboard"
         element={
@@ -80,82 +78,19 @@ const Router = () => {
             <UserOrAdminDBLayout />
           </PrivateRoute>
         }
-      />
-        {/* User routes */}
-        <Route
-          path="mockInterview"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterview />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="mockInterview/:id"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MockInterviewDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="mockInterview/questionBank"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <QuestionBankDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="mockInterview/startInterview"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <StartInterviewPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="incites"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <Insights />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="notificationList"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <NotificationList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="myJobs"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <MyJobs />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="job-details/:jobId"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <JobDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="settings"
-          element={
-            <PrivateRoute allowedRoles={["user", "admin"]}>
-              <Settings />
-            </PrivateRoute>
-          }
-        />
+      >
+        {/* User-accessible routes */}
+        <Route path="mockInterview" element={<MockInterview />} />
+        <Route path="mockInterview/:id" element={<MockInterviewDetail />} />
+        <Route path="mockInterview/questionBank" element={<QuestionBankDetail />} />
+        <Route path="mockInterview/startInterview" element={<StartInterviewPage />} />
+        <Route path="incites" element={<Insights />} />
+        <Route path="notificationList" element={<NotificationList />} />
+        <Route path="myJobs" element={<MyJobs />} />
+        <Route path="job-details/:jobId" element={<JobDetails />} />
+        <Route path="settings" element={<Settings />} />
 
-        {/* Admin routes */}
+        {/* Admin-only routes */}
         <Route
           path="dashboard"
           element={
@@ -276,6 +211,7 @@ const Router = () => {
             </PrivateRoute>
           }
         />
+      </Route>
     </Routes>
   );
 };
