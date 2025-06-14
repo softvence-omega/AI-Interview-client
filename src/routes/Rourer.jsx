@@ -41,6 +41,7 @@ import Subscription from "../pages/adminPages/settings/Subscription";
 import PrivacyOptions from "../pages/adminPages/settings/PrivacyOptions";
 import NotificationPage from "../pages/adminPages/notifications/NotificationPage";
 import PrivateRoute from "../privateRoutes/PrivateRoute";
+import Unauthorized from "../privateRoutes/Unauthorized";
 
 
 const Router = () => {
@@ -64,6 +65,7 @@ const Router = () => {
         <Route path="/certificates" element={<EducationCertificate />} />
         <Route path="/help-center" element={<HelpCenter />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Route>
 
       {/* User and Admin dashboard routes */}
