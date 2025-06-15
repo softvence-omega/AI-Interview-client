@@ -4,8 +4,7 @@ import bannerImage from "../../../assets/home-banner.png";
 import softwareDeveloperCard from "../../../assets/softwaredeveloper.png";
 import dataScience from "../../../assets/datascience.png";
 import { FaArrowRight } from "react-icons/fa6";
-
-
+import { Link } from "react-router-dom";
 
 const Banner = () => {
   return (
@@ -48,13 +47,13 @@ const Banner = () => {
 
         {/* Floating Card - Left (Data Science) */}
         <div
-          className="bg-white p-2 absolute rounded-xl shadow-2xl z-0
+          className="bg-white p-2 absolute rounded-xl cursor-pointer shadow-2xl z-0
                top-[85%] left-[5%]
                sm:top-[80%] sm:left-[10%]
                md:top-[75%] md:left-[12%]
                lg:top-[49%] lg:left-[22%]"
         >
-          <div className="flex flex-row text-left gap-2">
+          <div className="flex flex-row text-left gap-2 cursor-pointer">
             <img
               src={dataScience}
               alt="Software Developer Interview"
@@ -64,10 +63,17 @@ const Banner = () => {
               <p className="text-[8px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
                 Software Developer <br /> Interview
               </p>
-              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">11 Positions</p>
+              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">
+                10 Positions
+              </p>
             </div>
             <div className="flex items-center justify-center ml-auto">
-            <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2"/>
+              <Link
+                to="/userDashboard/mockInterview"
+                className="cursor-pointer"
+              >
+                <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2" />
+              </Link>
             </div>
           </div>
         </div>
@@ -90,10 +96,17 @@ const Banner = () => {
               <p className="text-[8px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
                 Software Developer <br /> Interview
               </p>
-              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">11 Positions</p>
+              <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">
+                11 Positions
+              </p>
             </div>
             <div className="flex items-center justify-center ml-auto">
-            <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2"/>
+              <Link
+                to="/userDashboard/mockInterview"
+                className="cursor-pointer"
+              >
+                <FaArrowRight className="bg-[#37B874] text-white rounded-full w-8 h-8 p-2" />
+              </Link>
             </div>
           </div>
         </div>
