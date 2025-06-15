@@ -34,7 +34,7 @@ const WhyChoose = () => {
   return (
     <div className="mt-12 md:mt-18 lg:mt-24">
       <h1 className="text-center text-[28px] md:text-[36px] lg:text-[70px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-2 lg:mb-12 md:w-[450px] lg:w-[864px] mx-auto">
-        Why Chose Inprep.ai
+        Why Choose Inprep.ai
       </h1>
 
       <p className="text-center text-[16px] lg:text-xl font-normal leading-[24px] tracking-[-0.32px] text-[#676768] px-2 md:w-[480px] lg:w-[580px] mx-auto">
