@@ -6,10 +6,12 @@ import PrepareAnyJob from "./PrepareAnyJob/PrepareAnyJob";
 import JustFewStep from "./JustFewStep/JustFewStep";
 import SuccessStories from "./SuccessStories/SuccessStories";
 import HomeCorner from "./HomeCorner/HomeCorner";
+import { LandingPageProvider } from "../../context/LandingPageContext";
 
 const Home = () => {
   return (
-    <div className="bg-[#F6F6F7] justify-center text-center max-w-full mx-auto pb-24">
+    <LandingPageProvider>
+      <div className="bg-[#F6F6F7] justify-center text-center max-w-full mx-auto pb-24">
       <Banner />
       <LogoFrame />
       <WhyChoose />
@@ -20,6 +22,7 @@ const Home = () => {
         <HomeCorner />
       </div>
     </div>
+    </LandingPageProvider>
   );
 };
 
