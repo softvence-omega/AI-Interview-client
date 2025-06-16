@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import axios from "axios";
+import { toast } from "sonner";
+import Swal from "sweetalert2";
 
 const LandingPageManage = () => {
   const [loading, setLoading] = useState(false);
   const [companyLogos, setCompanyLogos] = useState([]);
+  const [deletingIndices, setDeletingIndices] = useState(new Set());
 
   const {
     register,
@@ -45,8 +48,6 @@ const LandingPageManage = () => {
 
         const pageData = res.data.data[0] || {}; // <-- extract first object from array
         setCompanyLogos(pageData?.banner?.companyList || []);
-
-        console.log("Commmmmmpppanyyyy logo", pageData.banner.companyList[3]);
 
         // Clean the API response to match form structure
         const cleanedData = {
@@ -105,6 +106,7 @@ const LandingPageManage = () => {
         }
       } catch (err) {
         console.error("Failed to fetch landing page data", err);
+        toast.error("Failed to fetch landing page data");
       } finally {
         setLoading(false);
       }
@@ -112,6 +114,45 @@ const LandingPageManage = () => {
 
     fetchData();
   }, [reset, appendFeatureCard, appendGuideCard, setValue]);
+
+
+  const handleDeleteLogo = async (index) => {
+    const result = await Swal.fire({
+      title: `Delete This Logo?`,
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#37B874",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    setDeletingIndices((prev) => new Set([...prev, index]));
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/v1/landingPage/company-logo/${index}`
+      );
+      setCompanyLogos(response.data.banner.companyList);
+      toast.success(`Logo ${index + 1} deleted successfully`);
+    } catch (error) {
+      console.error("Failed to delete logo", error);
+      toast.error("Failed to delete logo");
+    } finally {
+      setDeletingIndices((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(index);
+        return newSet;
+      });
+    }
+  };
+
+
+
 
   const onSubmit = async (data) => {
     try {
@@ -161,10 +202,17 @@ const LandingPageManage = () => {
       await axios.put("http://localhost:5000/api/v1/landingPage/update", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      // NEW: Refresh company logos after update
+      const updatedData = await axios.get(
+        "http://localhost:5000/api/v1/landingPage/landingpagedata"
+      );
+      setCompanyLogos(updatedData.data.data[0]?.banner?.companyList || []);
+      toast.success("Landing page updated successfully!");
       alert("Landing page updated successfully!");
     } catch (error) {
       console.error("Update failed", error);
       alert("Update failed.");
+      toast.error("Update failed.");
     }
   };
 
@@ -214,7 +262,7 @@ const LandingPageManage = () => {
             </h3>
 
             {/* Show existing logos */}
-            <div className="flex flex-wrap gap-4 mt-4">
+            {/* <div className="flex flex-wrap gap-4 mt-4">
               {companyLogos.map((logo, index) => (
                 <img
                   key={index}
@@ -223,6 +271,60 @@ const LandingPageManage = () => {
                   className="h-16 w-32 md:w-36 lg:w-40 object-contain rounded shadow border"
                 />
               ))}
+            </div> */}
+
+            {/* NEW: Updated logo display with delete button */}
+            <div className="flex flex-wrap gap-4 mt-4">
+              {companyLogos.length === 0 ? (
+                <p className="text-gray-500 text-sm">No company logos uploaded.</p>
+              ) : (
+                companyLogos.map((logo, index) => (
+                  <div
+                    key={index}
+                    className="relative h-16 w-32 md:w-36 lg:w-40 rounded shadow border bg-white flex items-center justify-center"
+                  >
+                    <img
+                      src={logo}
+                      alt={`Company Logo ${index + 1}`}
+                      className="h-full w-full object-contain p-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteLogo(index)}
+                      disabled={deletingIndices.has(index)}
+                      className={`absolute top-1 right-1 p-1 rounded-full text-red-600 hover:bg-red-600 hover:text-white transition-colors ${
+                        deletingIndices.has(index) ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      title={`Delete Logo ${index + 1}`}
+                    >
+                      {deletingIndices.has(index) ? (
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                      ) : (
+                        <span>✕</span>
+                      )}
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
 
             <input
@@ -331,7 +433,7 @@ const LandingPageManage = () => {
                     {...register(`guide.guideCards.${index}.detail`)}
                     placeholder="Guide Step Detail"
                     rows={3}
-                    className="border border-gray-300 rounded px-3 py-2 w-full mt-3 resize-none focus:outline-none focus:ring-1 focus:ring-green-500"
+                    className="border border-gray-300 rounded px-3 py-2 w-full resize-none focus:outline-none focus:ring-1 focus:ring-green-500"
                   />
                   <button
                     type="button"
