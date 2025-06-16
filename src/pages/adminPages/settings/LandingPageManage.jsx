@@ -232,7 +232,7 @@ const LandingPageManage = () => {
         Manage Your Landing Page
       </h1>
       <p className="text-[#3A4C67] text-[12px] mt-4 px-6">
-        <span className="text-[#878788]">Settings</span>/ Landing Page
+        <span className="text-[#878788]">Settings</span> / Landing Page
         Management
       </p>
       <div className="mt-6 bg-white p-6 shadow-md rounded-lg">
