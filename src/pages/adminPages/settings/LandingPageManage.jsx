@@ -38,6 +38,13 @@ const LandingPageManage = () => {
     name: "guide.guideCards",
   });
 
+  // Scroll to top
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }, 0);
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -152,8 +159,6 @@ const LandingPageManage = () => {
   };
 
 
-
-
   const onSubmit = async (data) => {
     try {
       // Fetch current data to merge with updated fields
@@ -208,10 +213,11 @@ const LandingPageManage = () => {
       );
       setCompanyLogos(updatedData.data.data[0]?.banner?.companyList || []);
       toast.success("Landing page updated successfully!");
-      alert("Landing page updated successfully!");
+      // alert("Landing page updated successfully!");
+      window.scrollTo(0, 0);
     } catch (error) {
       console.error("Update failed", error);
-      alert("Update failed.");
+      // alert("Update failed.");
       toast.error("Update failed.");
     }
   };
@@ -281,7 +287,7 @@ const LandingPageManage = () => {
                 companyLogos.map((logo, index) => (
                   <div
                     key={index}
-                    className="relative h-16 w-32 md:w-36 lg:w-40 rounded shadow border bg-white flex items-center justify-center"
+                    className="relative h-16 w-32 md:w-36 lg:w-40 border border-gray-200 rounded shadow bg-white flex items-center justify-center"
                   >
                     <img
                       src={logo}
@@ -292,7 +298,7 @@ const LandingPageManage = () => {
                       type="button"
                       onClick={() => handleDeleteLogo(index)}
                       disabled={deletingIndices.has(index)}
-                      className={`absolute top-1 right-1 p-1 rounded-full text-red-600 hover:bg-red-600 hover:text-white transition-colors ${
+                      className={`absolute top-0 right-1 p-1 rounded-full text-red-600 hover:bg-red-600 hover:text-white transition-colors ${
                         deletingIndices.has(index) ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       title={`Delete Logo ${index + 1}`}

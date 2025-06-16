@@ -1,7 +1,17 @@
+import useLandingPage from "../../../hook/useLandingPage";
 import Buttons from "../../../reuseable/AllButtons";
 import "./homeCorner.css";
 
 const HomeCorner = () => {
+  const { landingData, loading } = useLandingPage();
+
+  if (loading)
+    return <div className="text-center text-gray-500">Loading...</div>;
+  if (!landingData)
+    return <div className="text-center text-gray-500">No data available</div>;
+
+  const corner = landingData?.aiCorner || [];
+
   return (
     <div
       id="prepareJobBanner"
@@ -16,12 +26,10 @@ const HomeCorner = () => {
           WebkitTextFillColor: "transparent",
         }}
         >
-          It's time you get AI on your corner.
+          {corner.title}
         </h1>
         <p className="w-[80%] md:w-[90%] lg:w-[35%] mx-auto text-[#F6F6F7] mt-4">
-          Whether you're preparing for your first job or aiming for a new
-          challenge, inprep.ai helps you prepare smarter with AI-driven
-          insights.
+          {corner.detail}
         </p>
         <Buttons.LinkButton
           text="Start Free Trial"

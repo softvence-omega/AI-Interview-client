@@ -5,18 +5,24 @@ import softwareDeveloperCard from "../../../assets/softwaredeveloper.png";
 import dataScience from "../../../assets/datascience.png";
 import { FaArrowRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import useLandingPage from "../../../hook/useLandingPage";
 
 const Banner = () => {
+  const { landingData, loading } = useLandingPage();
+
+  if (loading)
+    return <div className="text-center text-gray-500">Loading...</div>;
+  if (!landingData)
+    return <div className="text-center text-gray-500">No data available</div>;
+
   return (
     <div id="banner" className="text-black text-center pt-24">
       <h1 className="text-center text-[28px] md:text-[36px] lg:text-[60px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 md:w-[450px] lg:w-[820px] mx-auto">
-        Master Your Interviews with AI-Driven Preparation
+        {landingData.banner.title}
       </h1>
 
       <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[410px] lg:w-[480px] mx-auto">
-        Did you know that 80% of video interviews are screened by AI? With{" "}
-        Inprep.ai, you can harness the power of AI to prepare for your{" "}
-        interview. Join us now and get interview-ready with Inprep.ai!
+        {landingData.banner.detail}
       </p>
 
       <div className="flex justify-center items-center mt-8">
