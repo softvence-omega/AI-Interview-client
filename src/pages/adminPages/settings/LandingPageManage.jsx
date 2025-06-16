@@ -122,7 +122,6 @@ const LandingPageManage = () => {
     fetchData();
   }, [reset, appendFeatureCard, appendGuideCard, setValue]);
 
-
   const handleDeleteLogo = async (index) => {
     const result = await Swal.fire({
       title: `Delete This Logo?`,
@@ -157,7 +156,6 @@ const LandingPageManage = () => {
       });
     }
   };
-
 
   const onSubmit = async (data) => {
     try {
@@ -282,7 +280,9 @@ const LandingPageManage = () => {
             {/* NEW: Updated logo display with delete button */}
             <div className="flex flex-wrap gap-4 mt-4">
               {companyLogos.length === 0 ? (
-                <p className="text-gray-500 text-sm">No company logos uploaded.</p>
+                <p className="text-gray-500 text-sm">
+                  No company logos uploaded.
+                </p>
               ) : (
                 companyLogos.map((logo, index) => (
                   <div
@@ -299,7 +299,9 @@ const LandingPageManage = () => {
                       onClick={() => handleDeleteLogo(index)}
                       disabled={deletingIndices.has(index)}
                       className={`absolute top-0 right-1 p-1 rounded-full text-red-600 hover:bg-red-600 hover:text-white transition-colors ${
-                        deletingIndices.has(index) ? "opacity-50 cursor-not-allowed" : ""
+                        deletingIndices.has(index)
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
                       }`}
                       title={`Delete Logo ${index + 1}`}
                     >
