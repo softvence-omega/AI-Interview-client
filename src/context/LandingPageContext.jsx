@@ -10,7 +10,7 @@ export const LandingPageProvider = ({ children }) => {
   useEffect(() => {
     const fetchLandingData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v1/landingPage/landingpagedata");
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`);
         setLandingData(res.data.data[0]);
       } catch (err) {
         console.error("Landing data fetch failed:", err);
