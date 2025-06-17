@@ -53,7 +53,7 @@ const LandingPageManage = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/v1/landingPage/landingpagedata"
+          `${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`
         );
 
         const pageData = res.data.data[0] || {};
@@ -148,7 +148,7 @@ const LandingPageManage = () => {
     setDeletingIndices((prev) => new Set([...prev, index]));
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/v1/landingPage/company-logo/${index}`
+        `${import.meta.env.VITE_BASE_URL}/landingPage/company-logo/${index}`
       );
       setCompanyLogos(response.data.banner.companyList);
       toast.success(`Logo ${index + 1} deleted successfully`);
@@ -183,7 +183,7 @@ const LandingPageManage = () => {
     setDeletingIndices((prev) => new Set([...prev, index]));
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/v1/landingPage/feature-card-image/${index}`
+        `${import.meta.env.VITE_BASE_URL}/landingPage/feature-card-image/${index}`
       );
       // Update featureCardImages
       setFeatureCardImages(
@@ -206,7 +206,7 @@ const LandingPageManage = () => {
     try {
       // Fetch current data to merge with updated fields
       const currentDataRes = await axios.get(
-        "http://localhost:5000/api/v1/landingPage/landingpagedata"
+        `${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`
       );
       const currentData = currentDataRes.data.data;
 
@@ -247,12 +247,12 @@ const LandingPageManage = () => {
         }
       });
 
-      await axios.put("http://localhost:5000/api/v1/landingPage/update", form, {
+      await axios.put(`${import.meta.env.VITE_BASE_URL}/landingPage/update`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       // Refresh company logos and feature card images
       const updatedData = await axios.get(
-        "http://localhost:5000/api/v1/landingPage/landingpagedata"
+        `${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`
       );
       setCompanyLogos(updatedData.data.data[0]?.banner?.companyList || []);
       setFeatureCardImages(

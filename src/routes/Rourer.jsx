@@ -46,6 +46,7 @@ import CreateAdminPage from "../pages/adminPages/userManagement/CreateAdminPage"
 import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
 import ErrorPage from "../reuseable/ErrorPage";
 import LandingPageManage from "../pages/adminPages/settings/LandingPageManage";
+import PrivacyPolicy from "../pages/privacyPolicy/PrivacyPolicy";
 
 const Router = () => {
   return (
@@ -70,6 +71,7 @@ const Router = () => {
         <Route path="/payment-status" element={<PaymentStatus />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Route>
 
       {/* Protected routes for both users and admins */}

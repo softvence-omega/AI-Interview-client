@@ -18,13 +18,14 @@ const HomeCorner = () => {
       className="max-w-7xl mx-auto text-center justify-items-center items-center mt-24 mb-12"
     >
       <div className="content-wrapper text-center flex flex-col items-center px-4">
-        <h1 className="text-white w-[80%] md:w-[90%] lg:w-[50%] mx-auto"
-        style={{
-          background: "linear-gradient(90deg, #FFF   5.21%, #869AB7 100%)",
-          backgroundClip: "text",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
+        <h1
+          className="text-white w-[80%] md:w-[90%] lg:w-[50%] mx-auto"
+          style={{
+            background: "linear-gradient(90deg, #FFF   5.21%, #869AB7 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
         >
           {corner.title}
         </h1>
