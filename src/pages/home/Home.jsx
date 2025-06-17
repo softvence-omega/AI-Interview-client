@@ -10,8 +10,7 @@ import { LandingPageProvider } from "../../context/LandingPageContext";
 
 const Home = () => {
   return (
-    <LandingPageProvider>
-      <div className="bg-[#F6F6F7] justify-center text-center max-w-full mx-auto pb-24">
+    <div className="bg-[#F6F6F7] justify-center text-center max-w-full mx-auto pb-24">
       <Banner />
       <LogoFrame />
       <WhyChoose />
@@ -22,7 +21,6 @@ const Home = () => {
         <HomeCorner />
       </div>
     </div>
-    </LandingPageProvider>
   );
 };
 
