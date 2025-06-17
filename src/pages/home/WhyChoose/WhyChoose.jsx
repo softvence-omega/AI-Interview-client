@@ -44,7 +44,7 @@ const WhyChoose = () => {
                   </div>
                   <div className="flex justify-end -mt-18 pe-4">
                     <img
-                      src={localImages[index] || localImages[0]}
+                      src={feature.img}
                       alt={feature.title}
                       className="mt-4 rounded-lg"
                     />
