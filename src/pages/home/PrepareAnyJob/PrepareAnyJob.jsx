@@ -74,10 +74,10 @@ const PrepareAnyJob = () => {
             className="mx-auto"
             alt="Prepare for any job"
           />
-          <h1 className="text-white md:w-[70%] lg:w-[70%] mx-auto">
+          <h1 className="text-white md:w-[70%] lg:w-[60%] mx-auto">
             {prepareAnyJob.title}
           </h1>
-          <p className="w-[80%] mx-auto text-[#676768] mt-4">
+          <p className="w-[70%] mx-auto text-[#676768] mt-4">
             {prepareAnyJob.detail}
           </p>
 
