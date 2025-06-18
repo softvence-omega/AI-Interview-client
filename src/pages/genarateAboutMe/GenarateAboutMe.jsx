@@ -92,7 +92,7 @@ const GenerateAboutMe = () => {
 
   return (
     <Container>
-      <div className="h-screen flex flex-col items-center justify-center w-full max-w-[1444px] mx-auto">
+      <div className="min-h-screen my-20 md:my-0 lg:my-0 flex flex-col items-center justify-center w-full max-w-[1444px] mx-auto">
         <div className="w-[80%] bg-white p-6 rounded-lg shadow-md">
           {loading ? (
             <p className="text-center text-gray-600">Loading...</p>
@@ -112,7 +112,7 @@ const GenerateAboutMe = () => {
           <Buttons.LinkButton
           to={'/takeAboutMeVideoTest'}
           text='Take Video Test'
-          height='h-20'
+          height='h-12'
           width="w-64"
           />
           </div>

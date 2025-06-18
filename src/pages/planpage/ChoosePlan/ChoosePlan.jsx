@@ -135,7 +135,7 @@ const ChoosePlan = () => {
                 ))}
               </ul>
               <div className="mt-6 absolute bottom-4 right-6 left-6">
-                <Link to="/">
+                <Link to="/userDashboard/mockInterview">
                   <button
                     type="button"
                     className="flex items-center justify-center font-semibold transition duration-200 cursor-pointer h-12 w-full text-white bg-[#37B874] rounded-[12px]"

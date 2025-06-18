@@ -62,29 +62,20 @@ const UserOrAdminDBLayout = () => {
   };
 
   useEffect(() => {
-    if (!userType) {
-      console.log("Waiting for userType to be available");
-      return;
-    }
-
-    // Handle one-time redirect after login
+    if (!userType || !userData) return;
+  
+    const currentPath = location.pathname;
+    const isAdmin = userType === "admin";
     const hasRedirected = localStorage.getItem("hasRedirected");
-    if (!hasRedirected) {
-      const routes = userType === "admin" ? adminRoutes : userRoutes;
-      const firstRoute = routes[0].to;
-      console.log(`Performing one-time redirect to: /userDashboard/${firstRoute}`);
-      localStorage.setItem("hasRedirected", "true");
-      navigate(`/userDashboard/${firstRoute}`);
-      return;
-    }
-
-    // Show notifications for incomplete steps (non-admins only)
-    if (userType !== "admin" && userMeta) {
+  
+    const routes = isAdmin ? adminRoutes : userRoutes;
+    const firstRoute = routes[0].to;
+  
+    // Handle non-admin conditions first
+    if (!isAdmin && userMeta) {
       const completedSteps = userMeta;
-      const currentPath = location.pathname;
-
+  
       if (!userData.OTPverified) {
-        console.log("User is not OTP verified");
         toast.error("Please get OTP verified in Settings", {
           description: "Complete OTP verification to access all features.",
           action: {
@@ -92,11 +83,11 @@ const UserOrAdminDBLayout = () => {
             onClick: () => handleNavigation("settings"),
           },
         });
-      } else if (
-        !completedSteps.isResumeUploaded &&
-        currentPath !== "/resume-upload"
-      ) {
-        console.log("Resume not uploaded");
+        navigate("/userDashboard/settings");
+        return;
+      }
+  
+      if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
         toast.warning("Please upload your resume", {
           description: "Upload your resume to unlock more features.",
           action: {
@@ -104,11 +95,11 @@ const UserOrAdminDBLayout = () => {
             onClick: () => navigate("/resume-upload"),
           },
         });
-      } else if (
-        !completedSteps.isAboutMeGenerated &&
-        currentPath !== "/generateAboutMe"
-      ) {
-        console.log("About Me not generated");
+        navigate("/resume-upload");
+        return;
+      }
+  
+      if (!completedSteps.isAboutMeGenerated && currentPath !== "/generateAboutMe") {
         toast.warning("Please generate your About Me section", {
           description: "Complete your About Me to enhance your profile.",
           action: {
@@ -116,11 +107,11 @@ const UserOrAdminDBLayout = () => {
             onClick: () => navigate("/generateAboutMe"),
           },
         });
-      } else if (
-        !completedSteps.isAboutMeVideoChecked &&
-        currentPath !== "/generateAboutMe"
-      ) {
-        console.log("About Me video not checked");
+        navigate("/generateAboutMe");
+        return;
+      }
+  
+      if (!completedSteps.isAboutMeVideoChecked && currentPath !== "/generateAboutMe") {
         toast.warning("Please complete your About Me video", {
           description: "Finish your About Me video to proceed.",
           action: {
@@ -128,9 +119,89 @@ const UserOrAdminDBLayout = () => {
             onClick: () => navigate("/generateAboutMe"),
           },
         });
+        navigate("/generateAboutMe");
+        return;
       }
     }
+  
+    // After checks pass, perform one-time redirect if not already done
+    if (!hasRedirected && baseRoute === "") {
+      localStorage.setItem("hasRedirected", "true");
+      navigate(`/userDashboard/${firstRoute}`);
+    }
   }, [userType, userMeta, userData, navigate, location.pathname]);
+  
+
+  // useEffect(() => {
+  //   if (!userType) {
+  //     console.log("Waiting for userType to be available");
+  //     return;
+  //   }
+
+  //   // Handle one-time redirect after login
+  //   const hasRedirected = localStorage.getItem("hasRedirected");
+  //   if (!hasRedirected) {
+  //     const routes = userType === "admin" ? adminRoutes : userRoutes;
+  //     const firstRoute = routes[0].to;
+  //     console.log(`Performing one-time redirect to: /userDashboard/${firstRoute}`);
+  //     localStorage.setItem("hasRedirected", "true");
+  //     navigate(`/userDashboard/${firstRoute}`);
+  //     return;
+  //   }
+
+  //   // Show notifications for incomplete steps (non-admins only)
+  //   if (userType !== "admin" && userMeta) {
+  //     const completedSteps = userMeta;
+  //     const currentPath = location.pathname;
+
+  //     if (!userData.OTPverified) {
+  //       console.log("User is not OTP verified");
+  //       toast.error("Please get OTP verified in Settings", {
+  //         description: "Complete OTP verification to access all features.",
+  //         action: {
+  //           label: "Go to Settings",
+  //           onClick: () => handleNavigation("settings"),
+  //         },
+  //       });
+  //     } else if (
+  //       !completedSteps.isResumeUploaded &&
+  //       currentPath !== "/resume-upload"
+  //     ) {
+  //       console.log("Resume not uploaded");
+  //       toast.warning("Please upload your resume", {
+  //         description: "Upload your resume to unlock more features.",
+  //         action: {
+  //           label: "Upload Resume",
+  //           onClick: () => navigate("/resume-upload"),
+  //         },
+  //       });
+  //     } else if (
+  //       !completedSteps.isAboutMeGenerated &&
+  //       currentPath !== "/generateAboutMe"
+  //     ) {
+  //       console.log("About Me not generated");
+  //       toast.warning("Please generate your About Me section", {
+  //         description: "Complete your About Me to enhance your profile.",
+  //         action: {
+  //           label: "Generate About Me",
+  //           onClick: () => navigate("/generateAboutMe"),
+  //         },
+  //       });
+  //     } else if (
+  //       !completedSteps.isAboutMeVideoChecked &&
+  //       currentPath !== "/generateAboutMe"
+  //     ) {
+  //       console.log("About Me video not checked");
+  //       toast.warning("Please complete your About Me video", {
+  //         description: "Finish your About Me video to proceed.",
+  //         action: {
+  //           label: "Complete Video",
+  //           onClick: () => navigate("/generateAboutMe"),
+  //         },
+  //       });
+  //     }
+  //   }
+  // }, [userType, userMeta, userData, navigate, location.pathname]);
 
   return (
     <div className="h-screen mx-auto flex bg-gray-100 max-w-9xl">
