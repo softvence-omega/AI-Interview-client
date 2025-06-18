@@ -1,47 +1,57 @@
 import { useState } from "react";
 import image from "../../../assets/home-banner.png";
 import Buttons from "../../../reuseable/AllButtons";
-import './ContactForm.css';
+import "./ContactForm.css";
+import CountryList from "country-list-with-dial-code-and-flag";
 
 const ContactForm = () => {
+  const countries = CountryList.getAll();
+
+  const getFlagUrl = (countryCode) =>
+    `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     message: "",
-    countryCode: "+1",
+    // countryCode: "+1",
+    countryCode: countries[0].dialCode,
   });
 
-  const [selectedCountry, setSelectedCountry] = useState({
-    code: "us",
-    name: "United States",
-    flag: "https://flagcdn.com/w20/us.png",
-    phoneCode: "+1",
-  });
+  // const [selectedCountry, setSelectedCountry] = useState({
+  //   code: "us",
+  //   name: "United States",
+  //   flag: "https://flagcdn.com/w20/us.png",
+  //   phoneCode: "+1",
+  // });
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const countries = [
-    {
-      code: "us",
-      name: "United States",
-      flag: "https://flagcdn.com/w20/us.png",
-      phoneCode: "+1",
-    },
-    {
-      code: "uk",
-      name: "United Kingdom",
-      flag: "https://flagcdn.com/w20/gb.png",
-      phoneCode: "+44",
-    },
-    {
-      code: "fr",
-      name: "France",
-      flag: "https://flagcdn.com/w20/fr.png",
-      phoneCode: "+33",
-    },
-  ];
+  // const countries = [
+  //   {
+  //     code: "us",
+  //     name: "United States",
+  //     flag: "https://flagcdn.com/w20/us.png",
+  //     phoneCode: "+1",
+  //   },
+  //   {
+  //     code: "uk",
+  //     name: "United Kingdom",
+  //     flag: "https://flagcdn.com/w20/gb.png",
+  //     phoneCode: "+44",
+  //   },
+  //   {
+  //     code: "fr",
+  //     name: "France",
+  //     flag: "https://flagcdn.com/w20/fr.png",
+  //     phoneCode: "+33",
+  //   },
+  // ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,16 +65,53 @@ const ContactForm = () => {
     setSelectedCountry(country);
     setFormData((prev) => ({
       ...prev,
-      countryCode: country.phoneCode,
+      countryCode: country.dialCode,
       phone: "",
     }));
     setIsOpen(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+  
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/contact/contact-us`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+  
+      let data = null;
+      const contentType = response.headers.get("content-type");
+  
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      }
+  
+      if (response.ok) {
+        alert(data?.message || "Message sent successfully!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          message: "",
+          countryCode: countries[0].dialCode,
+        });
+      } else {
+        alert(data?.message || "Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Error sending contact form:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
+  
 
   return (
     <div className="max-w-7xl mx-auto pt-12 md:pt-20 lg:pt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 ">
@@ -114,6 +161,59 @@ const ContactForm = () => {
                 <div className="relative">
                   <button
                     type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center w-24 p-2 border border-gray-300 rounded-l text-black text-left"
+                  >
+                    <img
+                      src={getFlagUrl(selectedCountry.code)}
+                      alt={selectedCountry.name}
+                      className="w-6 h-4 mr-2"
+                    />
+                    {selectedCountry.dialCode}
+                  </button>
+
+                  {isOpen && (
+                    <div className="absolute z-10 text-black bg-white border border-gray-300 rounded shadow-lg mt-1 max-h-60 overflow-auto w-44">
+                      <input
+                        type="text"
+                        placeholder="Search"
+                        className="w-full px-2 py-1 border-b border-gray-300 text-sm text-black"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+
+                      {countries
+                        .filter(
+                          (country) =>
+                            country.name
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase()) ||
+                            country.dialCode.includes(searchQuery) ||
+                            country.code
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())
+                        )
+                        .map((country) => (
+                          <button
+                            key={country.code}
+                            onClick={() => handleCountryChange(country)}
+                            className="w-full px-2 py-1 text-left flex items-center hover:bg-gray-100"
+                          >
+                            <img
+                              src={getFlagUrl(country.code)}
+                              alt={country.name}
+                              className="w-6 h-4 mr-2"
+                            />
+                            {country.dialCode}
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* <div className="relative">
+                  <button
+                    type="button"
                     className="flex items-center w-24 p-2 border border-gray-300 rounded-l text-black text-left"
                     onClick={() => setIsOpen(!isOpen)}
                   >
@@ -142,7 +242,7 @@ const ContactForm = () => {
                       ))}
                     </div>
                   )}
-                </div>
+                </div> */}
                 <input
                   type="text"
                   name="phone"
@@ -185,14 +285,12 @@ const ContactForm = () => {
             </div>
 
             <div className="flex justify-center items-center mt-8">
-              <Buttons.LinkButton
-                text="Get Started"
-                to="/"
-                height="h-12"
-                width="w-36"
-                rounded="rounded-xl"
+              <button
                 type="submit"
-              />
+                className="h-12 w-36 rounded-xl bg-[#37B874] text-white font-semibold hover:bg-[#2c9458] transition duration-200"
+              >
+                Send Message
+              </button>
             </div>
           </div>
         </form>
