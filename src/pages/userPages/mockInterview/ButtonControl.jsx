@@ -97,7 +97,7 @@ const ButtonControls = ({
         <div className="flex justify-center gap-6 w-full">
           <button
             onClick={handleContinueClick}
-            className="bg-[#3A4C67] w-[30%] h-[40px] rounded-[12px] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#3A4C67] w-[40%] h-[50px] md:w-[30%] md:h-[40px] lg:w-[30%] lg:h-[40px] rounded-[12px] text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             disabled={isProcessing || loading || retakeLoading || !!error} // Disable on error
             title={error ? "Resolve error to proceed" : ""} // Optional tooltip
           >
@@ -109,7 +109,7 @@ const ButtonControls = ({
           </button>
           <button
             onClick={handleRetakeClick}
-            className="bg-green-500 w-[30%] h-[40px] rounded-[12px] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-green-500 w-[40%] h-[50px] md:w-[30%] md:h-[40px] lg:w-[30%] lg:h-[40px] rounded-[12px] text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             disabled={isProcessing || loading || retakeLoading} // No error condition
           >
             {retakeLoading

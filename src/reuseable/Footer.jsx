@@ -9,9 +9,7 @@ const Footer = () => {
         <aside>
           <img src={footerLogo} alt="" />
           <p className="text-[#FFFFFF] leading-[150%] font-normal text-[14px] mt-2">
-            Lorem ipsum dolor sit amet <br /> consectetur. Non scelerisque
-            cursus <br /> lacus sagittis consequat. Suscipit <br /> tempus nam
-            diam adipiscing enim.
+          AI-powered interview preparation platform. <br /> Practice with real-time simulations, test your skills, and <br /> develop your skills and build confidence <br /> through live video interviews.
           </p>
           <div className="flex gap-2 justify-items-center mt-8">
             <input

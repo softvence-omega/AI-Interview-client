@@ -4,48 +4,143 @@ import Marquee from "react-fast-marquee";
 const reviews = [
   {
     name: "Maren Schleifer",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui.",
+    text: "This platform has transformed the way I prepare for interviews. The AI simulations are realistic and helped me improve my responses significantly.",
     image: "https://i.pravatar.cc/40?img=1",
+    rating: 5,
   },
   {
     name: "Aspen Curtis",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui. Ut magna pharetra vitae sem morbi viverra ac odio.",
+    text: "The live video interview feature boosted my confidence and made me feel prepared for real job interviews. Highly recommend for anyone looking to sharpen their skills.",
     image: "https://i.pravatar.cc/40?img=2",
+    rating: 4,
   },
   {
     name: "Corey White",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui.",
+    text: "An excellent tool for practicing interview scenarios. The feedback helped me identify areas of improvement and enhanced my overall communication.",
     image: "https://i.pravatar.cc/40?img=3",
+    rating: 4,
   },
   {
     name: "Maren Torff",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui.",
+    text: "The AI interview platform is user-friendly and effective. It simulates real interview conditions, making my preparation much more productive.",
     image: "https://i.pravatar.cc/40?img=4",
+    rating: 5,
   },
   {
     name: "Craig Vetrows",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui. Ut magna pharetra vitae sem morbi viverra ac odio.",
+    text: "Thanks to this platform, I was able to refine my answers and gain confidence before my actual interviews. The camera-enabled sessions are particularly helpful.",
     image: "https://i.pravatar.cc/40?img=5",
+    rating: 5,
   },
   {
     name: "Allison Calzoni",
-    text: "Lorem ipsum dolor sit amet consectetur. In amet sed aenean orci scelerisque. Est congue justo tortor mi id nec ipsum arcu. Libero ut nibh purus tristique feugiat dui. Ut magna pharetra vitae sem morbi viverra ac odio.",
+    text: "I appreciate how this platform offers a realistic and engaging interview experience. It helped me manage my nerves and improve my delivery.",
     image: "https://i.pravatar.cc/40?img=6",
+    rating: 4,
+  },
+  {
+    name: "David Harper",
+    text: "This AI tool made interview preparation easy and efficient. The instant feedback was invaluable.",
+    image: "https://i.pravatar.cc/40?img=7",
+    rating: 5,
+  },
+  {
+    name: "Lena Brooks",
+    text: "I improved my communication skills dramatically thanks to this platform’s realistic simulations.",
+    image: "https://i.pravatar.cc/40?img=8",
+    rating: 5,
+  },
+  {
+    name: "Samuel Reed",
+    text: "A great way to prepare for interviews with live video practice. I feel ready for any interview now!",
+    image: "https://i.pravatar.cc/40?img=9",
+    rating: 4,
+  },
+  {
+    name: "Clara Benson",
+    text: "The interface is intuitive and the AI questions are very relevant to real job interviews.",
+    image: "https://i.pravatar.cc/40?img=10",
+    rating: 5,
+  },
+  {
+    name: "Oliver Grant",
+    text: "I highly recommend this platform for anyone wanting to practice interviews with real-time feedback.",
+    image: "https://i.pravatar.cc/40?img=11",
+    rating: 5,
+  },
+  {
+    name: "Emily Scott",
+    text: "The camera-enabled sessions helped me get comfortable speaking on video. It’s an amazing resource!",
+    image: "https://i.pravatar.cc/40?img=12",
+    rating: 5,
+  },
+  {
+    name: "Mason King",
+    text: "Practicing with AI has made a huge difference in my interview confidence and answer quality.",
+    image: "https://i.pravatar.cc/40?img=13",
+    rating: 4,
+  },
+  {
+    name: "Sophia Diaz",
+    text: "The detailed feedback after each interview helped me focus on my weaknesses and improve.",
+    image: "https://i.pravatar.cc/40?img=14",
+    rating: 5,
+  },
+  {
+    name: "Liam Turner",
+    text: "This platform is a game-changer for job seekers. The realistic AI interviews prepared me well.",
+    image: "https://i.pravatar.cc/40?img=15",
+    rating: 5,
+  },
+  {
+    name: "Ava Morris",
+    text: "Thanks to the video interview practice, I no longer feel nervous during real interviews.",
+    image: "https://i.pravatar.cc/40?img=16",
+    rating: 4,
+  },
+  {
+    name: "Noah Mitchell",
+    text: "The AI feedback helped me craft better answers and improved my overall interview skills.",
+    image: "https://i.pravatar.cc/40?img=17",
+    rating: 5,
+  },
+  {
+    name: "Isabella Cox",
+    text: "A very user-friendly platform that mimics real interview scenarios perfectly.",
+    image: "https://i.pravatar.cc/40?img=18",
+    rating: 5,
+  },
+  {
+    name: "Ethan Rogers",
+    text: "Practicing here was one of the best decisions I made. It helped me land my dream job!",
+    image: "https://i.pravatar.cc/40?img=19",
+    rating: 5,
+  },
+  {
+    name: "Mia Coleman",
+    text: "The AI-driven interviews provide excellent practice and boost confidence before the real thing.",
+    image: "https://i.pravatar.cc/40?img=20",
+    rating: 5,
   },
 ];
 
-const StarRating = () => (
-  <div className="flex space-x-1 text-yellow-400 text-sm">
-    {Array.from({ length: 5 }).map((_, i) => (
-      <span key={i}>★</span>
-    ))}
-  </div>
-);
+const StarRating = ({ rating }) => {
+  const totalStars = 5;
+  return (
+    <div className="flex space-x-1 text-yellow-400 text-sm">
+      {Array.from({ length: totalStars }).map((_, i) => (
+        <span key={i}>
+          {i < rating ? "★" : "☆"}
+        </span>
+      ))}
+    </div>
+  );
+};
 
 const TestimonialCard = ({ review }) => (
   <div className="bg-white shadow-md rounded-xl p-4 w-92 h-62 mx-2 flex-shrink-0 text-left">
     <div className="flex gap-4 items-center">
-      <StarRating />
+      <StarRating rating={review.rating} />
       <div className="flex items-center gap-2 text-sm mt-1">
         <span className="text-[#3A4C67]">
           <svg
@@ -75,6 +170,7 @@ const TestimonialCard = ({ review }) => (
     </div>
   </div>
 );
+
 const SuccessStories = () => {
   const [secondSpeed, setSecondSpeed] = useState(0);
 
@@ -91,20 +187,20 @@ const SuccessStories = () => {
       <h1 className="text-center text-[28px] md:text-[36px] lg:text-[70px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 w-[300px] md:w-[450px] lg:w-[864px] mx-auto">
         Success Stories from Our Users
       </h1>
-      {/* First slider starts immediately */}
+      {/* First slider shows reviews 0-9 */}
       <div className="bg-gray-100 py-10">
         <Marquee gradient={false} speed={50}>
-          {reviews.map((review, index) => (
+          {reviews.slice(0, 10).map((review, index) => (
             <TestimonialCard key={index} review={review} />
           ))}
         </Marquee>
       </div>
 
-      {/* Second slider is visible but scrolls after 3 seconds */}
+      {/* Second slider shows reviews 10-19 */}
       <div className="bg-gray-100 pb-10">
         <Marquee gradient={false} speed={secondSpeed}>
-          {reviews.map((review, index) => (
-            <TestimonialCard key={index} review={review} />
+          {reviews.slice(8, 20).map((review, index) => (
+            <TestimonialCard key={index + 10} review={review} />
           ))}
         </Marquee>
       </div>

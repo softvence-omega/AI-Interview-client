@@ -19,19 +19,19 @@ const ViewHistory = ({ history }) => {
   }
 
   return (
-    <div className="w-full px-6 py-8">
+    <div className="w-full md:px-6 lg:px-6 py-8">
       <div className="bg-white p-6 rounded-lg shadow">
-        <h1 className="text-center text-2xl font-bold mb-4 text-[#293649]">
-          You Have Completed this Interview
+        <h1 className="text-center text-2xl md:text-3xl lg:text-3xl font-bold mb-8 text-[#293649]">
+          You Have Completed This Interview
         </h1>
-        <h2 className="text-2xl font-bold mb-4 text-[#293649]">
+        <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold mb-4 text-[#37B874]">
           Interview History
         </h2>
         <div className="flex flex-col gap-4">
           {history.map((item, index) => (
             <div
               key={item._id || index + 1}
-              className="flex justify-between items-center p-4 border border-gray-200 rounded-lg text-[#293649]"
+              className="flex gap-6 justify-between items-center p-4 border border-green-200 rounded-lg text-[#293649]"
             >
               <p className="text-lg font-medium">
                 {item.isSummary ? "Overall Interview Feedback" : `Question: ${index + 1}`}
