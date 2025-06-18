@@ -5,8 +5,8 @@ const Accordian = () => {
     {
       title: "What is Inprep.ai?",
       content:
-        "Lorem ipsum dolor sit amet consectetur. Ipsum facilisi orci amet id dignissim. A quis turpis fringilla libero maecenas elementum morbi. Orci tristique venenatis penatibus vitae blandit aliquam.",
-    },
+        "Inprep.ai is an innovative AI-powered interview preparation platform designed to help job seekers improve their skills through realistic interview simulations, personalized feedback, and live video practice sessions. Our goal is to boost your confidence and readiness for any job interview.",
+    },    
     {
       title: "How can I upgrade my subscription?",
       content: "You can upgrade your subscription in the account settings.",
