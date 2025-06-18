@@ -11,14 +11,14 @@ const HistoryButtonControls = ({
     <div className="flex justify-center gap-6 w-full">
       <button
         onClick={handleFullRetaake}
-        className="bg-green-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+        className="bg-green-500 w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50 cursor-pointer"
         disabled={isProcessing || loading || retakeLoading}
       >
         {retakeLoading ? "Generating..." : "Restart Interview"}
       </button>
       <button
         onClick={handleGoBack}
-        className="bg-[#3A4C67] w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50"
+        className="bg-[#3A4C67] w-[30%] h-[50px] rounded-[12px] text-white disabled:opacity-50 cursor-pointer"
         disabled={isProcessing || loading || retakeLoading}
       >
         Go Back 

@@ -387,8 +387,8 @@ const VideoController = forwardRef(
         ) : (
           <div>
             {isRecording && (
-              <div>
-                <h3>Recording...</h3>
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-[#37B874]">Recording...</h3>
                 <p>Time remaining: {formatTime(recordingTimeLeft)}</p>
               </div>
             )}
@@ -401,9 +401,11 @@ const VideoController = forwardRef(
                   muted
                   style={{
                     width: "80%",
-                    height: "80%",
-                    border: "1px solid black",
+                    height: "auto",
+                    maxHeight: "580px", 
+                    border: "0px solid black",
                     transform: "rotate(360deg)",
+                    objectFit: "cover",aspectRatio: "16/9",
                   }}
                 />
               </div>

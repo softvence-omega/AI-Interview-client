@@ -28,8 +28,8 @@ const ContentSection = ({
           <LoadingCircle />
         </div>
       ) : (
-        <div className="w-full h-[80%] border-[1px] border-[#37B874] rounded-sm p-2">
-          <p className="text-lg mb-4">
+        <div className="w-full h-[80%] rounded-sm p-2">
+          <p className="text-lg mb-4 text-green-500"><span className="text-black me-2">Total Time:</span> 
             {ongoingQuestion.time_to_answer &&
               `${Math.floor(Number(ongoingQuestion.time_to_answer) / 60)} minute(s)`}
           </p>
