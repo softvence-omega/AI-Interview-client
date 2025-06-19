@@ -61,9 +61,9 @@
 //         setUser(userData);
 //         localStorage.setItem("userData", JSON.stringify(userData));
 //         toast.success("✅ Log in successful!");
-        
+
 //         setTimeout(() =>navigate("/userDashBoard"), 1500);
-//       } 
+//       }
 //       else {
 //         toast.error(res.message || "Login failed");
 //         console.error("Login failed", res);
@@ -96,7 +96,7 @@
 //         setOtpToken(res.data.data.token);
 //         toast.success("✅ Check your email for OTP!");
 //         setTimeout(() => navigate("/otp-crosscheck"), 1500);
-//       } 
+//       }
 //       else {
 //         toast.error(res.data.message || "Signup failed");
 //         console.error("Signup failed", res);
@@ -185,8 +185,8 @@
 //               </div>
 //             </div>
 //           </form>
-//         ) 
-//         : 
+//         )
+//         :
 //         (
 //           <form
 //             onSubmit={triggerFunctionForSignUp}
@@ -295,8 +295,6 @@
 
 // export default LoginOrSignup;
 
-
-
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import botImg from "../../assets/features/hello 1.png";
@@ -322,6 +320,7 @@ const LoginOrSignup = () => {
     aggriedToTerms: false,
   });
   const [isLoggingIn, setIsLoggingIn] = useState(false); // Loader state
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
     setFormData({
@@ -372,7 +371,7 @@ const LoginOrSignup = () => {
         setUser(userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         toast.success("✅ Log in successful!");
-        
+
         setTimeout(() => navigate("/userDashBoard"), 1500);
       } else {
         toast.error(res.message || "Login failed");
@@ -388,6 +387,7 @@ const LoginOrSignup = () => {
 
   const triggerFunctionForSignUp = async (e) => {
     e.preventDefault();
+    setIsSigningUp(true); // Start loader
 
     if (!formData.aggriedToTerms) {
       toast.error("You must agree to the terms and conditions to sign up.");
@@ -420,6 +420,8 @@ const LoginOrSignup = () => {
     } catch (err) {
       console.error("Signup error", err);
       toast.error("An error occurred during sign-up.");
+    } finally {
+      setIsSigningUp(false); // Stop loader
     }
   };
 
@@ -438,7 +440,7 @@ const LoginOrSignup = () => {
             style={{ color: "var(--btn-primary-color)" }}
           />
           <p className="text-center font-semibold text-3xl text-[#37B874]">
-            Your first step <br/> towards a perfect interview
+            Your first step <br /> towards a perfect interview
           </p>
         </div>
       </div>
@@ -520,15 +522,15 @@ const LoginOrSignup = () => {
               onClick={triggerFunctionForLogIN}
             />
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-white">
-              <Link to="/forgot-password" className="hover:underline text-white">
+              <Link
+                to="/forgot-password"
+                className="hover:underline text-white"
+              >
                 Forgot password?
               </Link>
               <div className="text-center flex mt-14">
                 <p className="text-white">Don't have an account?</p>
-                <Link
-                  to="/signup"
-                  className="hover:underline text-white ml-2"
-                >
+                <Link to="/signup" className="hover:underline text-white ml-2">
                   Sign Up
                 </Link>
               </div>
@@ -629,8 +631,10 @@ const LoginOrSignup = () => {
                   <span
                     className="block w-5 h-5 rounded border-[1px] border-white flex items-center justify-center"
                     style={{
-                      backgroundColor: formData.aggriedToTerms ? '#37B874' : '#ffffff',
-                      transition: 'background-color 0.2s',
+                      backgroundColor: formData.aggriedToTerms
+                        ? "#37B874"
+                        : "#ffffff",
+                      transition: "background-color 0.2s",
                     }}
                   >
                     {formData.aggriedToTerms && (
@@ -650,7 +654,32 @@ const LoginOrSignup = () => {
               </label>
             </div>
             <Buttons.SubmitButton
-              text="Sign Up"
+              text={
+                isSigningUp ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mx-auto text-[#37B874]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Sign Up"
+                )
+              }
               height="h-[60px]"
               rounded="rounded-[10px]"
               bgColor="bg-white"
@@ -660,10 +689,7 @@ const LoginOrSignup = () => {
             <div className="w-full flex flex-col items-center mt-10 space-y-4 text-sm text-white">
               <div className="text-center flex mt-14">
                 <p className="text-white">Already have an account?</p>
-                <Link
-                  to="/login"
-                  className="hover:underline text-white ml-2"
-                >
+                <Link to="/login" className="hover:underline text-white ml-2">
                   Log In
                 </Link>
               </div>

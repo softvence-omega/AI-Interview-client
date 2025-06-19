@@ -28,7 +28,7 @@ const Banner = () => {
       <div className="flex justify-center items-center mt-8">
         <Buttons.LinkButton
           text="Get Started"
-          to="/"
+          to="/userDashboard/mockInterview"
           height="h-12"
           width="w-32"
           rounded="rounded-xl"
