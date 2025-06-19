@@ -5,27 +5,25 @@ import useApi from '../../hook/apiHook';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
+const OtpCrossCheck = ({ adminOTPToken, navigateTo }) => {
   console.log(".......>>>>>>>>>>>>>>>>>>>>>>>>======>>>>>>>>>>>", adminOTPToken);
 
-  const { setOtpToken, otpToken, logout } = useAuth(); // Added logout from useAuth
+  const { setOtpToken, otpToken, logout } = useAuth();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [loading, setLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [timeLeft, setTimeLeft] = useState(120);
   const { request } = useApi();
   const navigate = useNavigate();
 
-  // Use adminOTPToken if provided, otherwise fall back to otpToken from useAuth
   const tokenToUse = adminOTPToken || otpToken;
 
   const handleChange = (index, value) => {
     if (!/^[0-9]?$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`)?.focus();
     }
@@ -33,20 +31,18 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const enteredOtp = otp.join('');
     if (enteredOtp.length < 6) {
       toast.error('Please enter the full 6-digit OTP.');
       return;
     }
-
     if (!tokenToUse) {
       toast.error('No OTP token available.');
       return;
     }
 
     try {
-      setLoading(true);
+      setVerifyLoading(true);
       const res = await request({
         endpoint: '/auth/otpcrossCheck',
         method: 'POST',
@@ -60,13 +56,11 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
         toast.success(`${res.data.message}`);
         setTimeout(() => {
           setOtp(['', '', '', '', '', '']);
-
-          // Check if request is from /userDashBoard/settings
           if (navigateTo === '/userDashBoard/mockInterview') {
-            logout(); // Log out the user
-            navigate('/login'); // Navigate to login
+            logout();
+            navigate('/login');
           } else {
-            navigate(navigateTo || '/login'); // Use navigateTo or default to /login
+            navigate(navigateTo || '/login');
           }
         }, 1500);
       } else {
@@ -76,7 +70,7 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
       console.error('OTP verification error:', error);
       toast.error('❌ Something went wrong during OTP verification.');
     } finally {
-      setLoading(false);
+      setVerifyLoading(false);
     }
   };
 
@@ -87,7 +81,7 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
     }
 
     try {
-      setLoading(true);
+      setResendLoading(true);
       const res = await request({
         endpoint: '/auth/reSend_OTP',
         method: 'POST',
@@ -99,7 +93,7 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
       if (res?.ok) {
         toast.success(res.data.message || '✅ OTP has been resent to your email.');
         if (res.data.body) {
-          setOtpToken(res.data.body); // Update token if new one is provided
+          setOtpToken(res.data.body);
         }
         setTimeLeft(120);
         setResendDisabled(true);
@@ -110,11 +104,10 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
       console.error('Resend OTP error:', error);
       toast.error('❌ Error while resending OTP.');
     } finally {
-      setLoading(false);
+      setResendLoading(false);
     }
   };
 
-  // Handle countdown
   useEffect(() => {
     let timer;
     if (resendDisabled && timeLeft > 0) {
@@ -124,11 +117,9 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
     } else if (timeLeft === 0) {
       setResendDisabled(false);
     }
-
     return () => clearInterval(timer);
   }, [resendDisabled, timeLeft]);
 
-  // Format time left as MM:SS
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -162,12 +153,12 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={verifyLoading}
               className={`w-full py-3 px-4 bg-[#37B874] text-white rounded-md hover:bg-[#2ea664] transition duration-200 hover:shadow-md flex items-center justify-center ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
+                verifyLoading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              {loading ? (
+              {verifyLoading ? (
                 <svg
                   className="animate-spin h-5 w-5 mr-2 text-white"
                   xmlns="http://www.w3.org/2000/svg"
@@ -189,17 +180,17 @@ const OtpCrossCheck = ({ adminOTPToken, navigateTo}) => {
                   ></path>
                 </svg>
               ) : null}
-              {loading ? 'Verifying...' : 'Verify OTP'}
+              {verifyLoading ? 'Verifying...' : 'Verify OTP'}
             </button>
 
             <div className="text-center mt-6">
               <button
                 type="button"
                 onClick={handleResend}
-                disabled={loading || resendDisabled}
+                disabled={resendLoading || resendDisabled}
                 className="text-sm text-[#37B874] hover:underline"
               >
-                {loading || resendDisabled ? 'Resending...' : 'Resend OTP'}
+                {resendLoading ? 'Resending...' : 'Resend OTP'}
               </button>
               {resendDisabled && timeLeft > 0 && (
                 <span className="text-sm text-gray-600 ml-2">

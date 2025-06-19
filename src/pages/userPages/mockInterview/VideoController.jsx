@@ -393,22 +393,20 @@ const VideoController = forwardRef(
               </div>
             )}
             {!isProcessingRef.current && (
-              <div className="w-full flex justify-center items-center rotate-y-180">
-                <video
-                  className="video-bg"
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  style={{
-                    width: "80%",
-                    height: "auto",
-                    maxHeight: "580px", 
-                    border: "0px solid black",
-                    transform: "rotate(360deg)",
-                    objectFit: "cover",aspectRatio: "16/9",
-                  }}
-                />
-              </div>
+              <div className="w-full h-full flex justify-center items-center rotate-y-180">
+              <video
+                className="video-bg w-full h-[250px] sm:w-[80%] sm:h-auto max-h-[580px] object-cover"
+                ref={videoRef}
+                autoPlay
+                muted
+                style={{
+                  border: "0px solid black",
+                  transform: "rotate(360deg)",
+                  aspectRatio: "16/9",
+                }}
+              />
+            </div>
+            
             )}
           </div>
         )}
