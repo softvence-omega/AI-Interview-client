@@ -1025,10 +1025,10 @@ const StartInterviewPage = () => {
 
   return (
     <ErrorBoundary>
-      <div className="text-black w-full px-4 md:px-6 lg:px-6 py-8 h-auto">
+      <div className="text-black w-full px-0 md:px-6 lg:px-6 md:py-8 lg:py-8 h-auto">
         <LoadingErrorDisplay loading={loading} error={error} />
         {historyState ? (
-          <div className="w-full bg-white p-6 rounded-lg shadow h-full">
+          <div className="w-full bg-white p-0 md:p-6 lg:p-6 rounded-lg shadow h-full">
             <ViewHistory history={history.current} />
             <HistoryButtonControls
               isProcessing={isProcessingRef.current}

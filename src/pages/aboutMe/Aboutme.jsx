@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -54,47 +54,94 @@ const customSelectStyles = {
   }),
 };
 
-const countryOptions = [
-  "United States",
-  "United Kingdom",
-  "Canada",
-  "Australia",
-  "Germany",
-  "France",
-  "India",
-  "Bangladesh",
-  "Brazil",
-  "China",
-  "Japan",
-  "South Korea",
-  "Mexico",
-  "Russia",
-  "South Africa",
-  "Spain",
-  "Italy",
-  "Netherlands",
-  "Norway",
-  "Sweden",
-  "Denmark",
-  "New Zealand",
-  "United Arab Emirates",
-  "Saudi Arabia",
-  "Pakistan",
-].map((country) => ({ value: country, label: country }));
+// const countryOptions = [
+//   "United States",
+//   "United Kingdom",
+//   "Canada",
+//   "Australia",
+//   "Germany",
+//   "France",
+//   "India",
+//   "Bangladesh",
+//   "Brazil",
+//   "China",
+//   "Japan",
+//   "South Korea",
+//   "Mexico",
+//   "Russia",
+//   "South Africa",
+//   "Spain",
+//   "Italy",
+//   "Netherlands",
+//   "Norway",
+//   "Sweden",
+//   "Denmark",
+//   "New Zealand",
+//   "United Arab Emirates",
+//   "Saudi Arabia",
+//   "Pakistan",
+// ].map((country) => ({ value: country, label: country }));
 
-const defaultSkillOptions = [
-  "UI/UX Design",
-  "Frontend Development",
-  "Backend Development",
-  "Mobile App Development",
-  "Project Management",
-  "Other",
-].map((skill) => ({ value: skill, label: skill }));
+// const defaultSkillOptions = [
+//   "UI/UX Design",
+//   "Frontend Development",
+//   "Backend Development",
+//   "Mobile App Development",
+//   "Project Management",
+//   "Other",
+// ].map((skill) => ({ value: skill, label: skill }));
 
 const AboutMe = () => {
   const user = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
+
+  const [countryOptions, setCountryOptions] = useState([]);
+  const [skillOptions, setSkillOptions] = useState([]);
+
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all?fields=name");
+        const countries = response.data
+          .filter((country) => country.name.common !== "Israel") // ❌ Exclude Israel
+          .map((country) => ({
+            value: country.name.common,
+            label: country.name.common,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
+  
+        setCountryOptions(countries);
+      } catch (error) {
+        console.error("Failed to fetch countries", error);
+        toast.error("Could not load country list");
+      }
+    };
+  
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/skill/all-skills`);
+        const skills = response.data.data.map((skill) => ({
+          value: skill.name,
+          label: skill.name,
+        }));
+        setSkillOptions(skills);
+      } catch (error) {
+        console.error("Failed to fetch skills", error);
+        toast.error("Could not load skills list");
+      }
+    };
+  
+    fetchSkills();
+  }, []);
+  
+  
   // Add all fields like summary, experience, education, etc.
   const [formData, setFormData] = useState({
     summary: "ABCDEFGHI",
@@ -147,6 +194,8 @@ const AboutMe = () => {
       toast.error("Please fill in all required fields!");
       return;
     }
+
+    setLoading(true); // Start loader
     toast.success("About Me saved successfully!");
 
     const modifyIncommingData = {
@@ -180,6 +229,8 @@ const AboutMe = () => {
     } catch (error) {
       console.log(error);
       toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -239,7 +290,7 @@ const AboutMe = () => {
                 <label className="block text-sm font-medium mb-1">Skills</label>
                 <CreatableSelect
                   isMulti
-                  options={defaultSkillOptions}
+                  options={skillOptions}
                   value={formData.skills}
                   onChange={handleSkillsChange}
                   isSearchable
@@ -250,7 +301,32 @@ const AboutMe = () => {
 
               {/* Continue Button */}
               <Buttons.SubmitButton
-                text="Continue"
+                text={
+                  loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 mx-auto text-[#FFF]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Continue"
+                  )
+                }
                 width="w-full"
                 rounded="rounded-[12px]"
                 onClick={handleContinue}

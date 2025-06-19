@@ -5,7 +5,7 @@ import botImg from "../../assets/logos/Hi_bot.png"; // Adjust the path to your b
 import { useAuth } from "../../context/AuthProvider";
 
 const ResumeUpload = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const userData = user.userData;
 
   const navigate = useNavigate();
@@ -54,7 +54,57 @@ const ResumeUpload = () => {
       }
 
       toast.success("Resume uploaded successfully!");
-      setTimeout(() => navigate("/userDashboard/mockInterview"), 1500);
+
+      // // Get current auth data from localStorage
+      // const localUser = JSON.parse(localStorage.getItem("userData"));
+
+      // console.log("Local USER ::: ",localUser)
+
+      // // Update userMeta
+      // const updatedUser = {
+      //   ...localUser,
+      //     userMeta: {
+      //       ...localUser.userData.userMeta,
+      //       isResumeUploaded: true, // ✅ Set the desired flag to true
+      //       isAboutMeGenerated: true,
+      //     },
+      // };
+
+      // // Save updated data back to localStorage
+      // localStorage.setItem("userData", JSON.stringify(updatedUser));
+      
+      // console.log("updatedUser ::: ", updatedUser);
+      // Get current auth data from localStorage
+      const localUser = JSON.parse(localStorage.getItem("userData"));
+
+      console.log("Local USER ::: ", localUser);
+
+      // Update userMeta
+      const updatedUser = {
+        ...localUser,
+        userMeta: {
+          ...localUser.userMeta,
+          isResumeUploaded: true, // ✅ Set the desired flag to true
+          isAboutMeGenerated: true, // CHANGED: Set to true as before
+          isAboutMeVideoChecked: false, // CHANGED: Explicitly set to false to match workflow
+        },
+      };
+
+      // Save updated data back to localStorage
+      localStorage.setItem("userData", JSON.stringify(updatedUser));
+
+      // CHANGED: Update Auth context to reflect changes
+      setUser((prev) => ({
+        ...prev,
+        userData: {
+          ...prev.userData,
+          userMeta: updatedUser.userMeta,
+        },
+      }));
+
+      console.log("updatedUser ::: ", updatedUser);
+
+      setTimeout(() => navigate("/generateAboutMe"), 1500);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error(`Upload failed: ${error.message}`);

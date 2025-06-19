@@ -17,7 +17,7 @@ const AssessmentDisplay = ({ response, currentQuestionIndex }) => {
   );
 
   return (
-    <div className="bg-white p-4 rounded-lg border border-gray-200">
+    <div className="bg-white p-0 md:p-4 lg:p-4 rounded-lg border border-gray-200">
       {isSummary ? (
         <div className="w-full">
           <h1 className="text-center text-2xl mb-4">

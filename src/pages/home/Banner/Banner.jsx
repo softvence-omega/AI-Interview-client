@@ -17,7 +17,7 @@ const Banner = () => {
 
   return (
     <div id="banner" className="text-black text-center pt-24">
-      <h1 className="text-center text-[28px] md:text-[36px] lg:text-[60px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 md:w-[450px] lg:w-[820px] mx-auto">
+      <h1 className="text-center text-[28px] md:text-[36px] lg:text-[60px] font-semibold leading-[67.2px] bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent mb-12 md:w-[450px] lg:w-[820px] mx-auto px-2 md:px-0 lg:px-0">
         {landingData.banner.title}
       </h1>
 
@@ -28,7 +28,7 @@ const Banner = () => {
       <div className="flex justify-center items-center mt-8">
         <Buttons.LinkButton
           text="Get Started"
-          to="/"
+          to="/userDashboard/mockInterview"
           height="h-12"
           width="w-32"
           rounded="rounded-xl"

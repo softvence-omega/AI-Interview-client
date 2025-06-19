@@ -20,7 +20,7 @@ const UserOrAdminDBLayout = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const userRoutes = [
     { name: "Mock Interviews", logo: <IoHome />, to: "mockInterview" },
@@ -74,6 +74,8 @@ const UserOrAdminDBLayout = () => {
     // Handle non-admin conditions first
     if (!isAdmin && userMeta) {
       const completedSteps = userMeta;
+
+      console.log("console log from redirect", userMeta)
   
       if (!userData.OTPverified) {
         toast.error("Please get OTP verified in Settings", {
