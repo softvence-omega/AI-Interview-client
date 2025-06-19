@@ -511,34 +511,61 @@ const EducationCertificate = () => {
 
         // console.log("LOCAL USER Updated :: ", updatedUser);
         // Get current auth data from localStorage
-        const localUser = JSON.parse(localStorage.getItem("userData"));
+        // Safely parse localStorage with fallback
+        let localUser;
+        try {
+          const storedData = localStorage.getItem("userData");
+          localUser = storedData ? JSON.parse(storedData) : { userMeta: {}, userData: {} };
+        } catch (error) {
+          console.error("Error parsing localStorage:", error);
+          localUser = { userMeta: {}, userData: {} };
+          toast.warning("Local storage data was reset due to an error.");
+        }
 
-        // Update userMeta
+        console.log("LOCAL USER :: ", localUser);
+
+        // Update both top-level and nested userMeta
         const updatedUser = {
           ...localUser,
+          userMeta: {
+            ...localUser.userMeta,
+            isResumeUploaded: true,
+            isAboutMeGenerated: true,
+            isAboutMeVideoChecked: false,
+          },
+          userData: {
+            ...localUser.userData,
             userMeta: {
-              ...localUser.userMeta,
+              ...(localUser.userData.userMeta || {}),
               isResumeUploaded: true,
               isAboutMeGenerated: true,
               isAboutMeVideoChecked: false,
             },
+          },
         };
 
-        // Save updated data back to localStorage
-        localStorage.setItem("userData", JSON.stringify(updatedUser));
+        // Save to localStorage with error handling
+        try {
+          localStorage.setItem("userData", JSON.stringify(updatedUser));
+          console.log("LOCAL USER Updated :: ", updatedUser);
+        } catch (error) {
+          console.error("Error saving to localStorage:", error);
+          toast.error("Failed to update local storage. Please try again.");
+          setLoading(false);
+          return;
+        }
 
-        // Update Auth context
+        // Update Auth context to align with localStorage
         setUser((prev) => ({
           ...prev,
+          userMeta: updatedUser.userMeta, // CHANGED: Update top-level userMeta
           userData: {
             ...prev.userData,
-            userMeta: updatedUser.userData.userMeta,
+            userMeta: updatedUser.userData.userMeta, // CHANGED: Update nested userMeta
           },
         }));
 
-        console.log("LOCAL USER Updated :: ", updatedUser);
-
-        navigate("/userDashboard/mockInterview");
+        setTimeout(() => navigate("/userDashboard/mockInterview"), 1500); // CHANGED: Redirect to aboutMeVideoTest
       } else {
         toast.error("Failed to save education details!");
       }
