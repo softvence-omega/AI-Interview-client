@@ -55,25 +55,6 @@ const ResumeUpload = () => {
 
       toast.success("Resume uploaded successfully!");
 
-      // // Get current auth data from localStorage
-      // const localUser = JSON.parse(localStorage.getItem("userData"));
-
-      // console.log("Local USER ::: ",localUser)
-
-      // // Update userMeta
-      // const updatedUser = {
-      //   ...localUser,
-      //     userMeta: {
-      //       ...localUser.userData.userMeta,
-      //       isResumeUploaded: true, // ✅ Set the desired flag to true
-      //       isAboutMeGenerated: true,
-      //     },
-      // };
-
-      // // Save updated data back to localStorage
-      // localStorage.setItem("userData", JSON.stringify(updatedUser));
-      
-      // console.log("updatedUser ::: ", updatedUser);
       // Get current auth data from localStorage
       const localUser = JSON.parse(localStorage.getItem("userData"));
 
