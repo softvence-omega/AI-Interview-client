@@ -67,10 +67,10 @@ const Banner = () => {
             />
             <div>
               <p className="text-[8px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
-                Software Developer <br /> Interview
+                AI Developer <br /> Interview
               </p>
               <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">
-                10 Positions
+                Machine Learning Engineer
               </p>
             </div>
             <div className="flex items-center justify-center ml-auto">
@@ -103,7 +103,7 @@ const Banner = () => {
                 Software Developer <br /> Interview
               </p>
               <p className="text-[#AFAFAF] text-xs md:text-md lg:text-md">
-                11 Positions
+              MERN Stack Developer
               </p>
             </div>
             <div className="flex items-center justify-center ml-auto">

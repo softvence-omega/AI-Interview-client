@@ -34,7 +34,7 @@ const HomeCorner = () => {
         </p>
         <Buttons.LinkButton
           text="Start Free Trial"
-          to="/"
+          to="/userDashboard/mockInterview"
           height="h-12"
           width="w-36"
           rounded="rounded-xl"

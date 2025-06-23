@@ -164,10 +164,10 @@ const AboutMeVideoTest = () => {
                 </>
               ) : (
                 <div>
-                  <AssessmentDisplay
+                  {/* <AssessmentDisplay
                     response={aboutMeResult}
                     currentQuestionIndex={"About Me"}
-                  />
+                  /> */}
                   <div className="mt-4 text-center">
                     <button
                       onClick={submitAboutMeVideoTest}

@@ -439,7 +439,7 @@ const LoginOrSignup = () => {
             className="h-3/4 w-auto object-contain"
             style={{ color: "var(--btn-primary-color)" }}
           />
-          <p className="text-center font-semibold text-3xl text-[#37B874]">
+          <p className="text-center font-semibold text-3xl text-[#3A4C67]">
             Your first step <br /> towards a perfect interview
           </p>
         </div>

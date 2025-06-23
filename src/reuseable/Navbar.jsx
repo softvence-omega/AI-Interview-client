@@ -154,7 +154,8 @@ const Navbar = () => {
                   ? "text-[#37B874] bg-white"
                   : "text-[#FFF]"
               }
-            /> : <Buttons.LinkButton
+            /> : <div className="flex justify-items-center items-center gap-4">
+              <Buttons.LinkButton
             text="Log In"
             to="/login"
             height="h-[44px]"
@@ -165,6 +166,18 @@ const Navbar = () => {
                 : "text-[#FFF]"
             }
           />
+          <Buttons.LinkButton
+            text="Sign Up"
+            to="/signup"
+            height="h-[44px]"
+            width="w-[94px]"
+            textColor={
+              scrolled
+                ? "text-[#37B874] bg-white"
+                : "text-[#FFF]"
+            }
+          />
+            </div>
             }
           </div>
         </div>
