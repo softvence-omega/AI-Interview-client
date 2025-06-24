@@ -164,10 +164,10 @@ const AboutMeVideoTest = () => {
                 </>
               ) : (
                 <div>
-                  {/* <AssessmentDisplay
+                  <AssessmentDisplay
                     response={aboutMeResult}
                     currentQuestionIndex={"About Me"}
-                  /> */}
+                  />
                   <div className="mt-4 text-center">
                     <button
                       onClick={submitAboutMeVideoTest}
@@ -188,7 +188,7 @@ const AboutMeVideoTest = () => {
               )}
             </div>
           ) : (
-            <div>
+            <div className="flex items-center justify-center gap-2 text-lg">
               {" "}
               your video is being processed <LoadingCircle />{" "}
             </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { throttle } from "lodash";
 import Buttons from "./AllButtons";
 // import img1 from "../assets/logos/inprep.png";
@@ -34,10 +34,9 @@ const Navbar = () => {
     // { name: "About US", to: "/About-US" },
     { name: "Contact Us", to: "/Contact-Us" },
 
-
-    ...(user?.userData?.role === 'user'
+    ...(user?.userData?.role === "user"
       ? [{ name: "Dashboard", to: "/userDashboard/mockInterview" }]
-      : user?.userData?.role === 'admin'
+      : user?.userData?.role === "admin"
       ? [{ name: "Dashboard", to: "/userDashboard/dashboard" }]
       : []),
   ];
@@ -57,8 +56,8 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/login");
-    window.location.href = "/login"
-  }
+    window.location.href = "/login";
+  };
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -68,20 +67,21 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   useEffect(() => {
     const fetchWebsiteData = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/website/get-website`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/website/get-website`
+        );
         setWebsiteData(response.data?.data); // adjust based on actual response shape
       } catch (error) {
         console.error("Error fetching website data:", error);
       }
     };
-  
+
     fetchWebsiteData();
   }, []);
-  
 
   return (
     <div className="fixed top-0 left-0 w-full z-[1000]">
@@ -101,7 +101,11 @@ const Navbar = () => {
                 role="button"
                 className="text-[#37B874] border-none lg:hidden rounded-xl"
               >
-                <TiThMenu className={`h-8 w-8 mx-2 ${scrolled ? "text-white" : "text-none"}`} />
+                <TiThMenu
+                  className={`h-8 w-8 mx-2 ${
+                    scrolled ? "text-white" : "text-none"
+                  }`}
+                />
               </div>
               <ul
                 tabIndex={0}
@@ -118,7 +122,11 @@ const Navbar = () => {
               <img src={img1} alt="logo" className="h-[40px] w-[118px]" />
             </Link> */}
             <Link to="/">
-              <img src={websiteData?.logoUrl} alt="logo" className="h-[40px] w-[118px]" />
+              <img
+                src={websiteData?.logoUrl}
+                alt="logo"
+                className="h-[40px] w-[118px]"
+              />
             </Link>
           </div>
 
@@ -131,9 +139,7 @@ const Navbar = () => {
                     text={item.name}
                     to={item.to}
                     textColor={
-                      scrolled
-                        ? "text-white text-[#676768]"
-                        : "text-[#676768]"
+                      scrolled ? "text-white text-[#676768]" : "text-[#676768]"
                     }
                   />
                 </li>
@@ -143,42 +149,36 @@ const Navbar = () => {
 
           {/* Right: Auth Button */}
           <div className="navbar-end">
-            {
-              user ? <Buttons.OnClickButton
-              text="Log Out"
-              onClick={handleLogout}
-              height="h-[44px]"
-              width="w-[94px]"
-              textColor={
-                scrolled
-                  ? "text-[#37B874] bg-white"
-                  : "text-[#FFF]"
-              }
-            /> : <div className="flex justify-items-center items-center gap-4">
-              <Buttons.LinkButton
-            text="Log In"
-            to="/login"
-            height="h-[44px]"
-            width="w-[94px]"
-            textColor={
-              scrolled
-                ? "text-[#37B874] bg-white"
-                : "text-[#FFF]"
-            }
-          />
-          <Buttons.LinkButton
-            text="Sign Up"
-            to="/signup"
-            height="h-[44px]"
-            width="w-[94px]"
-            textColor={
-              scrolled
-                ? "text-[#37B874] bg-white"
-                : "text-[#FFF]"
-            }
-          />
-            </div>
-            }
+            {user ? (
+              <Buttons.OnClickButton
+                text="Log Out"
+                onClick={handleLogout}
+                height="h-[44px]"
+                width="w-[94px]"
+                textColor={scrolled ? "text-[#37B874] bg-white" : "text-[#FFF]"}
+              />
+            ) : (
+              <div className="flex justify-items-center items-center gap-4">
+                <Buttons.LinkButton
+                  text="Log In"
+                  to="/login"
+                  height="h-[32px] md:h-[44px] lg:h-[44px]"
+                  width="w-[72px] md:w-[94px] lg:w-[94px]"
+                  textColor={
+                    scrolled ? "text-[#37B874] bg-white" : "text-[#FFF]"
+                  }
+                />
+                <Buttons.LinkButton
+                  text="Sign Up"
+                  to="/signup"
+                  height="h-[32px] md:h-[44px] lg:h-[44px]"
+                  width="w-[72px] md:w-[94px] lg:w-[94px]"
+                  textColor={
+                    scrolled ? "text-[#37B874] bg-white" : "text-[#FFF]"
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

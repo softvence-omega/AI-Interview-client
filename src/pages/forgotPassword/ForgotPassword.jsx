@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ForgotPassword = () => {
@@ -12,6 +12,11 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
 
   const authPath = "/auth";
+
+  // ✅ Scroll to top on load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Step 1: Submit email for password reset
   const handleEmailSubmit = async (e) => {
@@ -101,7 +106,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 md:px-0 lg:px-0">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-[#212121]">
           Forgot Password
@@ -132,7 +137,7 @@ const ForgotPassword = () => {
               disabled={loading}
               className="w-full bg-[#37B874] text-white py-2 rounded-lg hover:bg-[#195234] disabled:bg-green-300 cursor-pointer transition-colors duration-400"
             >
-              {loading ? "Sending..." : "Send Reset Email"}
+              {loading ? "Sending..." : "Send Email"}
             </button>
           </form>
         )}
