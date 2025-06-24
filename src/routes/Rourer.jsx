@@ -47,6 +47,7 @@ import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
 import ErrorPage from "../reuseable/ErrorPage";
 import LandingPageManage from "../pages/adminPages/settings/LandingPageManage";
 import PrivacyPolicy from "../pages/privacyPolicy/PrivacyPolicy";
+import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 
 const Router = () => {
   return (
@@ -72,6 +73,7 @@ const Router = () => {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
       </Route>
 
       {/* Protected routes for both users and admins */}
