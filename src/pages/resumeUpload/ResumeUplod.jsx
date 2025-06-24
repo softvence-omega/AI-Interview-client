@@ -61,37 +61,36 @@ const ResumeUpload = () => {
       console.log("Local USER ::: ", localUser);
 
       // Update top-level userMeta in localStorage
-              const updatedUser = {
-                ...localUser,
-                userMeta: {
-                  ...localUser.userMeta,
-                  isResumeUploaded: true,
-                  isAboutMeGenerated: true,
-                },
-                userData: {
-                  ...localUser.userData,
-                  userMeta: {
-                    ...(localUser.userData.userMeta || {}),
-                    isResumeUploaded: true,
-                    isAboutMeGenerated: true
-                  },
-                },
-              };
-      
-              // Save to localStorage with error handling
-                localStorage.setItem("userData", JSON.stringify(updatedUser));
-                console.log("localStorage updated successfully:", updatedUser);
+      const updatedUser = {
+        ...localUser,
+        userMeta: {
+          ...localUser.userMeta,
+          isResumeUploaded: true,
+          isAboutMeGenerated: true,
+        },
+        userData: {
+          ...localUser.userData,
+          userMeta: {
+            ...(localUser.userData.userMeta || {}),
+            isResumeUploaded: true,
+            isAboutMeGenerated: true,
+          },
+        },
+      };
 
-      
-              // Update Auth context to align with localStorage
-              setUser((prev) => ({
-                ...prev,
-                userMeta: updatedUser.userMeta, // CHANGED: Update top-level userMeta
-                userData: {
-                  ...prev.userData,
-                  userMeta: updatedUser.userData.userMeta, // CHANGED: Update nested userMeta
-                },
-              }));
+      // Save to localStorage with error handling
+      localStorage.setItem("userData", JSON.stringify(updatedUser));
+      console.log("localStorage updated successfully:", updatedUser);
+
+      // Update Auth context to align with localStorage
+      setUser((prev) => ({
+        ...prev,
+        userMeta: updatedUser.userMeta, // CHANGED: Update top-level userMeta
+        userData: {
+          ...prev.userData,
+          userMeta: updatedUser.userData.userMeta, // CHANGED: Update nested userMeta
+        },
+      }));
 
       // // Update userMeta
       // const updatedUser = {
@@ -109,10 +108,10 @@ const ResumeUpload = () => {
 
       // CHANGED: Update Auth context to reflect changes
       // Update AuthContext
-        // setUser((prev) => ({
-        //   ...prev,
-        //   userData: updatedUser,
-        // }));
+      // setUser((prev) => ({
+      //   ...prev,
+      //   userData: updatedUser,
+      // }));
       // setUser((prev) => ({
       //   ...prev,
       //   userData: {
