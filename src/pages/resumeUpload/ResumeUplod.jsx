@@ -60,28 +60,65 @@ const ResumeUpload = () => {
 
       console.log("Local USER ::: ", localUser);
 
-      // Update userMeta
+      // Update top-level userMeta in localStorage
       const updatedUser = {
         ...localUser,
         userMeta: {
           ...localUser.userMeta,
-          isResumeUploaded: true, // ✅ Set the desired flag to true
-          isAboutMeGenerated: true, // CHANGED: Set to true as before
-          isAboutMeVideoChecked: false, // CHANGED: Explicitly set to false to match workflow
+          isResumeUploaded: true,
+          isAboutMeGenerated: true,
+        },
+        userData: {
+          ...localUser.userData,
+          userMeta: {
+            ...(localUser.userData.userMeta || {}),
+            isResumeUploaded: true,
+            isAboutMeGenerated: true,
+          },
         },
       };
 
-      // Save updated data back to localStorage
+      // Save to localStorage with error handling
       localStorage.setItem("userData", JSON.stringify(updatedUser));
+      console.log("localStorage updated successfully:", updatedUser);
 
-      // CHANGED: Update Auth context to reflect changes
+      // Update Auth context to align with localStorage
       setUser((prev) => ({
         ...prev,
+        userMeta: updatedUser.userMeta, // CHANGED: Update top-level userMeta
         userData: {
           ...prev.userData,
-          userMeta: updatedUser.userMeta,
+          userMeta: updatedUser.userData.userMeta, // CHANGED: Update nested userMeta
         },
       }));
+
+      // // Update userMeta
+      // const updatedUser = {
+      //   ...localUser,
+      //   userMeta: {
+      //     ...localUser.userMeta,
+      //     isResumeUploaded: true, // ✅ Set the desired flag to true
+      //     isAboutMeGenerated: true, // CHANGED: Set to true as before
+      //     isAboutMeVideoChecked: false, // CHANGED: Explicitly set to false to match workflow
+      //   },
+      // };
+
+      // Save updated data back to localStorage
+      // localStorage.setItem("userData", JSON.stringify(updatedUser));
+
+      // CHANGED: Update Auth context to reflect changes
+      // Update AuthContext
+      // setUser((prev) => ({
+      //   ...prev,
+      //   userData: updatedUser,
+      // }));
+      // setUser((prev) => ({
+      //   ...prev,
+      //   userData: {
+      //     ...prev.userData,
+      //     userMeta: updatedUser.userMeta,
+      //   },
+      // }));
 
       console.log("updatedUser ::: ", updatedUser);
 

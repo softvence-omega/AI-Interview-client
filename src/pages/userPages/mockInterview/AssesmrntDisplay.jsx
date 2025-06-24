@@ -33,7 +33,7 @@ const AssessmentDisplay = ({ response, currentQuestionIndex }) => {
         <div>
           <div className="text-2xl font-medium mb-4">
             {currentQuestionIndex === "About Me"
-              ? currentQuestionIndex
+              ? ""
               : `Question ${currentQuestionIndex + 1} Feedback`}
           </div>
         </div>
