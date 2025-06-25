@@ -253,7 +253,7 @@ const ResumeUpload = () => {
                 />
               </svg>
               <p className="text-lg text-[#37B874] font-semibold">
-                Uploading your resume...
+                Analyzing your resume...
               </p>
             </div>
             <p className="text-sm text-gray-500">
