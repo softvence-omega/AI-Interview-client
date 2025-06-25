@@ -22,7 +22,7 @@ const ResumeUpload = () => {
       toast.error("Please upload a PDF file only!");
     }
   };
-
+ 
   const handleContinue = async () => {
     if (!selectedFile) {
       toast.error("Please select a PDF file first!");
