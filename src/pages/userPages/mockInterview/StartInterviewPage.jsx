@@ -568,7 +568,7 @@ const LoadingErrorDisplay = ({ loading, error }) => (
   <>
     {loading && (
       <div className="flex justify-center items-center text-[#278352]">
-        <p className="text-[#278352] text-lg">Loading generated questions...</p>
+        <p className="text-[#278352] text-lg">Loading questions...</p>
         <LoadingCircle className="" />
       </div>
     )}

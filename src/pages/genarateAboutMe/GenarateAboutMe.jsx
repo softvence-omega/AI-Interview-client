@@ -90,9 +90,9 @@ const GenerateAboutMe = () => {
   }, [user, navigate]);
 
   return (
-    <Container>
-      <div className="min-h-screen my-10 md:my-0 lg:my-0 flex flex-col items-center justify-center w-full max-w-[1444px] mx-auto">
-        <div className="bg-white w-[80%] md:max-w-3xl lg:max-w-3xl mx-auto border-2 border-[#37B874] mb-12 p-6 text-center shadow-lg rounded-lg">
+    <div className="w-full max-w-[1440px] mx-auto my-12">
+      <div className="min-h-screen my-10 md:my-0 lg:my-0 flex flex-col items-center justify-center">
+        <div className="bg-green-200 w-[80%] md:max-w-3xl lg:max-w-3xl mx-auto border-2 border-[#37B874] mb-12 p-6 text-center shadow-lg rounded-lg">
           <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-snug">
             Thank you for uploading your resume!
           </h1>
@@ -132,7 +132,7 @@ const GenerateAboutMe = () => {
           />
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
