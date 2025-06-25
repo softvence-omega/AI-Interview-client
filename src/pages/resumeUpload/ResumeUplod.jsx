@@ -167,7 +167,7 @@ const ResumeUpload = () => {
         <div className="flex flex-col items-center justify-center flex-1 space-y-8 text-left">
           <div>
             <h2 className="text-3xl font-semibold"></h2>
-            <h1 className="text-4xl md:text-6xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-white text-4xl md:text-6xl lg:text-6xl font-bold mb-6">
               Welcome, {userData.name}!
             </h1>
             <h3 className="text-2xl md:text-4xl lg:text-4xl text-gray-400 font-thin w-[80%]">
