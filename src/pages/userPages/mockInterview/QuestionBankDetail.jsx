@@ -175,7 +175,7 @@ const QuestionBankDetail = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${AuthorizationToken}`,
+            Authorization: `${AuthorizationToken}`,
           },
         });
 
