@@ -84,12 +84,12 @@ const IncompleateInterviews = () => {
   };
 
   return (
-    <div className="text-black w-full px-6">
+    <div className="text-black max-w-4xl mx-auto px-6">
       {loading && <LoadingCircle />}
       {error && <p className="text-red-500">Error: {error}</p>}
       {!loading && !error && (
-        <div className="w-full">
-          <div className="w-full mb-16">
+        <div className="max-w-4xl mx-auto mt-8">
+          <div className="max-w-4xl mx-auto mb-16">
             <h1 className="text-2xl lg:text-3xl font-bold mb-4 text-[#37B874] text-center tracking-wide">
               Incomplete Interviews
             </h1>

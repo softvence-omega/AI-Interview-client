@@ -10,12 +10,18 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
 import Notification from "../pages/userPages/notifications/Notification";
 import { toast } from "sonner";
+import axios from "axios";
 
 const UserOrAdminDBLayout = () => {
   const { user, logout } = useAuth();
   const userData = user?.userData;
   const userMeta = user?.userMeta;
   const userType = user?.userData?.role;
+
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [errorProfile, setErrorProfile] = useState(null);
+
   console.log("user********************", user, "meta*********", userMeta);
 
   const navigate = useNavigate();
@@ -39,9 +45,8 @@ const UserOrAdminDBLayout = () => {
   ];
 
   // Extract the base route segment after /userDashboard/
-  const baseRoute = location.pathname
-    .split("/userDashboard/")[1]
-    ?.split("/")[0] || "";
+  const baseRoute =
+    location.pathname.split("/userDashboard/")[1]?.split("/")[0] || "";
   console.log("baseRoute:", baseRoute, "pathname:", location.pathname);
 
   const handleNavigation = (path) => {
@@ -63,20 +68,20 @@ const UserOrAdminDBLayout = () => {
 
   useEffect(() => {
     if (!userType || !userData) return;
-  
+
     const currentPath = location.pathname;
     const isAdmin = userType === "admin";
     const hasRedirected = localStorage.getItem("hasRedirected");
-  
+
     const routes = isAdmin ? adminRoutes : userRoutes;
     const firstRoute = routes[0].to;
-  
+
     // Handle non-admin conditions first
     if (!isAdmin && userMeta) {
       const completedSteps = userMeta;
 
-      console.log("console log from redirect", userMeta)
-  
+      console.log("console log from redirect", userMeta);
+
       if (!userData.OTPverified) {
         toast.error("Please get OTP verified in Settings", {
           description: "Complete OTP verification to access all features.",
@@ -88,8 +93,11 @@ const UserOrAdminDBLayout = () => {
         navigate("/userDashboard/settings");
         return;
       }
-  
-      if (!completedSteps.isResumeUploaded && currentPath !== "/resume-upload") {
+
+      if (
+        !completedSteps.isResumeUploaded &&
+        currentPath !== "/resume-upload"
+      ) {
         toast.warning("Please upload your resume", {
           description: "Upload your resume to unlock more features.",
           action: {
@@ -100,8 +108,11 @@ const UserOrAdminDBLayout = () => {
         navigate("/resume-upload");
         return;
       }
-  
-      if (!completedSteps.isAboutMeGenerated && currentPath !== "/generateAboutMe") {
+
+      if (
+        !completedSteps.isAboutMeGenerated &&
+        currentPath !== "/generateAboutMe"
+      ) {
         toast.warning("Please generate your About Me section", {
           description: "Complete your About Me to enhance your profile.",
           action: {
@@ -112,8 +123,11 @@ const UserOrAdminDBLayout = () => {
         navigate("/generateAboutMe");
         return;
       }
-  
-      if (!completedSteps.isAboutMeVideoChecked && currentPath !== "/generateAboutMe") {
+
+      if (
+        !completedSteps.isAboutMeVideoChecked &&
+        currentPath !== "/generateAboutMe"
+      ) {
         toast.warning("Please complete your About Me video", {
           description: "Finish your About Me video to proceed.",
           action: {
@@ -125,14 +139,52 @@ const UserOrAdminDBLayout = () => {
         return;
       }
     }
-  
+
     // After checks pass, perform one-time redirect if not already done
     if (!hasRedirected && baseRoute === "") {
       localStorage.setItem("hasRedirected", "true");
       navigate(`/userDashboard/${firstRoute}`);
     }
   }, [userType, userMeta, userData, navigate, location.pathname]);
-  
+
+  useEffect(() => {
+    if (!user?.approvalToken) {
+      setLoadingProfile(false);
+      return;
+    }
+
+    const fetchProfile = async () => {
+      setLoadingProfile(true);
+      setErrorProfile(null);
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/users/getProfile`,
+          {
+            headers: {
+              Authorization: `${user.approvalToken}`,
+            },
+          }
+        );
+
+        setProfile(response.data);
+        console.log(
+          "profileeeeeeeee :::::::::",
+          response.data.data.interviewsAvailable
+        );
+      } catch (error) {
+        setErrorProfile(
+          error.response?.data?.message ||
+            error.message ||
+            "Something went wrong"
+        );
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
 
   // useEffect(() => {
   //   if (!userType) {
@@ -204,6 +256,9 @@ const UserOrAdminDBLayout = () => {
   //     }
   //   }
   // }, [userType, userMeta, userData, navigate, location.pathname]);
+
+  if (loadingProfile) return <div>Loading profile...</div>;
+  if (errorProfile) return <div>Error: {errorProfile}</div>;
 
   return (
     <div className="h-screen mx-auto flex bg-gray-100 max-w-9xl">
@@ -300,13 +355,20 @@ const UserOrAdminDBLayout = () => {
               </div>
               <div className="text-gray-600">
                 <h2 className="text-[#676768]">Welcome!</h2>
-                <h2 className="text-[20px] font-medium">
-                  {userData?.name?.toUpperCase() || "Guest"}
-                </h2>
+                <div className="flex justify-items-center items-center gap-2">
+                  <h2 className="text-[20px] font-medium">
+                    {userData?.name?.toUpperCase() || "Guest"}
+                  </h2>
+                  <h4 className="text-sm font-light text-gray-400">( Available Interview : {profile?.data?.interviewsAvailable} )</h4>
+                </div>
               </div>
             </div>
 
-            {userType === "user" && <Link to="notificationList"><Notification /></Link>}
+            {userType === "user" && (
+              <Link to="notificationList">
+                <Notification />
+              </Link>
+            )}
           </div>
         </div>
 
