@@ -6,7 +6,7 @@ import Planpage from "../pages/planpage/Planpage";
 import AboutUs from "../pages/AboutUs/AboutUs";
 import ContuctUs from "../pages/contuctus/ContuctUs";
 import LoginOrSignup from "../pages/loginOrSignUp/LoginOrSignup";
-import CommonLayout from "../container/commonLayout";
+import CommonLayout from "../container/CommonLayout";
 import OtpCrossCheck from "../pages/OtpCrosscheck/OtpCrossCheck";
 import ResumeUpload from "../pages/resumeUpload/ResumeUplod";
 import AboutMe from "../pages/Aboutme/Aboutme";
@@ -23,7 +23,7 @@ import Insights from "../pages/userPages/insights/Insights";
 import MyJobs from "../pages/userPages/myJobs/MyJobs";
 import JobDetails from "../pages/userPages/myJobs/JobDetails";
 import Dashboard from "../pages/adminPages/dashboard/Dashboard";
-import GenerateAboutMe from "../pages/genarateAboutMe/genarateAboutMe";
+import GenerateAboutMe from "../pages/genarateAboutMe/GenarateAboutMe";
 import AboutMeVideoTest from "../pages/aboutMeVidioTest/AboutMeVideoTest";
 import Settings from "../pages/userPages/settings/Settings";
 import PaymentManagement from "../pages/adminPages/paymentManagement/PaymentManagement";
@@ -47,6 +47,7 @@ import TermsAndConditions from "../pages/termsAndConditions/TermsAndConditions";
 import ErrorPage from "../reuseable/ErrorPage";
 import LandingPageManage from "../pages/adminPages/settings/LandingPageManage";
 import PrivacyPolicy from "../pages/privacyPolicy/PrivacyPolicy";
+import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 
 const Router = () => {
   return (
@@ -72,6 +73,7 @@ const Router = () => {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
       </Route>
 
       {/* Protected routes for both users and admins */}

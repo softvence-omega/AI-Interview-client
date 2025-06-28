@@ -146,7 +146,7 @@ const Insights = () => {
         </div>
         <button
           onClick={handleDownload}
-          className="bg-[#37B874] hover:bg-[#1E6540] text-white px-4 py-2 rounded-md flex justify-items-center items-center gap-2 mt-4 md:mt-0 lg:mt-0"
+          className="bg-[#37B874] hover:bg-[#1E6540] text-white px-4 py-2 rounded-md flex justify-items-center items-center gap-2 mt-4 md:mt-0 lg:mt-0 cursor-pointer"
         >
           Download Progress Report{" "}
           <HiDownload className="bg-white text-green-400 rounded-full w-5 h-5 p-[2px]" />
