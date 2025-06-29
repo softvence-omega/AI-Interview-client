@@ -281,7 +281,7 @@ const UserOrAdminDBLayout = () => {
             </div>
           </div>
           <p className="text-gray-700 text-lg font-semibold tracking-wide">
-            Loading your profile...
+            Loading your dashboard...
           </p>
           <p className="text-sm text-gray-400">This won't take long.</p>
         </div>
@@ -384,8 +384,8 @@ const UserOrAdminDBLayout = () => {
               </div>
               <div className="text-gray-600">
                 <h2 className="text-[#676768]">Welcome!</h2>
-                <div className="flex justify-items-center items-center gap-2">
-                  <h2 className="text-[20px] font-medium">
+                <div className="md:flex lg:flex md:justify-items-center lg:justify-items-center items-center gap-2">
+                  <h2 className="text-[16px] md:text-[20px] lg:text-[20px] font-medium">
                     {userData?.name?.toUpperCase() || "Guest"}
                   </h2>
                   <h4 className="text-sm font-light text-gray-400">

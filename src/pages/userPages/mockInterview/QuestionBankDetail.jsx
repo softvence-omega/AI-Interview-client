@@ -16,11 +16,6 @@
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
 
-
-
-
-
-
 //   useEffect(() => {
 //     const fetchQuestionBank = async () => {
 //       try {
@@ -65,9 +60,6 @@
 //     }
 //   }, [questionBankId, interviewId, AuthorizationToken]);
 
-
-
-
 //   return (
 //     <div className="text-black w-full md:px-6 lg:px-6 py-8">
 //       {loading && <p>Loading question bank data...</p>}
@@ -85,7 +77,6 @@
 //               {/* Metadata Section */}
 //               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-6">
 
-
 //                 <div className="bg-green-100 p-2 rounded text-center">
 //                   <p className="text-sm text-gray-600">Duration</p>
 //                   <p className="text-lg font-semibold">{item.duration || "N/A"} min</p>
@@ -98,7 +89,6 @@
 //                   <p className="text-sm text-gray-600">Type</p>
 //                   <p className="text-lg font-semibold">{item.question_Type || "N/A"}</p>
 //                 </div>
-
 
 //               </div>
 
@@ -133,16 +123,82 @@
 
 // export default QuestionBankDetail;
 
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthProvider";
 import useApi from "../../../hook/apiHook";
 import Buttons from "../../../reuseable/AllButtons";
+import CustomSelect from "../../../reuseable/CustomSelect";
+
+// const difficultyOptions = ["Beginner", "Intermediate", "Expert"];
+
+// const CustomSelect = ({ value, onChange }) => {
+//   const [open, setOpen] = useState(false);
+//   const dropdownRef = useRef(null);
+
+//   // Close dropdown if clicked outside
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setOpen(false);
+//       }
+//     };
+
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+
+//   return (
+//     <div className="relative w-full" ref={dropdownRef}>
+//       {/* Label */}
+//       <p className="text-sm text-gray-500 mb-2">Difficulty Level</p>
+
+//       {/* Selected Box */}
+//       <button
+//         type="button"
+//         onClick={() => setOpen(!open)}
+//         className="w-full bg-green-50 text-green-700 font-medium border border-green-300 rounded-md px-4 py-2 text-sm flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-green-400"
+//       >
+//         {value}
+//         <svg
+//           className={`w-4 h-4 ml-2 transform transition-transform ${
+//             open ? "rotate-180" : ""
+//           }`}
+//           fill="none"
+//           stroke="currentColor"
+//           strokeWidth={2}
+//           viewBox="0 0 24 24"
+//         >
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M19 9l-7 7-7-7"
+//           />
+//         </svg>
+//       </button>
+
+//       {/* Options */}
+//       {open && (
+//         <ul className="absolute z-10 w-full mt-1 bg-white border border-green-300 rounded-md shadow-lg">
+//           {difficultyOptions.map((option) => (
+//             <li
+//               key={option}
+//               onClick={() => {
+//                 onChange(option);
+//                 setOpen(false);
+//               }}
+//               className={`px-4 py-2 text-sm cursor-pointer hover:bg-green-100 hover:text-green-500 ${
+//                 option === value ? "bg-green-500 text-white" : "text-gray-700"
+//               }`}
+//             >
+//               {option}
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
 
 const QuestionBankDetail = () => {
   const [searchParams] = useSearchParams();
@@ -165,9 +221,11 @@ const QuestionBankDetail = () => {
         setError(null);
 
         const queryParams = [];
-        if (questionBankId) queryParams.push(`questionBank_id=${questionBankId}`);
+        if (questionBankId)
+          queryParams.push(`questionBank_id=${questionBankId}`);
         if (interviewId) queryParams.push(`interview_id=${interviewId}`);
-        const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+        const queryString =
+          queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
 
         const endpoint = `/interview/get_question_bank${queryString}`;
         const res = await request({
@@ -189,22 +247,32 @@ const QuestionBankDetail = () => {
 
         // Initialize expectingPreference and expandedSections
         if (Array.isArray(data)) {
-          const initialPreferences = data.reduce((acc, item) => ({
-            ...acc,
-            [item._id]: {
-              selectedExpectation: Array.isArray(item.what_to_expect) && item.what_to_expect.length > 0 ? [item.what_to_expect[0]] : [],
-              selectedDifficulty: item.difficulty_level || "Beginner",
-              selectedQuestionType: item.question_Type || "MCQ Question",
-            },
-          }), {});
-          const initialExpanded = data.reduce((acc, item) => ({
-            ...acc,
-            [item._id]: {
-              whatToExpect: false,
-              difficultyLevel: false,
-              questionType: false,
-            },
-          }), {});
+          const initialPreferences = data.reduce(
+            (acc, item) => ({
+              ...acc,
+              [item._id]: {
+                selectedExpectation:
+                  Array.isArray(item.what_to_expect) &&
+                  item.what_to_expect.length > 0
+                    ? [item.what_to_expect[0]]
+                    : [],
+                selectedDifficulty: item.difficulty_level || "Beginner",
+                selectedQuestionType: item.question_Type || "MCQ Question",
+              },
+            }),
+            {}
+          );
+          const initialExpanded = data.reduce(
+            (acc, item) => ({
+              ...acc,
+              [item._id]: {
+                whatToExpect: false,
+                difficultyLevel: false,
+                questionType: false,
+              },
+            }),
+            {}
+          );
           setExpectingPreference(initialPreferences);
           setExpandedSections(initialExpanded);
         }
@@ -220,7 +288,11 @@ const QuestionBankDetail = () => {
       fetchQuestionBank();
     } else {
       setLoading(false);
-      setError(AuthorizationToken ? "questionBank_id is required" : "No authorization token available");
+      setError(
+        AuthorizationToken
+          ? "questionBank_id is required"
+          : "No authorization token available"
+      );
     }
   }, [questionBankId, interviewId, AuthorizationToken]);
 
@@ -313,18 +385,27 @@ const QuestionBankDetail = () => {
           }
         `}
       </style>
-      {loading && <p className="text-gray-600">Loading question bank data...</p>}
+      {loading && (
+        <p className="text-gray-600">Loading question bank data...</p>
+      )}
       {error && <p className="text-red-500">Error: {error}</p>}
       {Array.isArray(questionBankData) && questionBankData.length > 0 ? (
         <div>
           {questionBankData.map((item, index) => (
-            <div key={item._id || index} className="w-full bg-white p-6 rounded-lg shadow mb-6">
+            <div
+              key={item._id || index}
+              className="w-full bg-white p-6 rounded-lg shadow mb-6"
+            >
               <Buttons.LinkButton
                 text="Start Mock Interview"
                 width="w-full"
                 height="h-[50px]"
-                to={`/userDashboard/mockInterview/startInterview?questionBank_id=${item._id}&expectation=${encodeURIComponent(
-                  JSON.stringify(expectingPreference[item._id]?.selectedExpectation || [])
+                to={`/userDashboard/mockInterview/startInterview?questionBank_id=${
+                  item._id
+                }&expectation=${encodeURIComponent(
+                  JSON.stringify(
+                    expectingPreference[item._id]?.selectedExpectation || []
+                  )
                 )}&difficulty=${encodeURIComponent(
                   expectingPreference[item._id]?.selectedDifficulty || ""
                 )}&questionType=${encodeURIComponent(
@@ -333,96 +414,67 @@ const QuestionBankDetail = () => {
               />
 
               {/* Metadata Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-6">
-                <div className="bg-green-100 p-2 rounded text-center">
-                  <p className="text-sm text-gray-600">Duration</p>
-                  <p className="text-lg font-semibold">{item.duration || "N/A"} min</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-6">
+                {/* Duration */}
+                <div className="bg-white shadow-sm border border-gray-100 p-4 rounded-xl text-center">
+                  <p className="text-sm text-gray-500">Duration</p>
+                  <p className="text-xl font-bold text-green-600">
+                    {item.duration || "N/A"} min{" "}
+                    <span className="text-sm font-semibold text-gray-600">
+                      (Approximate)
+                    </span>
+                  </p>
                 </div>
-                <div className="bg-green-100 p-2 rounded text-center">
-                  <button
-                    type="button"
-                    className="flex items-center text-sm text-gray-600 w-full focus:outline-none hover:text-green-600"
-                    onClick={() => toggleSection(item._id, "difficultyLevel")}
-                  >
-                    <span>Difficulty Level: </span>
-                    <span className="ml-1 font-semibold">
-                      {expectingPreference[item._id]?.selectedDifficulty || item.difficulty_level || "Beginner"}
-                    </span>
-                    <span
-                      className={`ml-2 transform transition-transform duration-200 ${
-                        expandedSections[item._id]?.difficultyLevel ? "rotate-180" : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </button>
-                  <div
-                    className={`slide-down ${
-                      expandedSections[item._id]?.difficultyLevel ? "expanded" : "collapsed"
-                    }`}
-                  >
-                    <div className="custom-select-wrapper mt-2">
-                      <select
-                        className="custom-select"
-                        value={expectingPreference[item._id]?.selectedDifficulty || item.difficulty_level || "Beginner"}
-                        onChange={(e) => {
-                          handlePreferenceChange(item._id, "selectedDifficulty", e.target.value);
-                          toggleSection(item._id, "difficultyLevel"); // Auto-close after selection
-                        }}
-                      >
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Expert">Expert</option>
-                      </select>
-                      <span className="custom-select-arrow">▼</span>
-                    </div>
-                  </div>
+
+                {/* Difficulty Level */}
+                <div className="bg-white shadow-sm border border-gray-100 p-4 rounded-xl">
+                  {/* <p className="text-sm text-gray-500 mb-2">Difficulty Level</p> */}
+                  <CustomSelect
+                    label="Difficulty Level"
+                    options={["Beginner", "Intermediate", "Expert"]}
+                    value={
+                      expectingPreference[item._id]?.selectedDifficulty ||
+                      item.difficulty_level ||
+                      "Beginner"
+                    }
+                    onChange={(val) =>
+                      handlePreferenceChange(
+                        item._id,
+                        "selectedDifficulty",
+                        val
+                      )
+                    }
+                  />
                 </div>
-                <div className="bg-green-100 p-2 rounded text-center">
-                  <button
-                    type="button"
-                    className="flex items-center text-sm text-gray-600 w-full focus:outline-none hover:text-green-600"
-                    onClick={() => toggleSection(item._id, "questionType")}
-                  >
-                    <span>Type: </span>
-                    <span className="ml-1 font-semibold">
-                      {expectingPreference[item._id]?.selectedQuestionType || item.question_Type || "MCQ Question"}
-                    </span>
-                    <span
-                      className={`ml-2 transform transition-transform duration-200 ${
-                        expandedSections[item._id]?.questionType ? "rotate-180" : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </button>
-                  <div
-                    className={`slide-down ${
-                      expandedSections[item._id]?.questionType ? "expanded" : "collapsed"
-                    }`}
-                  >
-                    <div className="custom-select-wrapper mt-2">
-                      <select
-                        className="custom-select"
-                        value={expectingPreference[item._id]?.selectedQuestionType || item.question_Type || "MCQ Question"}
-                        onChange={(e) => {
-                          handlePreferenceChange(item._id, "selectedQuestionType", e.target.value);
-                          toggleSection(item._id, "questionType"); // Auto-close after selection
-                        }}
-                      >
-                        <option value="MCQ Question">MCQ Question</option>
-                        <option value="Open Ended">Open Ended</option>
-                      </select>
-                      <span className="custom-select-arrow">▼</span>
-                    </div>
-                  </div>
+
+                {/* Question Type */}
+                <div className="bg-white shadow-sm border border-gray-100 p-4 rounded-xl">
+                  {/* <p className="text-sm text-gray-500 mb-2">Question Type</p> */}
+                  <CustomSelect
+                    label="Question Type"
+                    options={["Multiple Choice", "Open Ended"]}
+                    value={
+                      expectingPreference[item._id]?.selectedQuestionType ||
+                      item.question_Type ||
+                      "Multiple Choice"
+                    }
+                    onChange={(val) =>
+                      handlePreferenceChange(
+                        item._id,
+                        "selectedQuestionType",
+                        val
+                      )
+                    }
+                  />
                 </div>
               </div>
 
               {/* Description Section */}
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <p className="text-gray-700">{item.description || "No description available"}</p>
+                <p className="text-gray-700">
+                  {item.description || "No description available"}
+                </p>
               </div>
 
               {/* What to Expect Section */}
@@ -435,30 +487,77 @@ const QuestionBankDetail = () => {
                   What to Expect
                   <span
                     className={`ml-2 transform transition-transform duration-200 ${
-                      expandedSections[item._id]?.whatToExpect ? "rotate-180" : ""
+                      expandedSections[item._id]?.whatToExpect
+                        ? "rotate-180"
+                        : ""
                     }`}
-                  >
-                    ▼
-                  </span>
+                  ></span>
                 </button>
                 <div
-                  className={`slide-down ${
-                    expandedSections[item._id]?.whatToExpect ? "expanded" : "collapsed"
-                  }`}
+                  className={`slide-down 
+                    
+                  `}
+                  // ${
+                  //   expandedSections[item._id]?.whatToExpect
+                  //     ? "expanded"
+                  //     : "collapsed"
+                  // }
                 >
-                  {Array.isArray(item.what_to_expect) && item.what_to_expect.length > 0 ? (
-                    <div className="flex flex-wrap justify-between gap-4 mt-2">
-                      {item.what_to_expect.map((expectation, idx) => (
-                        <label key={idx} className="flex items-center space-x-2 w-[calc(50%-0.5rem)]">
-                          <input
-                            type="checkbox"
-                            className="h-5 w-5 border-gray-300 rounded checked:bg-green-500 checked:text-white focus:ring-green-500"
-                            checked={expectingPreference[item._id]?.selectedExpectation?.includes(expectation) || false}
-                            onChange={() => handlePreferenceChange(item._id, "selectedExpectation", expectation)}
-                          />
-                          <span className="text-gray-700">{expectation}</span>
-                        </label>
-                      ))}
+                  {Array.isArray(item.what_to_expect) &&
+                  item.what_to_expect.length > 0 ? (
+                    <div className="flex flex-wrap justify-between gap-4 mt-2 p-2">
+                      {item.what_to_expect.map((expectation, idx) => {
+                        const isChecked =
+                          expectingPreference[
+                            item._id
+                          ]?.selectedExpectation?.includes(expectation) ||
+                          false;
+
+                        return (
+                          <label
+                            key={idx}
+                            className="flex items-center gap-3 w-[calc(50%-0.5rem)] cursor-pointer relative"
+                          >
+                            <input
+                              type="checkbox"
+                              className={`appearance-none h-5 w-5 rounded-full border-2 transition-all duration-200 ${
+                                isChecked
+                                  ? "bg-green-500 border-green-500"
+                                  : "border-gray-300"
+                              } checked:bg-green-500 checked:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-400`}
+                              checked={isChecked}
+                              onChange={() =>
+                                handlePreferenceChange(
+                                  item._id,
+                                  "selectedExpectation",
+                                  expectation
+                                )
+                              }
+                            />
+                            {isChecked && (
+                              <svg
+                                className="absolute left-1.5 top-1.5 pointer-events-none"
+                                width="10"
+                                height="8"
+                                viewBox="0 0 10 8"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M1 4L4 7L9 1"
+                                  stroke="white"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                            <span className="text-sm text-gray-800">
+                              {expectation}
+                            </span>
+                          </label>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-gray-700 mt-2">No expectations listed</p>
@@ -469,7 +568,10 @@ const QuestionBankDetail = () => {
           ))}
         </div>
       ) : (
-        !loading && !error && <p className="text-gray-600">No question bank details available.</p>
+        !loading &&
+        !error && (
+          <p className="text-gray-600">No question bank details available.</p>
+        )
       )}
     </div>
   );
