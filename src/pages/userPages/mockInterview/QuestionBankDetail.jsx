@@ -213,6 +213,7 @@ const QuestionBankDetail = () => {
   const [error, setError] = useState(null);
   const [expectingPreference, setExpectingPreference] = useState({});
   const [expandedSections, setExpandedSections] = useState({});
+  const [userPreferenceData, setUserPreferenceData] = useState(null);
 
   useEffect(() => {
     const fetchQuestionBank = async () => {
@@ -284,8 +285,47 @@ const QuestionBankDetail = () => {
       }
     };
 
+    const getUserPreference = async () => {
+      try {
+        const response = await request({
+          endpoint: `/interview/getUserPreferenceBasedOnQuestionBankId?questionBank_id=${questionBankId}`,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${AuthorizationToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            response.message || "Failed to fetch user preferences"
+          );
+        }
+
+        const data = response.data.body;
+        console.log("Fetched User Preferences:", data);
+
+        // ✅ Pre-fill expectingPreference with saved values
+        if (data) {
+          setExpectingPreference((prev) => ({
+            ...prev,
+            [questionBankId]: {
+              selectedDifficulty: data.difficulty_level || "Beginner",
+              selectedQuestionType: data.question_Type || "Multiple Choice",
+              selectedExpectation: data.what_to_expect || [],
+            },
+          }));
+        }
+
+        setUserPreferenceData(data); // ✅ save to state
+      } catch (err) {
+        console.error("Error fetching user preferences:", err);
+      }
+    };
+
     if (AuthorizationToken && questionBankId) {
       fetchQuestionBank();
+      getUserPreference();
     } else {
       setLoading(false);
       setError(
@@ -432,9 +472,13 @@ const QuestionBankDetail = () => {
                   <CustomSelect
                     label="Difficulty Level"
                     options={["Beginner", "Intermediate", "Expert"]}
+                    // value={
+                    //   expectingPreference[item._id]?.selectedDifficulty ||
+                    //   item.difficulty_level ||
+                    //   "Beginner"
+                    // }
                     value={
                       expectingPreference[item._id]?.selectedDifficulty ||
-                      item.difficulty_level ||
                       "Beginner"
                     }
                     onChange={(val) =>
@@ -444,7 +488,14 @@ const QuestionBankDetail = () => {
                         val
                       )
                     }
+                    // ✅ Disable if user preference has difficulty_level
+                    disabled={!!userPreferenceData?.difficulty_level}
                   />
+                  {userPreferenceData?.difficulty_level && (
+                    <p className="text-sm italic text-gray-500 mt-2 flex items-center gap-1">
+                      <span>⚠️</span> Locked due to saved preference
+                    </p>
+                  )}
                 </div>
 
                 {/* Question Type */}
@@ -453,9 +504,13 @@ const QuestionBankDetail = () => {
                   <CustomSelect
                     label="Question Type"
                     options={["Multiple Choice", "Open Ended"]}
+                    // value={
+                    //   expectingPreference[item._id]?.selectedQuestionType ||
+                    //   item.question_Type ||
+                    //   "Multiple Choice"
+                    // }
                     value={
                       expectingPreference[item._id]?.selectedQuestionType ||
-                      item.question_Type ||
                       "Multiple Choice"
                     }
                     onChange={(val) =>
@@ -465,7 +520,14 @@ const QuestionBankDetail = () => {
                         val
                       )
                     }
+                    // ✅ Disable if user preference has question_Type
+                    disabled={!!userPreferenceData?.question_Type}
                   />
+                  {userPreferenceData?.question_Type && (
+                    <p className="text-sm italic text-gray-500 mt-2 flex items-center gap-1">
+                      <span>⚠️</span> Locked due to saved preference
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -507,6 +569,11 @@ const QuestionBankDetail = () => {
                   item.what_to_expect.length > 0 ? (
                     <div className="flex flex-wrap justify-between gap-4 mt-2 p-2">
                       {item.what_to_expect.map((expectation, idx) => {
+                        // const isChecked =
+                        //   expectingPreference[
+                        //     item._id
+                        //   ]?.selectedExpectation?.includes(expectation) ||
+                        //   false;
                         const isChecked =
                           expectingPreference[
                             item._id
@@ -520,6 +587,12 @@ const QuestionBankDetail = () => {
                           >
                             <input
                               type="checkbox"
+                              disabled={
+                                Array.isArray(
+                                  userPreferenceData?.what_to_expect
+                                ) &&
+                                userPreferenceData.what_to_expect.length > 0
+                              }
                               className={`appearance-none h-5 w-5 rounded-full border-2 transition-all duration-200 ${
                                 isChecked
                                   ? "bg-green-500 border-green-500"
@@ -534,6 +607,7 @@ const QuestionBankDetail = () => {
                                 )
                               }
                             />
+
                             {isChecked && (
                               <svg
                                 className="absolute left-1.5 top-1.5 pointer-events-none"
@@ -561,6 +635,11 @@ const QuestionBankDetail = () => {
                     </div>
                   ) : (
                     <p className="text-gray-700 mt-2">No expectations listed</p>
+                  )}
+                  {userPreferenceData?.question_Type && (
+                    <p className="text-sm italic text-gray-500 mt-2 flex items-center gap-1">
+                      <span>⚠️</span> Locked due to saved preference
+                    </p>
                   )}
                 </div>
               </div>

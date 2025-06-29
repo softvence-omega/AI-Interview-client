@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const CustomSelect = ({ label, options, value, onChange }) => {
+const CustomSelect = ({ label, options, value, onChange, disabled = false }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -29,6 +29,7 @@ const CustomSelect = ({ label, options, value, onChange }) => {
       {/* Select Box */}
       <button
         type="button"
+        disabled={disabled}
         onClick={() => setOpen(!open)}
         className="w-full bg-green-50 text-green-700 font-medium border border-green-300 rounded-md px-4 py-2 text-sm flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-green-400"
       >
