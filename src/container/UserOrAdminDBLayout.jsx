@@ -147,14 +147,56 @@ const UserOrAdminDBLayout = () => {
     }
   }, [userType, userMeta, userData, navigate, location.pathname]);
 
+  // useEffect(() => {
+  //   if (!user?.approvalToken) {
+  //     setLoadingProfile(false);
+  //     return;
+  //   }
+
+  //   const fetchProfile = async () => {
+  //     setLoadingProfile(true);
+  //     setErrorProfile(null);
+
+  //     try {
+  //       const response = await axios.get(
+  //         `${import.meta.env.VITE_BASE_URL}/users/getProfile`,
+  //         {
+  //           headers: {
+  //             Authorization: `${user.approvalToken}`,
+  //           },
+  //         }
+  //       );
+
+  //       setProfile(response.data);
+  //       console.log(
+  //         "profileeeeeeeee :::::::::",
+  //         response.data.data.interviewsAvailable
+  //       );
+  //     } catch (error) {
+  //       setErrorProfile(
+  //         error.response?.data?.message ||
+  //           error.message ||
+  //           "Something went wrong"
+  //       );
+  //     } finally {
+  //       setLoadingProfile(false);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, [user]);
+
   useEffect(() => {
     if (!user?.approvalToken) {
       setLoadingProfile(false);
       return;
     }
 
-    const fetchProfile = async () => {
-      setLoadingProfile(true);
+    const fetchProfile = async (isInitialFetch = false) => {
+      // Only set loading state for initial fetch
+      if (isInitialFetch) {
+        setLoadingProfile(true);
+      }
       setErrorProfile(null);
 
       try {
@@ -179,12 +221,32 @@ const UserOrAdminDBLayout = () => {
             "Something went wrong"
         );
       } finally {
-        setLoadingProfile(false);
+        if (isInitialFetch) {
+          setLoadingProfile(false);
+        }
       }
     };
 
-    fetchProfile();
-  }, [user]);
+    // Initial fetch with loading state
+    fetchProfile(true);
+
+    // Refetch when entering the Mock Interviews page or window regains focus
+    if (baseRoute === "mockInterview") {
+      fetchProfile(false); // Refetch without loading state
+    }
+
+    // Add event listener for window focus to refetch profile without loading state
+    const handleFocus = () => {
+      fetchProfile(false); // Refetch without loading state
+    };
+
+    window.addEventListener("focus", handleFocus);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [user, baseRoute]);
 
   // useEffect(() => {
   //   if (!userType) {
