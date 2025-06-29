@@ -548,15 +548,6 @@
 // };
 // export default StartInterviewPage;
 
-
-
-
-
-
-
-
-
-
 // import React, { useState, useEffect, useRef, useMemo } from "react";
 // import { useNavigate, useSearchParams } from "react-router-dom";
 // import { useAuth } from "../../../context/AuthProvider";
@@ -1148,13 +1139,6 @@
 
 // export default StartInterviewPage;
 
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthProvider";
@@ -1168,7 +1152,12 @@ import HistoryButtonControls from "./HistoryControllButton";
 import ErrorPage from "../../../reuseable/ErrorPage";
 
 // RetakePreferenceModal Component
-const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBankId }) => {
+const RetakePreferenceModal = ({
+  isOpen,
+  onClose,
+  onStartInterview,
+  questionBankId,
+}) => {
   const { user } = useAuth();
   const AuthorizationToken = user?.approvalToken;
   const { request } = useApi();
@@ -1188,6 +1177,8 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
   const [questionBankTopicsModal, setQuestionBankTopicsModal] = useState([]);
   const [loadingTopicsModal, setLoadingTopicsModal] = useState(false);
   const [errorTopicsModal, setErrorTopicsModal] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     if (!isOpen) {
@@ -1246,7 +1237,9 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
         }
       } catch (err) {
         if (!isCancelled) {
-          setErrorTopicsModal(err.message || "Failed to fetch question bank topics");
+          setErrorTopicsModal(
+            err.message || "Failed to fetch question bank topics"
+          );
           console.error("Error fetching question bank topics:", err);
         }
       } finally {
@@ -1285,7 +1278,7 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex justify-center items-center z-50 p-2 lg:p-0 md:p-0">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <style>
           {`
@@ -1337,10 +1330,12 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
           `}
         </style>
 
-        <h2 className="text-xl font-semibold mb-4">Customize Interview Preferences</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Customize Interview Preferences
+        </h2>
 
         {/* What to Expect */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <button
             type="button"
             className="flex items-center text-lg font-semibold mb-2 focus:outline-none hover:text-green-600"
@@ -1351,7 +1346,7 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
               ▼
             </span>
           </button>
-          <div className={`slide-down ${expandedSections.whatToExpect ? "expanded" : "collapsed"}`}>
+          <div className={`slide-down ${expandedSections.whatToExpect ? "expanded" : "expanded"}`}>
             {loadingTopicsModal ? (
               <p className="text-gray-600 mt-2">Loading topics...</p>
             ) : errorTopicsModal ? (
@@ -1374,6 +1369,60 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
               <p className="text-gray-700 mt-2">No expectations listed</p>
             )}
           </div>
+        </div> */}
+        <div className="mb-4">
+          <button
+            type="button"
+            className="flex items-center text-lg font-semibold mb-2 focus:outline-none hover:text-green-600"
+            onClick={() => toggleSection("whatToExpect")}
+          >
+            What to Expect
+            <span
+              className={`ml-2 transform transition-transform ${
+                expandedSections.whatToExpect ? "rotate-180" : ""
+              }`}
+            >
+              {/* ▼ */}
+            </span>
+          </button>
+          <div
+            className={`slide-down ${
+              expandedSections.whatToExpect ? "expanded" : "expanded"
+            }`}
+          >
+            {loadingTopicsModal ? (
+              <p className="text-gray-600 mt-2">Loading topics...</p>
+            ) : errorTopicsModal ? (
+              <p className="text-red-500 mt-2">Error: {errorTopicsModal}</p>
+            ) : questionBankTopicsModal.length > 0 ? (
+              <div className="flex flex-wrap gap-4 mt-2">
+                {questionBankTopicsModal.map((expectation, idx) => (
+                  <label
+                    key={idx}
+                    className="flex items-center space-x-2 w-[calc(50%-0.5rem)]"
+                  >
+                    <input
+                      type="checkbox"
+                      className={`h-5 w-5 rounded border-2 border-gray-400 bg-white checked:bg-green-500 checked:border-green-500 focus:ring-green-500 transition-colors duration-200 appearance-none
+  `}
+                      checked={preferences.selectedExpectation.includes(
+                        expectation
+                      )}
+                      onChange={() =>
+                        handlePreferenceChange(
+                          "selectedExpectation",
+                          expectation
+                        )
+                      }
+                    />
+                    <span className="text-gray-700">{expectation}</span>
+                  </label>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-700 mt-2">No expectations listed</p>
+            )}
+          </div>
         </div>
 
         {/* Difficulty Level */}
@@ -1384,11 +1433,19 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
             onClick={() => toggleSection("difficultyLevel")}
           >
             Difficulty Level: {preferences.selectedDifficulty}
-            <span className={`ml-2 transform transition-transform ${expandedSections.difficultyLevel ? "rotate-180" : ""}`}>
-              ▼
+            <span
+              className={`ml-2 transform transition-transform ${
+                expandedSections.difficultyLevel ? "rotate-180" : ""
+              }`}
+            >
+              {/* ▼ */}
             </span>
           </button>
-          <div className={`slide-down ${expandedSections.difficultyLevel ? "expanded" : "collapsed"}`}>
+          <div
+            className={`slide-down ${
+              expandedSections.difficultyLevel ? "expanded" : "expanded"
+            }`}
+          >
             <div className="custom-select-wrapper mt-2">
               <select
                 className="custom-select"
@@ -1415,17 +1472,28 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
             onClick={() => toggleSection("questionType")}
           >
             Question Type: {preferences.selectedQuestionType}
-            <span className={`ml-2 transform transition-transform ${expandedSections.questionType ? "rotate-180" : ""}`}>
-              ▼
+            <span
+              className={`ml-2 transform transition-transform ${
+                expandedSections.questionType ? "rotate-180" : ""
+              }`}
+            >
+              {/* ▼ */}
             </span>
           </button>
-          <div className={`slide-down ${expandedSections.questionType ? "expanded" : "collapsed"}`}>
+          <div
+            className={`slide-down ${
+              expandedSections.questionType ? "expanded" : "expanded"
+            }`}
+          >
             <div className="custom-select-wrapper mt-2">
               <select
                 className="custom-select"
                 value={preferences.selectedQuestionType}
                 onChange={(e) => {
-                  handlePreferenceChange("selectedQuestionType", e.target.value);
+                  handlePreferenceChange(
+                    "selectedQuestionType",
+                    e.target.value
+                  );
                   toggleSection("questionType");
                 }}
               >
@@ -1440,44 +1508,77 @@ const RetakePreferenceModal = ({ isOpen, onClose, onStartInterview, questionBank
         {/* Modal Actions */}
         <div className="flex justify-end gap-4">
           <button
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            onClick={() =>
-              onStartInterview(
-                preferences.selectedExpectation,
-                preferences.selectedDifficulty,
-                preferences.selectedQuestionType
-              )
-            }
+            disabled={isLoading}
+            className={`px-4 py-2 flex items-center justify-center gap-2 rounded text-white transition-colors duration-200 cursor-pointer ${
+              isLoading
+                ? "bg-green-400 cursor-not-allowed"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
+            onClick={async () => {
+              // ✅ Check if required fields are filled
+              if (
+                preferences.selectedExpectation.length === 0 ||
+                !preferences.selectedDifficulty ||
+                !preferences.selectedQuestionType
+              ) {
+                setFormError(
+                  "Please select all preferences before starting."
+                );
+                return;
+              }
+
+              setFormError(""); // Clear error if valid
+              setIsLoading(true);
+              try {
+                await onStartInterview(
+                  preferences.selectedExpectation,
+                  preferences.selectedDifficulty,
+                  preferences.selectedQuestionType
+                );
+              } finally {
+                setIsLoading(false);
+              }
+            }}
           >
-            Start Interview
+            {isLoading && (
+              <svg
+                className="w-4 h-4 animate-spin text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            )}
+            <span>{isLoading ? "Starting..." : "Start Interview"}</span>
           </button>
         </div>
+        {formError && (
+          <p className="text-red-500 text-sm font-medium my-2">
+            ⚠️ {formError}
+          </p>
+        )}
       </div>
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // LoadingErrorDisplay Component
 const LoadingErrorDisplay = ({ loading, error }) => (
@@ -1502,7 +1603,11 @@ const LoadingErrorDisplay = ({ loading, error }) => (
 );
 
 // QuestionSection Component
-const QuestionSection = ({ currentQuestionIndex, totalQuestions, question }) => (
+const QuestionSection = ({
+  currentQuestionIndex,
+  totalQuestions,
+  question,
+}) => (
   <>
     <h1 className="mb-4 text-left text-sm text-[#676768]">
       Question {currentQuestionIndex + 1} of {totalQuestions} Questions
@@ -1523,7 +1628,9 @@ const StartInterviewPage = () => {
   const { expectation, dependency, questionType } = useMemo(() => {
     let parsedExpectation;
     try {
-      parsedExpectation = JSON.parse(decodeURIComponent(searchParams.get("expectation") || "[]"));
+      parsedExpectation = JSON.parse(
+        decodeURIComponent(searchParams.get("expectation") || "[]")
+      );
     } catch (err) {
       parsedExpectation = [];
       console.error("Error parsing expectation:", err);
@@ -1605,7 +1712,9 @@ const StartInterviewPage = () => {
           what_to_expect: expectation || ["HTML", "css", "js"],
         };
 
-        const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 500));
+        const minLoadingTime = new Promise((resolve) =>
+          setTimeout(resolve, 500)
+        );
         const res = await request({
           endpoint,
           method: "POST",
@@ -1652,7 +1761,14 @@ const StartInterviewPage = () => {
       }
     };
     fetchGeneratedQuestions();
-  }, [questionBankId, interviewId, expectation, dependency, questionType, AuthorizationToken]);
+  }, [
+    questionBankId,
+    interviewId,
+    expectation,
+    dependency,
+    questionType,
+    AuthorizationToken,
+  ]);
 
   // Save AI response
   const saveAiResponse = async (response) => {
@@ -1843,7 +1959,11 @@ const StartInterviewPage = () => {
   };
 
   // Handle full retake
-  const handleFullRetaake = async (selectedExpectation, selectedDifficulty, selectedQuestionType) => {
+  const handleFullRetaake = async (
+    selectedExpectation,
+    selectedDifficulty,
+    selectedQuestionType
+  ) => {
     if (
       (!ongoingQuestion || !ongoingQuestion.questionBank_id) &&
       !history.current.length
@@ -1856,7 +1976,10 @@ const StartInterviewPage = () => {
     }
 
     // Validate modal preferences
-    if (!Array.isArray(selectedExpectation) || selectedExpectation.length === 0) {
+    if (
+      !Array.isArray(selectedExpectation) ||
+      selectedExpectation.length === 0
+    ) {
       setError("Please select at least one topic in 'What to Expect'");
       isProcessingRef.current = false;
       return;

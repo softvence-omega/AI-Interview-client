@@ -147,14 +147,56 @@ const UserOrAdminDBLayout = () => {
     }
   }, [userType, userMeta, userData, navigate, location.pathname]);
 
+  // useEffect(() => {
+  //   if (!user?.approvalToken) {
+  //     setLoadingProfile(false);
+  //     return;
+  //   }
+
+  //   const fetchProfile = async () => {
+  //     setLoadingProfile(true);
+  //     setErrorProfile(null);
+
+  //     try {
+  //       const response = await axios.get(
+  //         `${import.meta.env.VITE_BASE_URL}/users/getProfile`,
+  //         {
+  //           headers: {
+  //             Authorization: `${user.approvalToken}`,
+  //           },
+  //         }
+  //       );
+
+  //       setProfile(response.data);
+  //       console.log(
+  //         "profileeeeeeeee :::::::::",
+  //         response.data.data.interviewsAvailable
+  //       );
+  //     } catch (error) {
+  //       setErrorProfile(
+  //         error.response?.data?.message ||
+  //           error.message ||
+  //           "Something went wrong"
+  //       );
+  //     } finally {
+  //       setLoadingProfile(false);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, [user]);
+
   useEffect(() => {
     if (!user?.approvalToken) {
       setLoadingProfile(false);
       return;
     }
 
-    const fetchProfile = async () => {
-      setLoadingProfile(true);
+    const fetchProfile = async (isInitialFetch = false) => {
+      // Only set loading state for initial fetch
+      if (isInitialFetch) {
+        setLoadingProfile(true);
+      }
       setErrorProfile(null);
 
       try {
@@ -179,12 +221,32 @@ const UserOrAdminDBLayout = () => {
             "Something went wrong"
         );
       } finally {
-        setLoadingProfile(false);
+        if (isInitialFetch) {
+          setLoadingProfile(false);
+        }
       }
     };
 
-    fetchProfile();
-  }, [user]);
+    // Initial fetch with loading state
+    fetchProfile(true);
+
+    // Refetch when entering the Mock Interviews page or window regains focus
+    if (baseRoute === "mockInterview") {
+      fetchProfile(false); // Refetch without loading state
+    }
+
+    // Add event listener for window focus to refetch profile without loading state
+    const handleFocus = () => {
+      fetchProfile(false); // Refetch without loading state
+    };
+
+    window.addEventListener("focus", handleFocus);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [user, baseRoute]);
 
   // useEffect(() => {
   //   if (!userType) {
@@ -257,7 +319,36 @@ const UserOrAdminDBLayout = () => {
   //   }
   // }, [userType, userMeta, userData, navigate, location.pathname]);
 
-  if (loadingProfile) return <div>Loading profile...</div>;
+  if (loadingProfile)
+    return (
+      <div className="flex items-center justify-center h-screen w-full bg-white">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative w-14 h-14">
+            <div className="absolute inset-0 rounded-full border-4 border-green-500 opacity-20 animate-ping"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-green-600 animate-spin border-t-transparent"></div>
+            <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center text-white font-bold shadow-md">
+              <svg
+                className="w-6 h-6 animate-bounce"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.121 17.804A12.073 12.073 0 0112 15c2.21 0 4.284.636 6.02 1.727M4 4h16M4 4a3 3 0 013-3h10a3 3 0 013 3M4 4v16a2 2 0 002 2h12a2 2 0 002-2V4"
+                />
+              </svg>
+            </div>
+          </div>
+          <p className="text-gray-700 text-lg font-semibold tracking-wide">
+            Loading your dashboard...
+          </p>
+          <p className="text-sm text-gray-400">This won't take long.</p>
+        </div>
+      </div>
+    );
   if (errorProfile) return <div>Error: {errorProfile}</div>;
 
   return (
@@ -355,11 +446,18 @@ const UserOrAdminDBLayout = () => {
               </div>
               <div className="text-gray-600">
                 <h2 className="text-[#676768]">Welcome!</h2>
-                <div className="flex justify-items-center items-center gap-2">
-                  <h2 className="text-[20px] font-medium">
+                <div className="md:flex lg:flex md:justify-items-center lg:justify-items-center items-center gap-2">
+                  <h2 className="text-[16px] md:text-[20px] lg:text-[20px] font-medium">
                     {userData?.name?.toUpperCase() || "Guest"}
                   </h2>
-                  <h4 className="text-sm font-light text-gray-400">( Available Interview : {profile?.data?.interviewsAvailable} )</h4>
+                  <h4 className="text-sm font-light text-gray-400">
+                    {userData?.role === "user" && (
+                      <p>
+                        ( Available Interview :{" "}
+                        {profile?.data?.interviewsAvailable} )
+                      </p>
+                    )}
+                  </h4>
                 </div>
               </div>
             </div>
