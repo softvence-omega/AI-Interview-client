@@ -7,7 +7,7 @@ const HistoryButtonControls = ({
   handleFullRetaake,
   handleGoBack,
 }) => (
-  <div className="w-full flex justify-center mt-4">
+  <div className="w-full flex justify-center mt-4 pb-4">
     <div className="flex justify-center gap-6 w-full">
       <button
         onClick={handleFullRetaake}
