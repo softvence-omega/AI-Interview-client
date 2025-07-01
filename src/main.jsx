@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 // ✅ React Query setup
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LandingPageProvider } from "./context/LandingPageContext.jsx";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -18,8 +19,10 @@ createRoot(document.getElementById("root")).render(
       <LandingPageProvider>
         <BrowserRouter>
           <AuthProvider>
+            <ErrorBoundary>
             <Router />
             <Toaster position="top-center" richColors />
+            </ErrorBoundary>
           </AuthProvider>
         </BrowserRouter>
       </LandingPageProvider>
