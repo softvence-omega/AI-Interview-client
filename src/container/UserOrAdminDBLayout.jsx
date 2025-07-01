@@ -11,6 +11,7 @@ import { IoSettings } from "react-icons/io5";
 import Notification from "../pages/userPages/notifications/Notification";
 import { toast } from "sonner";
 import axios from "axios";
+import Buttons from "../reuseable/AllButtons";
 
 const UserOrAdminDBLayout = () => {
   const { user, logout } = useAuth();
@@ -450,7 +451,7 @@ const UserOrAdminDBLayout = () => {
                   <h2 className="text-[16px] md:text-[20px] lg:text-[20px] font-medium">
                     {userData?.name?.toUpperCase() || "Guest"}
                   </h2>
-                  <h4 className="text-sm font-light text-gray-400">
+                  <h4 className="text-xs md:text-sm lg:text-sm font-light text-gray-400">
                     {userData?.role === "user" && (
                       <p>
                         ( Available Interview :{" "}
@@ -461,7 +462,16 @@ const UserOrAdminDBLayout = () => {
                 </div>
               </div>
             </div>
-
+            {profile?.data.interviewsAvailable === 0 ? (
+              <Buttons.LinkButton
+                to={"/pricing#planChoose"}
+                text="Upgrade"
+                height="h-8"
+                width="w-26"
+              />
+            ) : (
+              <p>""</p>
+            )}
             {userType === "user" && (
               <Link to="notificationList">
                 <Notification />
