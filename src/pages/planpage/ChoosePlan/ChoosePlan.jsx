@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const ChoosePlan = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   const fetchPlans = async () => {
     try {
@@ -78,6 +79,27 @@ const ChoosePlan = () => {
   // };
 
   useEffect(() => {
+    if (location.hash && !loading) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        console.warn(`Element with hash ${location.hash} not found`);
+        // Retry scrolling after a short delay
+        const retryScroll = setInterval(() => {
+          const retryElement = document.querySelector(location.hash);
+          if (retryElement) {
+            retryElement.scrollIntoView({ behavior: "smooth" });
+            clearInterval(retryScroll);
+          }
+        }, 200);
+        // Stop retrying after 2 seconds
+        setTimeout(() => clearInterval(retryScroll), 2000);
+      }
+    }
+  }, [location.hash, loading]);
+
+  useEffect(() => {
     fetchPlans();
   }, []);
 
@@ -93,7 +115,10 @@ const ChoosePlan = () => {
   const paidPlans = plans.filter((plan) => plan.priceMonthly > 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 lg:px-0 md:px-0 py-4">
+    <div
+      id="planChoose"
+      className="max-w-7xl mx-auto px-4 lg:px-0 md:px-0 py-4"
+    >
       <h1
         className="text-center text-[28px] md:text-[36px] lg:text-[60px] font-semibold leading-[67.2px] mb-12 mx-auto mt-16"
         style={{

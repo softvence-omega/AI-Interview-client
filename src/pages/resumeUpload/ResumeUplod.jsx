@@ -166,26 +166,26 @@ const ResumeUpload = () => {
         {/* Left: Welcome and Bot Image Section */}
         <div className="flex flex-col items-center justify-center flex-1 space-y-8 text-left">
           <div>
-            <h2 className="text-3xl font-semibold"></h2>
-            <h1 className="text-white text-4xl md:text-6xl lg:text-6xl font-bold mb-6">
+            <h2 className="text-2xl font-semibold"></h2>
+            <h1 className="text-white text-3xl md:text-5xl lg:text-5xl font-bold mb-6">
               Welcome, {userData.name}!
             </h1>
-            <h3 className="text-2xl md:text-4xl lg:text-4xl text-gray-400 font-thin w-[80%]">
+            <h3 className="text-xl md:text-3xl lg:text-3xl text-gray-400 font-thin w-[80%]">
               To start off, please upload your resume.
             </h3>
           </div>
           <img
             src={botImg}
             alt="Bot"
-            className="w-full h-auto object-contain p-2 rounded"
+            className="w-[80%] h-[80%] object-contain p-2 rounded"
             style={{ borderColor: "var(--btn-primary-color)" }}
           />
         </div>
 
         {/* Right: Upload Section */}
         <div className="flex-1 flex items-center justify-center w-full text-center">
-          <div className="w-full max-w-md">
-            <h3 className="text-4xl md:text-5xl lg:text-5xl text-white mb-6">
+          <div className="w-full max-w-md max-h-screen">
+            <h3 className="text-3xl md:text-4xl lg:text-4xl text-white mb-6">
               Upload Your Resume
             </h3>
             <p className="text-lg md:text-xl lg:text-xl tracking-wider text-gray-400 mb-12">
@@ -193,7 +193,7 @@ const ResumeUpload = () => {
             </p>
             {/* <div className="p-6 border-2 border-dashed border-gray-500 rounded-lg text-center space-y-4"> */}
             <div
-              className={`p-6 border-2 border-dashed rounded-lg text-center space-y-4 transition ${
+              className={`p-4 border-2 border-dashed rounded-lg text-center space-y-4 transition ${
                 isDragging ? "border-green-400 bg-violet-600" : "border-gray-500"
               }`}
               onDrop={(e) => {
@@ -216,7 +216,7 @@ const ResumeUpload = () => {
                 />
                 <FiUpload size={56} />
               </label>
-              <h3 className="text-3xl font-light text-white px-4 mb-8">
+              <h3 className="text-2xl font-light text-white px-4 mb-8">
                 Drag and drop your resume or click to browse
               </h3>
               {selectedFile && (
@@ -226,7 +226,7 @@ const ResumeUpload = () => {
                 <button
                   onClick={handleContinue}
                   disabled={loading}
-                  className="text-3xl font-semibold bg-[#FFB74E] text-[#182234] rounded-lg hover:bg-green-600 hover:text-white transition h-[64px] w-[70%] cursor-pointer"
+                  className="text-2xl font-semibold bg-[#FFB74E] text-[#182234] rounded-lg hover:bg-green-600 hover:text-white transition h-[60px] w-[70%] cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -260,7 +260,7 @@ const ResumeUpload = () => {
                 </button>
                 <button
                   onClick={handleManualUpload}
-                  className="text-2xl font-light text-gray-300 hover:text-white py-2 px-6 rounded transition h-[60px] cursor-pointer mt-4"
+                  className="text-xl font-light text-gray-300 hover:text-white py-2 px-6 rounded transition h-[60px] cursor-pointer mt-4"
                 >
                   Enter Manually
                 </button>

@@ -92,11 +92,11 @@ const GenerateAboutMe = () => {
   return (
     <div className="w-full max-w-[1440px] mx-auto my-12">
       <div className="min-h-screen my-10 md:my-0 lg:my-0 flex flex-col items-center justify-center">
-        <div className="bg-green-200 w-[80%] md:max-w-3xl lg:max-w-3xl mx-auto border-2 border-[#37B874] mb-12 p-6 text-center shadow-lg rounded-lg">
-          <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-snug">
+        <div className="w-[80%] md:max-w-3xl lg:max-w-3xl mx-auto mb-12 p-6 text-center rounded-lg">
+          <h1 className="text-3xl text-white font-semibold mb-4 leading-snug">
             Thank you for uploading your resume!
           </h1>
-          <p className="text-lg text-gray-700 mb-3">
+          <p className="text-lg text-white mb-3">
             The first interview question is often{" "}
             <span className="font-medium text-[#37B874]">
               “Tell me about yourself,”
@@ -104,7 +104,7 @@ const GenerateAboutMe = () => {
             and we’re here to help you generate a tailored response directly
             from your resume.
           </p>
-          <p className="text-md text-gray-600 italic">
+          <p className="text-md text-white italic">
             Give it a try yourself and impress your interviewers!
           </p>
         </div>
