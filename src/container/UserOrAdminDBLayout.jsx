@@ -462,7 +462,8 @@ const UserOrAdminDBLayout = () => {
                 </div>
               </div>
             </div>
-            {profile?.data.interviewsAvailable === 0 ? (
+            {userData?.role === "user" &&
+            profile?.data.interviewsAvailable === 0 ? (
               <Buttons.LinkButton
                 to={"/pricing#planChoose"}
                 text="Upgrade"
