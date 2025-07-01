@@ -64,7 +64,7 @@ const JobDetails = () => {
             </p>
           </div>
           <a
-            href={job.link}
+            href="/userDashboard/mockInterview"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block text-white bg-[#37B874] px-4 py-2 rounded-lg hover:bg-[#2e9664] transition mt-6"

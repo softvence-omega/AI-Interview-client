@@ -228,7 +228,7 @@ const Router = () => {
       </Route>
 
       {/* Error page route */}
-      <Route path="*" element={<ErrorPage />} />
+      <Route path="*" element={<ErrorPage code={404} />} />
     </Routes>
   );
 };
