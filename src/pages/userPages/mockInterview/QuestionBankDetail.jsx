@@ -567,7 +567,7 @@ const QuestionBankDetail = () => {
                 >
                   {Array.isArray(item.what_to_expect) &&
                   item.what_to_expect.length > 0 ? (
-                    <div className="flex flex-wrap justify-between gap-4 mt-2 p-2">
+                    <div className="lg:flex md:flex lg:flex-wrap md:flex-wrap lg:justify-between md:justify-between lg:gap-4 md:gap-4 mt-2 lg:p-2 md:p-2">
                       {item.what_to_expect.map((expectation, idx) => {
                         // const isChecked =
                         //   expectingPreference[
@@ -583,7 +583,7 @@ const QuestionBankDetail = () => {
                         return (
                           <label
                             key={idx}
-                            className="flex items-center gap-3 w-[calc(50%-0.5rem)] cursor-pointer relative"
+                            className="flex items-center gap-3 lg:w-[calc(50%-0.5rem)] md:w-[calc(50%-0.5rem)] cursor-pointer relative mb-1 lg:mb-0"
                           >
                             <input
                               type="checkbox"
