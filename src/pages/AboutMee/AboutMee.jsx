@@ -92,7 +92,7 @@ const customSelectStyles = {
 // ].map((skill) => ({ value: skill, label: skill }));
 
 
-const AboutMe = () => {
+const AboutMee = () => {
   const user = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -340,4 +340,4 @@ const AboutMe = () => {
   );
 };
 
-export default AboutMe;
+export default AboutMee;
