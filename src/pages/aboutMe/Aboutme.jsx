@@ -91,6 +91,7 @@ const customSelectStyles = {
 //   "Other",
 // ].map((skill) => ({ value: skill, label: skill }));
 
+
 const AboutMe = () => {
   const user = useAuth();
   const navigate = useNavigate();
