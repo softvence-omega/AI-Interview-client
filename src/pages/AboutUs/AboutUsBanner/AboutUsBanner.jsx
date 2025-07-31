@@ -1,5 +1,5 @@
 import "./AboutUsBanner.css";
-import bannerImage from "../../../assets/greeting.png";
+import bannerImage from "../../../assets/Greeting.png";
 
 const AboutUsBanner = () => {
   return (
