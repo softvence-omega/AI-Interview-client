@@ -9,7 +9,7 @@ import LoginOrSignup from "../pages/loginOrSignUp/LoginOrSignup";
 import CommonLayout from "../container/CommonLayout";
 import OtpCrossCheck from "../pages/OtpCrosscheck/OtpCrossCheck";
 import ResumeUpload from "../pages/resumeUpload/ResumeUplod";
-import AboutMe from "../pages/Aboutme/Aboutme";
+import AboutMe from "../pages/AboutMe/AboutMe";
 import Experience from "../pages/expreance/Exprence";
 import EducationCertificate from "../pages/certificates/Certificates";
 import UserOrAdminDBLayout from "../container/UserOrAdminDBLayout";
