@@ -1,5 +1,5 @@
 import React from "react";
-import AboutUsBanner from "./Banner/AboutUSBanner";
+import AboutUsBanner from "./AboutUsBanner/AboutUsBanner";
 import OurJourney from "./OurJourney/OurJourney";
 import OurTeam from "./OurTeam/OurTeam";
 
