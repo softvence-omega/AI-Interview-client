@@ -1,14 +1,13 @@
-import LoginOrSignup from "./pages/loginOrSignUp/LoginOrSignup"
-import Navbar from "./reuseable/Navbar"
+import LoginOrSignup from "./pages/loginOrSignUp/LoginOrSignup";
+import Navbar from "./reuseable/Navbar";
 
 function App() {
-
   return (
     <>
-  <Navbar/>
-  <LoginOrSignup/>
+      <Navbar />
+      <LoginOrSignup />
     </>
-  )
+  );
 }
 
 export default App;
