@@ -12,13 +12,13 @@ const LogoFrame = () => {
   const companyLogos = landingData?.banner?.companyList || [];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-2 justify-items-center items-center div-with-white-shadow mt-4 mb-12">
+    <div className="flex flex-wrap gap-4 justify-center items-center div-with-white-shadow mt-4 mb-12">
       {companyLogos.map((logoUrl, index) => (
         <img
           key={index}
           src={logoUrl}
           alt={`Company logo ${index + 1}`}
-          className="h-auto object-contain"
+          className="w-[200px] h-auto object-contain"
         />
       ))}
     </div>
