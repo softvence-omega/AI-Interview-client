@@ -115,9 +115,9 @@ const Footer = () => {
               target="_blank"
               className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]"
             >
-              Inprep, A Hyrworx Inc. product{" "}
-              <p className="pl-16">13010 Morris Road, Suite 670,</p>{" "}
-              <p className="pl-16">Alpharetta, GA, 30004</p>{" "}
+              Inprep, A Hyrworx Inc. {" "}
+              <p className="pl-15">13010 Morris Road, Suite 670,</p>{" "}
+              <p className="pl-15">Alpharetta, GA, 30004</p>{" "}
             </a>
           </p>
         </nav>
