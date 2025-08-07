@@ -76,7 +76,7 @@ const JustFewStep = () => {
               className="text-4xl font-bold mb-4"
               style={{
                 background:
-                  "linear-gradient(180deg, #1E6540 37.89%, #FFF 84.21%)",
+                  "linear-gradient(180deg, #1E6540 70.89%, #FFF 84.21%)",
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",

@@ -86,41 +86,36 @@ const Footer = () => {
             Help Center
           </a>
         </nav>
-        <nav>
-          <h6 className="text-[16px] text-[#37B874] font-medium leading-[130%] mb-5">
-            Contact Info
-          </h6>
-          <p className="text-[#E0E0E1] text-[14px] font-medium leading-[130%]">
-            Phone:{" "}
-            <a
-              href="tel:+19432709658"
-              className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]"
-            >
-              +1 9432709658
-            </a>
-          </p>
-          <p className="text-[#E0E0E1] text-[14px] font-medium leading-[130%]">
-            Email:{" "}
-            <a
-              href="mailto:info@inprepai.com"
-              className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]"
-            >
-              info@inprepai.com
-            </a>
-          </p>
-          <p className="text-[#E0E0E1] text-[14px] font-medium leading-[130%]">
-            Address:{" "}
-            <a
-              href="https://www.google.com/maps?q=13010+Morris+Road,+Suite+670,+Alpharetta,+GA,+30004"
-              target="_blank"
-              className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]"
-            >
-              Inprep, A Hyrworx Inc. {" "}
-              <p className="pl-15">13010 Morris Road, Suite 670,</p>{" "}
-              <p className="pl-15">Alpharetta, GA, 30004</p>{" "}
-            </a>
-          </p>
-        </nav>
+        <nav className="max-w-xs font-sans">
+  <h6 className="text-[16px] text-[#37B874] font-medium leading-[130%] mb-5">
+    Contact Info
+  </h6>
+  <div className="flex items-start mb-3">
+    <span className="w-17 text-[#E0E0E1] text-[14px] font-medium leading-[130%]">
+      Email:
+    </span>
+    <a
+      href="mailto:inprep@hyrworx.com"
+      className="text-[#E0E0E1] text-[14px] font-medium leading-[130%] hover:text-[#37B874] hover:underline transition-colors duration-200"
+    >
+      inprep@hyrworx.com
+    </a>
+  </div>
+  <div className="flex items-start mb-3">
+    <span className="w-17 text-[#E0E0E1] text-[14px] font-medium leading-[130%]">
+      Address:
+    </span>
+    <a
+      href="https://www.google.com/maps?q=13010+Morris+Road,+Suite+670,+Alpharetta,+GA,+30004"
+      target="_blank"
+      className="text-[#E0E0E1] text-[14px] font-medium leading-[130%] hover:text-[#37B874] hover:underline transition-colors duration-200"
+    >
+      <span className="block">Inprep, A Hyrworx Product</span>
+      <span className="block">13010 Morris Road, Suite 670</span>
+      <span className="block">Alpharetta, GA, 30004</span>
+    </a>
+  </div>
+</nav>
       </footer>
     </div>
   );
