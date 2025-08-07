@@ -7,11 +7,14 @@ import CountryList from "country-list-with-dial-code-and-flag";
 const ContactForm = () => {
   const countries = CountryList.getAll();
 
+  // Find USA in the countries array
+  const usa = countries.find((country) => country.code === "US") || countries[0];
+
   const getFlagUrl = (countryCode) =>
     `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+  const [selectedCountry, setSelectedCountry] = useState(countries[240]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -20,7 +23,8 @@ const ContactForm = () => {
     phone: "",
     message: "",
     // countryCode: "+1",
-    countryCode: countries[0].dialCode,
+    // countryCode: countries[0].dialCode,
+    countryCode: usa.dialCode,
   });
 
   // const [selectedCountry, setSelectedCountry] = useState({
@@ -101,8 +105,10 @@ const ContactForm = () => {
           email: "",
           phone: "",
           message: "",
-          countryCode: countries[0].dialCode,
+          // countryCode: countries[0].dialCode,
+          countryCode: usa.dialCode,
         });
+        setSelectedCountry(usa);
       } else {
         alert(data?.message || "Failed to send message.");
       }
@@ -155,7 +161,7 @@ const ContactForm = () => {
 
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2 text-black text-left">
-                Phone Number<span className="text-[#F00]">*</span>
+                Phone Number
               </label>
               <div className="phone-input flex items-center">
                 <div className="relative">
@@ -250,7 +256,7 @@ const ContactForm = () => {
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-r text-black text-left bg-[#F1F1F1] focus:border-[#37B874] transition duration-200"
                   placeholder={selectedCountry.phoneCode}
-                  required
+                  // required
                 />
               </div>
             </div>

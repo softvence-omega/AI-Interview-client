@@ -12,15 +12,22 @@ const LogoFrame = () => {
   const companyLogos = landingData?.banner?.companyList || [];
 
   return (
-    <div className="flex flex-wrap gap-4 justify-center items-center div-with-white-shadow mt-4 mb-12">
-      {companyLogos.map((logoUrl, index) => (
-        <img
-          key={index}
-          src={logoUrl}
-          alt={`Company logo ${index + 1}`}
-          className="w-[200px] h-auto object-contain"
-        />
-      ))}
+    <div className="pt-14 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col items-center">
+        <h1 className="text-center text-[28px] md:text-[36px] lg:text-[64px] font-semibold leading-tight bg-gradient-to-r from-[#195234] to-[#37B874] bg-clip-text text-transparent max-w-[864px]">
+          As Seen In
+        </h1>
+        <div className="flex flex-wrap justify-center gap-4 lg:gap-8">
+          {companyLogos.map((logoUrl, index) => (
+            <img
+              key={index}
+              src={logoUrl}
+              alt={`Company logo ${index + 1}`}
+              className="w-[150px] sm:w-[180px] lg:w-[200px] h-auto object-contain"
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
