@@ -80,7 +80,7 @@ const Footer = () => {
             Terms of Service
           </a>
           <a
-            href="/Contact-Us"
+            href="/help-center"
             className="link link-hover text-[#E0E0E1] text-[14px] font-medium leading-[130%]"
           >
             Help Center
