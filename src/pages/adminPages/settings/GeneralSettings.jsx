@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Settings from "../../userPages/settings/Settings";
@@ -8,10 +8,33 @@ const GeneralSettings = () => {
   const [triggerText, setTriggerText] = useState("");
   const [logo, setLogo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [logoPreview, setLogoPreview] = useState("");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/website/get-website`
+        );
+        const data = res.data.data;
+
+        setTitle(data?.title || "");
+        setTriggerText(data?.triggerText || "");
+        setLogoPreview(data?.logoUrl || ""); // Use logoUrl here
+      } catch (error) {
+        console.error("Failed to fetch settings", error);
+        toast.error("Failed to load current settings.");
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setLogo(e.target.files[0]);
+      const file = e.target.files[0];
+      setLogo(file);
+      setLogoPreview(URL.createObjectURL(file));
     }
   };
 
@@ -84,7 +107,7 @@ const GeneralSettings = () => {
           </div>
 
           {/* Logo Upload */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-[#333333] mb-1">
               Logo & Branding
             </label>
@@ -104,6 +127,40 @@ const GeneralSettings = () => {
                 </p>
               </div>
             </div>
+          </div> */}
+
+          <div>
+            <label className="block text-sm font-medium text-[#333333] mb-1">
+              Logo & Branding
+            </label>
+
+            {/* Logo preview if exists */}
+            {logoPreview && (
+              <div className="w-full max-w-[200px] h-24 mt-2 mb-2 border rounded flex items-center justify-center bg-white">
+                <img
+                  src={logoPreview}
+                  alt="Current Logo"
+                  className="object-contain h-full"
+                />
+              </div>
+            )}
+
+            {/* Upload input always visible */}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2 block w-full text-sm text-gray-600
+      file:mr-4 file:py-2 file:px-4
+      file:rounded file:border-0
+      file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-green-700
+      hover:file:bg-blue-100
+      focus:outline-none focus:ring-1 focus:ring-green-500"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              JPG, SVG, JPEG, PNG under 1MB
+            </p>
           </div>
 
           {/* Tagline */}
@@ -132,7 +189,7 @@ const GeneralSettings = () => {
         </div>
       </div>
 
-      <Settings/>
+      <Settings />
     </div>
   );
 };

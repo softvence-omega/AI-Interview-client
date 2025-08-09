@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import Swal from "sweetalert2";
 import { MdDelete } from "react-icons/md";
 
-
 const LandingPageManage = () => {
   const [loading, setLoading] = useState(false);
   const [companyLogos, setCompanyLogos] = useState([]);
@@ -183,7 +182,9 @@ const LandingPageManage = () => {
     setDeletingIndices((prev) => new Set([...prev, index]));
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/landingPage/feature-card-image/${index}`
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/landingPage/feature-card-image/${index}`
       );
       // Update featureCardImages
       setFeatureCardImages(
@@ -204,6 +205,7 @@ const LandingPageManage = () => {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true);
       // Fetch current data to merge with updated fields
       const currentDataRes = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`
@@ -247,9 +249,13 @@ const LandingPageManage = () => {
         }
       });
 
-      await axios.put(`${import.meta.env.VITE_BASE_URL}/landingPage/update`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/landingPage/update`,
+        form,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       // Refresh company logos and feature card images
       const updatedData = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/landingPage/landingpagedata`
@@ -265,6 +271,8 @@ const LandingPageManage = () => {
     } catch (error) {
       console.error("Update failed", error);
       toast.error("Update failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -361,7 +369,9 @@ const LandingPageManage = () => {
                           />
                         </svg>
                       ) : (
-                        <span><MdDelete /></span>
+                        <span>
+                          <MdDelete />
+                        </span>
                       )}
                     </button>
                   </div>
@@ -455,7 +465,9 @@ const LandingPageManage = () => {
                             />
                           </svg>
                         ) : (
-                          <span><MdDelete /></span>
+                          <span>
+                            <MdDelete />
+                          </span>
                         )}
                       </button>
                     </div>
@@ -569,9 +581,10 @@ const LandingPageManage = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#37B874] hover:bg-[#195234] text-white font-semibold py-3 rounded mt-6"
+            disabled={loading}
+            className="w-full bg-[#37B874] hover:bg-[#195234] text-white font-semibold py-3 rounded mt-6 cursor-pointer"
           >
-            Update
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </div>
