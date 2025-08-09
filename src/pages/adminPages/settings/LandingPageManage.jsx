@@ -114,7 +114,7 @@ const LandingPageManage = () => {
           pageData.guide.guideCards.forEach((card) => {
             appendGuideCard({
               title: card.title || "",
-              detail: card.title || "",
+              detail: card.detail || "",
             });
           });
         }
