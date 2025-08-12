@@ -16,7 +16,7 @@ const FeaturesBanner = () => {
         Features
       </h1>
 
-      <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[510px] lg:w-[520px] mx-auto">
+      <p className="text-center text-[16px] lg:text-xl font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[510px] lg:w-[520px] mx-auto">
         Explore the powerful tools and features that make inprep.ai the most
         effective way to prepare for interviews, track job applications, and
         improve your chances of success.

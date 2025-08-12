@@ -86,7 +86,7 @@ const PrepareAnyJob = () => {
 
   const prepareAnyJob = landingData?.guide || [];
 
-  console.log(prepareAnyJob);
+  // console.log(prepareAnyJob);
   return (
     <div className="mx-0 lg:mx-0">
       <div
@@ -113,14 +113,14 @@ const PrepareAnyJob = () => {
                 className="bg-white rounded-xl shadow-lg px-6 pt-6 pb-2 flex flex-col items-start text-start"
               >
                 <div
-                  className="text-4xl font-bold mb-4"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #1E6540 70.89%, #FFF 84.21%)",
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
+                  className="text-4xl font-bold mb-4 text-[#1E6540]"
+                  // style={{
+                  //   background:
+                  //     "linear-gradient(180deg, #1E6540 70.89%, #FFF 84.21%)",
+                  //   backgroundClip: "text",
+                  //   WebkitBackgroundClip: "text",
+                  //   WebkitTextFillColor: "transparent",
+                  // }}
                 >
                   {(index + 1).toString().padStart(2, "0")}
                 </div>

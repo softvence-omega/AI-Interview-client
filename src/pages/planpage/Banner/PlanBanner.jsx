@@ -16,7 +16,7 @@ const PlanBanner = () => {
         Pricing Plans
       </h1>
 
-      <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[510px] lg:w-[520px] mx-auto">
+      <p className="text-center text-[16px] lg:text-xl font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[510px] lg:w-[520px] mx-auto">
       Whether you're just getting started or ready to go all-in with unlimited interviews, we have a plan that fits your needs. Choose the one that works best for you.
       </p>
 
