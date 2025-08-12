@@ -336,8 +336,6 @@
 
 // export default EducationCertificate;
 
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -347,6 +345,7 @@ import Container from "../../container/container";
 import Buttons from "../../reuseable/AllButtons";
 import axios from "axios";
 import { useAuth } from "../../context/AuthProvider";
+import { DateInputWithIcon } from "../../reuseable/DateInputWithIcon";
 
 const customSelectStyles = {
   control: (provided, state) => ({
@@ -515,7 +514,9 @@ const EducationCertificate = () => {
         let localUser;
         try {
           const storedData = localStorage.getItem("userData");
-          localUser = storedData ? JSON.parse(storedData) : { userMeta: {}, userData: {} };
+          localUser = storedData
+            ? JSON.parse(storedData)
+            : { userMeta: {}, userData: {} };
         } catch (error) {
           console.error("Error parsing localStorage:", error);
           localUser = { userMeta: {}, userData: {} };
@@ -584,12 +585,12 @@ const EducationCertificate = () => {
       <div className="flex flex-col lg:flex-row w-screen min-h-screen items-center justify-center px-4 pt-24 gap-12 max-w-[1440px]">
         {/* Left Section */}
         <div className="flex flex-col items-center text-center space-y-6 flex-1">
-          <h1 className="text-4xl font-bold">Hello Russell!</h1>
+          <h1 className="text-4xl font-bold">Hello {user.userData.name}!</h1>
           <h2 className="text-3xl font-semibold">Welcome</h2>
           <img
             src={botImg}
             alt="Bot"
-            className="w-64 h-auto object-contain mt-6"
+            className="w-[70%] h-[70%] object-contain mt-2"
           />
         </div>
 
@@ -645,7 +646,7 @@ const EducationCertificate = () => {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       Start Date
                     </label>
@@ -674,6 +675,51 @@ const EducationCertificate = () => {
                     />
                   </div>
 
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id={`ongoing-checkbox-${index}`}
+                      checked={edu.isOngoing}
+                      onChange={() => handleOngoingChange(index)}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`ongoing-checkbox-${index}`}
+                      className="text-sm"
+                    >
+                      Ongoing Education
+                    </label>
+                  </div> */}
+
+                  {/* Start Date */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Start Date
+                    </label>
+                    <DateInputWithIcon
+                      name="startDate"
+                      value={edu.startDate}
+                      onChange={(e) => handleChange(index, e)}
+                      disabled={false}
+                      required={true}
+                    />
+                  </div>
+
+                  {/* Completion Date */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Completion Date
+                    </label>
+                    <DateInputWithIcon
+                      name="completionDate"
+                      value={edu.isOngoing ? "" : edu.completionDate}
+                      onChange={(e) => handleChange(index, e)}
+                      disabled={edu.isOngoing}
+                      required={!edu.isOngoing}
+                    />
+                  </div>
+
+                  {/* Ongoing Checkbox */}
                   <div className="flex items-center mt-2">
                     <input
                       type="checkbox"
