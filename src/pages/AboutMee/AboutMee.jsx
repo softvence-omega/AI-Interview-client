@@ -91,21 +91,20 @@ const customSelectStyles = {
 //   "Other",
 // ].map((skill) => ({ value: skill, label: skill }));
 
-
 const AboutMee = () => {
   const user = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-
   const [countryOptions, setCountryOptions] = useState([]);
   const [skillOptions, setSkillOptions] = useState([]);
-
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get("https://restcountries.com/v3.1/all?fields=name");
+        const response = await axios.get(
+          "https://restcountries.com/v3.1/all?fields=name"
+        );
         const countries = response.data
           .filter((country) => country.name.common !== "Israel") // ❌ Exclude Israel
           .map((country) => ({
@@ -113,21 +112,23 @@ const AboutMee = () => {
             label: country.name.common,
           }))
           .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
-  
+
         setCountryOptions(countries);
       } catch (error) {
         console.error("Failed to fetch countries", error);
         toast.error("Could not load country list");
       }
     };
-  
+
     fetchCountries();
   }, []);
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/skill/all-skills`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/skill/all-skills`
+        );
         const skills = response.data.data.map((skill) => ({
           value: skill.name,
           label: skill.name,
@@ -138,11 +139,10 @@ const AboutMee = () => {
         toast.error("Could not load skills list");
       }
     };
-  
+
     fetchSkills();
   }, []);
-  
-  
+
   // Add all fields like summary, experience, education, etc.
   const [formData, setFormData] = useState({
     summary: "ABCDEFGHI",
@@ -188,6 +188,30 @@ const AboutMee = () => {
 
   const handleSkillsChange = (selectedOptions) => {
     setFormData((prev) => ({ ...prev, skills: selectedOptions || [] }));
+  };
+
+  const handleCreateSkill = async (inputValue) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/skill/create-skill`,
+        {
+          name: inputValue,
+        }
+      );
+
+      const newSkill = { value: res.data.name, label: res.data.name };
+
+      setSkillOptions((prev) => [...prev, newSkill]);
+      setFormData((prev) => ({
+        ...prev,
+        skills: [...prev.skills, newSkill],
+      }));
+
+      toast.success("New skill added!");
+    } catch (error) {
+      console.error("Failed to create skill", error);
+      toast.error("Could not add new skill");
+    }
   };
 
   const handleContinue = async () => {
@@ -247,7 +271,7 @@ const AboutMee = () => {
           <img
             src={botImg}
             alt="Bot"
-            className="w-64 h-auto object-contain mt-6"
+            className="w-[70%] h-[70%] object-contain mt-2"
           />
         </div>
 
@@ -257,7 +281,7 @@ const AboutMee = () => {
             <h3 className="text-2xl font-semibold mb-6 text-center">
               About Me
             </h3>
-            <form className="space-y-4">
+            <form className="space-y-8">
               {/* City */}
               <div>
                 <label className="block text-sm font-medium mb-1">City</label>
@@ -294,6 +318,7 @@ const AboutMee = () => {
                   options={skillOptions}
                   value={formData.skills}
                   onChange={handleSkillsChange}
+                  onCreateOption={handleCreateSkill}
                   isSearchable
                   placeholder="Select or type to add skills"
                   styles={customSelectStyles}

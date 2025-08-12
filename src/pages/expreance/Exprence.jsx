@@ -7,6 +7,8 @@ import botImg from "../../assets/logos/Hi_bot.png";
 import Container from "../../container/container";
 import Buttons from "../../reuseable/AllButtons";
 import axios from "axios";
+import CreatableSelect from "react-select/creatable";
+import { DateInputWithIcon } from "../../reuseable/DateInputWithIcon";
 
 const customSelectStyles = {
   control: (provided, state) => ({
@@ -42,48 +44,94 @@ const customSelectStyles = {
   }),
 };
 
-const skillOptions = [
-  "JavaScript",
-  "TypeScript",
-  "Python",
-  "Ruby",
-  "Java",
-  "PHP",
-  "Node.js",
-  "React.js",
-  "Express js",
-  "Swift",
-  "C#",
-  "Go",
-  "C++",
-  "Kotlin",
-  "Dart",
-  "HTML",
-  "CSS",
-  "SQL",
-  "NoSQL",
-  "MySQL",
-  "R",
-  "Rust",
-  "Shell Scripting",
-  "Perl",
-  "Solidity",
-].map((lang) => ({ value: lang, label: lang }));
+// const skillOptions = [
+//   "JavaScript",
+//   "TypeScript",
+//   "Python",
+//   "Ruby",
+//   "Java",
+//   "PHP",
+//   "Node.js",
+//   "React.js",
+//   "Express js",
+//   "Swift",
+//   "C#",
+//   "Go",
+//   "C++",
+//   "Kotlin",
+//   "Dart",
+//   "HTML",
+//   "CSS",
+//   "SQL",
+//   "NoSQL",
+//   "MySQL",
+//   "R",
+//   "Rust",
+//   "Shell Scripting",
+//   "Perl",
+//   "Solidity",
+// ].map((lang) => ({ value: lang, label: lang }));
 
-const experienceOptions = [
-  "Less than 1 Year",
-  "1 Year",
-  "2 Years",
-  "3 Years",
-  "4 Years",
-  "5 Years",
-  "5+ Years",
-].map((exp) => ({ value: exp, label: exp }));
+// const experienceOptions = [
+//   "Less than 1 Year",
+//   "1 Year",
+//   "2 Years",
+//   "3 Years",
+//   "4 Years",
+//   "5 Years",
+//   "5+ Years",
+// ].map((exp) => ({ value: exp, label: exp }));
 
 const Experience = () => {
   const user = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const [countryOptions, setCountryOptions] = useState([]);
+  const [skillOptions, setSkillOptions] = useState([]);
+
+  // Fetch countries
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(
+          "https://restcountries.com/v3.1/all?fields=name"
+        );
+        const countries = response.data
+          .filter((country) => country.name.common !== "Israel")
+          .map((country) => ({
+            value: country.name.common,
+            label: country.name.common,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+        setCountryOptions(countries);
+      } catch (error) {
+        console.error("Failed to fetch countries", error);
+        toast.error("Could not load country list");
+      }
+    };
+    fetchCountries();
+  }, []);
+
+  // Fetch skills
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/skill/all-skills`
+        );
+        const skills = response.data.data.map((skill) => ({
+          value: skill.name,
+          label: skill.name,
+        }));
+        setSkillOptions(skills);
+      } catch (error) {
+        console.error("Failed to fetch skills", error);
+        toast.error("Could not load skills list");
+      }
+    };
+    fetchSkills();
+  }, []);
 
   const [experiences, setExperiences] = useState([
     {
@@ -96,7 +144,7 @@ const Experience = () => {
       startDate: "",
       endDate: "",
       isOngoing: false,
-      experienceDuration: experienceOptions[2], // Default selected experience duration
+      // experienceDuration: experienceOptions[2], // Default selected experience duration
     },
   ]);
 
@@ -118,9 +166,15 @@ const Experience = () => {
     setExperiences(updated);
   };
 
-  const handleExperienceChange = (index, selectedOption) => {
+  // const handleExperienceChange = (index, selectedOption) => {
+  //   const updated = [...experiences];
+  //   updated[index].experienceDuration = selectedOption;
+  //   setExperiences(updated);
+  // };
+
+  const handleCountryChange = (index, selectedOption) => {
     const updated = [...experiences];
-    updated[index].experienceDuration = selectedOption;
+    updated[index].country = selectedOption;
     setExperiences(updated);
   };
 
@@ -128,6 +182,32 @@ const Experience = () => {
     const updated = [...experiences];
     updated[index].skills = selectedSkills || [];
     setExperiences(updated);
+  };
+
+  const handleCreateSkill = async (inputValue, index) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/skill/create-skill`,
+        {
+          name: inputValue,
+        }
+      );
+
+      const newSkill = { value: res.data.name, label: res.data.name };
+
+      // Update skillOptions globally
+      setSkillOptions((prev) => [...prev, newSkill]);
+
+      // Add new skill to the selected experience's skills
+      const updated = [...experiences];
+      updated[index].skills = [...updated[index].skills, newSkill];
+      setExperiences(updated); // <-- use setExperiences here!
+
+      toast.success("New skill added!");
+    } catch (error) {
+      console.error("Failed to create skill", error);
+      toast.error("Could not add new skill");
+    }
   };
 
   const handleOngoingChange = (index) => {
@@ -152,7 +232,7 @@ const Experience = () => {
         startDate: "",
         endDate: "",
         isOngoing: false,
-        experienceDuration: experienceOptions[2],
+        // experienceDuration: experienceOptions[2],
       },
     ]);
   };
@@ -232,7 +312,7 @@ const Experience = () => {
           <img
             src={botImg}
             alt="Bot"
-            className="w-64 h-auto object-contain mt-6"
+            className="w-[70%] h-[70%] object-contain mt-2"
           />
         </div>
 
@@ -248,7 +328,7 @@ const Experience = () => {
           {/* Middle: Scrollable Experiences */}
           <div
             ref={scrollRef}
-            className="flex-1 w-full max-w-md mx-auto px-2 md:max-h-[400px] md:overflow-y-auto"
+            className="flex-1 w-full max-w-md mx-auto px-2 md:max-h-[450px] md:overflow-y-auto"
           >
             <form className="space-y-6">
               {experiences.map((exp, index) => (
@@ -303,13 +383,20 @@ const Experience = () => {
                     <label className="block text-sm font-medium mb-1">
                       Country
                     </label>
-                    <input
+                    {/* <input
                       type="text"
                       name="country"
                       value={exp.country}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
                       placeholder="Enter your country"
+                    /> */}
+                    <Select
+                      options={countryOptions}
+                      value={exp.country}
+                      onChange={(option) => handleCountryChange(index, option)}
+                      isSearchable
+                      styles={customSelectStyles}
                     />
                   </div>
 
@@ -329,7 +416,7 @@ const Experience = () => {
                   </div>
 
                   {/* Skills */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       Skills
                     </label>
@@ -345,10 +432,30 @@ const Experience = () => {
                       }
                       menuPosition="fixed"
                     />
+                  </div> */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Skills
+                    </label>
+                    <CreatableSelect
+                      isMulti
+                      options={skillOptions}
+                      value={exp.skills}
+                      onChange={(skills) => handleSkillsChange(index, skills)}
+                      onCreateOption={(inputValue) =>
+                        handleCreateSkill(inputValue, index)
+                      }
+                      className="text-black"
+                      styles={customSelectStyles}
+                      menuPortalTarget={
+                        typeof window !== "undefined" ? document.body : null
+                      }
+                      menuPosition="fixed"
+                    />
                   </div>
 
                   {/* Start Date */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       Start Date
                     </label>
@@ -359,10 +466,10 @@ const Experience = () => {
                       onChange={(e) => handleChange(index, e)}
                       className="w-full p-2 border rounded bg-white text-black border-[#37B874] focus:outline-none focus:ring-2 focus:ring-[#37B874]"
                     />
-                  </div>
+                  </div> */}
 
                   {/* End Date */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       End Date
                     </label>
@@ -389,10 +496,53 @@ const Experience = () => {
                     >
                       Currently working (Ongoing)
                     </label>
+                  </div> */}
+
+                  {/* Start Date */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Start Date
+                    </label>
+                    <DateInputWithIcon
+                      name="startDate"
+                      value={exp.startDate}
+                      onChange={(e) => handleChange(index, e)}
+                      disabled={false}
+                    />
+                  </div>
+
+                  {/* End Date */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      End Date
+                    </label>
+                    <DateInputWithIcon
+                      name="endDate"
+                      value={exp.isOngoing ? "" : exp.endDate}
+                      onChange={(e) => handleChange(index, e)}
+                      disabled={exp.isOngoing}
+                    />
+                  </div>
+
+                  {/* Ongoing Checkbox */}
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id={`ongoing-checkbox-${index}`}
+                      checked={exp.isOngoing}
+                      onChange={() => handleOngoingChange(index)}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`ongoing-checkbox-${index}`}
+                      className="text-sm"
+                    >
+                      Currently working (Ongoing)
+                    </label>
                   </div>
 
                   {/* Experience Duration */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium mb-1">
                       Experience Duration
                     </label>
@@ -409,7 +559,7 @@ const Experience = () => {
                       }
                       menuPosition="fixed"
                     />
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </form>
