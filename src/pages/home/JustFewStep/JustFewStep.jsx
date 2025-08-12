@@ -73,14 +73,14 @@ const JustFewStep = () => {
               <img src={card.image} alt="" className="" />
             </div>
             <h2
-              className="text-4xl font-bold mb-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, #1E6540 70.89%, #FFF 84.21%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+              className="text-4xl font-bold mb-4 text-[#1E6540]"
+              // style={{
+              //   background:
+              //     "linear-gradient(180deg, #1E6540 70.89%, #FFF 84.21%)",
+              //   backgroundClip: "text",
+              //   WebkitBackgroundClip: "text",
+              //   WebkitTextFillColor: "transparent",
+              // }}
             >
               {card.step}
             </h2>

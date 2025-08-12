@@ -99,13 +99,13 @@ const UserOrAdminDBLayout = () => {
         !completedSteps.isResumeUploaded &&
         currentPath !== "/resume-upload"
       ) {
-        toast.warning("Please upload your resume", {
-          description: "Upload your resume to unlock more features.",
-          action: {
-            label: "Upload Resume",
-            onClick: () => navigate("/resume-upload"),
-          },
-        });
+        // toast.warning("Please upload your resume", {
+        //   description: "Upload your resume to unlock more features.",
+        //   action: {
+        //     label: "Upload Resume",
+        //     onClick: () => navigate("/resume-upload"),
+        //   },
+        // });
         navigate("/resume-upload");
         return;
       }

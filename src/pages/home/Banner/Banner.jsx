@@ -21,7 +21,7 @@ const Banner = () => {
         {landingData.banner.title}
       </h1>
 
-      <p className="text-center text-[16px] font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[410px] lg:w-[480px] mx-auto">
+      <p className="text-center text-[16px] lg:text-xl font-normal leading-[24px] tracking-[-0.32px] text-[#676768] w-full px-2 md:w-[410px] lg:w-[480px] mx-auto">
         {landingData.banner.detail}
       </p>
 
