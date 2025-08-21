@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LandingPageProvider } from "./context/LandingPageContext.jsx";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
+import GAListener from "./components/GAListener.jsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -20,8 +21,9 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
           <AuthProvider>
             <ErrorBoundary>
-            <Router />
-            <Toaster position="top-center" richColors />
+              <GAListener />
+              <Router />
+              <Toaster position="top-center" richColors />
             </ErrorBoundary>
           </AuthProvider>
         </BrowserRouter>
