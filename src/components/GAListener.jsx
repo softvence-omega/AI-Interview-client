@@ -14,7 +14,7 @@ const GAListener = () => {
       hitType: "pageview",
       page: location.pathname + location.search,
     });
-  }, [location]); // send pageview on route change
+  }, [location]); // send pageview on each route change
 
   return null;
 };
